@@ -16,7 +16,8 @@
         android:layout_below="@+id/hwicon"
         android:layout_alignLeft="@+id/button2"
         android:layout_alignStart="@+id/button2"
-        android:background="@drawable/button" />
+        android:background="@drawable/button"
+        android:onClick="login"/>
 
     <Button
         android:text="Sign Up"
