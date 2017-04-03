@@ -8,4 +8,7 @@
     app:rectLayout="@layout/rect_activity_main"
     app:roundLayout="@layout/round_activity_main"
     tools:context="com.example.android.healthwatch.MainActivity"
-    tools:deviceIds="wear"></android.support.wearable.view.WatchViewStub>
+    tools:deviceIds="wear"
+    android:background="@color/ambient_mode_text"
+    android:layout_alignParentLeft="true">
+</android.support.wearable.view.WatchViewStub>
