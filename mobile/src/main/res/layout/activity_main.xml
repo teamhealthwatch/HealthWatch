@@ -16,7 +16,7 @@
         android:layout_below="@+id/hwicon"
         android:layout_alignLeft="@+id/button2"
         android:layout_alignStart="@+id/button2"
-        android:background="@drawable/button" />
+        android:background="@drawable/button_custom" />
 
     <Button
         android:text="Sign Up"
@@ -27,7 +27,7 @@
         android:layout_below="@+id/hwicon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="63dp"
-        android:background="@drawable/button"/>
+        android:background="@drawable/button_custom"/>
 
     <ImageView
         android:id="@+id/hwicon"
