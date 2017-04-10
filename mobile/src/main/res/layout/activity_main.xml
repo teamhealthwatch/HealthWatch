@@ -28,7 +28,8 @@
         android:layout_below="@+id/hwicon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="63dp"
-        android:background="@drawable/button_custom"/>
+        android:background="@drawable/button_custom"
+        android:onClick="register"/>
 
     <ImageView
         android:id="@+id/hwicon"
