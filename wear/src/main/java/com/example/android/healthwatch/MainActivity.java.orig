@@ -21,6 +21,13 @@ public class MainActivity extends Activity {
             }
         });
     }
-}
+
+<<<<<<< HEAD
+
+    private int value;
+=======
+    public void setmTextView() {
+
     }
+>>>>>>> a1996924cfb0c1ff43c67e773091e2505aaf4a52
 }
