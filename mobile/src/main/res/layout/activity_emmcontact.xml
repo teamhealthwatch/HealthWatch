@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.healthwatch.EmmContactActivity">
+
+    <ImageView
+        android:id="@+id/emmImage"
+        android:layout_width="479dp"
+        android:layout_height="230dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/login"
+        tools:layout_editor_absoluteX="-37dp"
+        tools:layout_editor_absoluteY="-44dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/profilepic"
+            android:layout_width="47dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/user_icon"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="244dp" />
+
+        <EditText
+            android:id="@+id/emmName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.06"
+            android:hint="Username"
+            tools:layout_editor_absoluteX="85dp"
+            tools:layout_editor_absoluteY="244dp" />
+
+    </LinearLayout>
+</LinearLayout>
