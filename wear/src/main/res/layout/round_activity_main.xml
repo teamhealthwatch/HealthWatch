@@ -1,16 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.android.healthwatch.MainActivity"
-    tools:deviceIds="wear_round">
+    tools:deviceIds="wear_round"
+    android:orientation="vertical"
+    android:background="#e1e1e1">
 
-    <TextView
-        android:id="@+id/text"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        app:layout_box="all">
+
+
+        <ImageView
+            android:id="@+id/hwicon"
+            android:layout_width="55dp"
+            android:layout_height="36dp"
+            android:layout_above="@+id/linearLayout"
+            android:layout_below="@+id/space3"
+            android:layout_toStartOf="@+id/imageView8"
+            android:cropToPadding="true"
+            android:src="@drawable/logo" />
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="82dp"
+            android:layout_height="51dp"
+            android:layout_gravity="right"
+            android:text="@string/welcome"
+            android:textAppearance="@style/TextAppearance.WearDiag.Message"
+            android:textColor="#ba0c0c" /><![CDATA[
+
+
+
+    />
+
+
+
+]]>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="46dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/heart" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="74dp"
+            android:layout_height="86dp"
+            
+            android:text="75"
+            android:textAppearance="@style/TextAppearance.Wearable.Large"
+            android:textSize="50dp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="BPM"
+            android:textColor="#000000" />
+
+
+
+
+    </FrameLayout>
+    
+    w<FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_round" />
-</RelativeLayout>
+        android:layout_height="wrap_content"></FrameLayout>
+
+
+</android.support.wearable.view.BoxInsetLayout>
+
