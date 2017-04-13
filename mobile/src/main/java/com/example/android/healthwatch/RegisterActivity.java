@@ -20,23 +20,24 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        OnFinishClick();
+        OnNextClick();
     }
 
-    public void OnFinishClick()
+    public void OnNextClick()
     {
         button = (Button) findViewById(R.id.finishbttn);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 EditText userNametxt = (EditText) findViewById(R.id.usertxt);
                 newUser.setUserName(userNametxt.getText().toString());
 //                Log.i("TAG: ", "Reaching");
-                Intent intent = new Intent();
-                intent.putExtra("result", 999);
-                setResult(RESULT_OK, intent);
-                finish();
+//                Intent intent = new Intent();
+//                intent.putExtra("result", 999);
+//                setResult(RESULT_OK, intent);
+//                finish();
+
+                startActivity(new Intent(RegisterActivity.this, EmContactActivity.class));
             }
         });
     }

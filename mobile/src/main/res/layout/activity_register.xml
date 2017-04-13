@@ -11,7 +11,7 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="479dp"
+        android:layout_width="wrap_content"
         android:layout_height="230dp"
         android:scaleType="centerCrop"
         android:src="@drawable/login"
@@ -20,13 +20,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="47dp"
-        android:orientation="horizontal">
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.32">
 
         <ImageView
             android:id="@+id/profilepic"
             android:layout_width="47dp"
-            android:layout_height="match_parent"
+            android:layout_height="41dp"
             android:src="@drawable/user_icon"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="244dp" />
@@ -34,8 +35,7 @@
         <EditText
             android:id="@+id/usertxt"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.06"
+            android:layout_height="wrap_content"
             android:hint="Username"
             tools:layout_editor_absoluteX="85dp"
             tools:layout_editor_absoluteY="244dp" />
@@ -44,7 +44,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="41dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <EditText
@@ -59,7 +59,7 @@
 
     <LinearLayout
         android:layout_width="383dp"
-        android:layout_height="46dp"
+        android:layout_height="43dp"
         android:orientation="horizontal">
 
         <EditText
@@ -74,7 +74,8 @@
     <LinearLayout
         android:layout_width="381dp"
         android:layout_height="52dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_weight="0.25">
 
         <ImageView
             android:id="@+id/emailpic"
@@ -94,7 +95,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:layout_weight="0.07"
+        android:layout_weight="0.01"
         android:orientation="horizontal">
 
         <ImageView
@@ -116,7 +117,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <EditText
@@ -128,33 +129,48 @@
             android:scaleType="centerCrop"
             tools:layout_editor_absoluteX="85dp"
             tools:layout_editor_absoluteY="244dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="380dp"
-        android:layout_height="37dp"
-        android:weightSum="1">
-
-        <Button
-            android:id="@+id/cancelbttn"
-            android:layout_width="167dp"
-            android:layout_height="29dp"
-            android:background="@drawable/cancel_button"
-            android:text="CANCEL" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/finishbttn"
-            android:layout_width="163dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/button_custom"
-            android:text="FINISH" />
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.69">
+
+        <LinearLayout
+            android:layout_width="380dp"
+            android:layout_height="37dp"
+            android:weightSum="1"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <Button
+                android:id="@+id/cancelbttn"
+                android:layout_width="167dp"
+                android:layout_height="39dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="0.61"
+                android:background="@drawable/cancel_button"
+                android:text="CANCEL" />
+
+            <Button
+                android:id="@+id/finishbttn"
+                android:layout_width="163dp"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_weight="0.61"
+                android:background="@drawable/button_custom"
+                android:text="NEXT" />
+
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

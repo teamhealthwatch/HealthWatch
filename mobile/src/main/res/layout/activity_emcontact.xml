@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.android.healthwatch.EmContactActivity">
+
+    <ImageView
+        android:id="@+id/emmImage"
+        android:layout_width="479dp"
+        android:layout_height="230dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/login"
+        tools:layout_editor_absoluteX="-37dp"
+        tools:layout_editor_absoluteY="-44dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/profilepic"
+            android:layout_width="47dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/user_icon"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="244dp" />
+
+        <EditText
+            android:id="@+id/emmName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.06"
+            android:hint="Full Name"
+            tools:layout_editor_absoluteX="85dp"
+            tools:layout_editor_absoluteY="244dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/passwordPic"
+            android:layout_width="49dp"
+            android:layout_height="57dp"
+            app:srcCompat="@drawable/phone" />
+
+        <EditText
+            android:id="@+id/phonenumber"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:hint="Phone Number"
+            tools:layout_editor_absoluteX="85dp"
+            tools:layout_editor_absoluteY="244dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/PrimaryCont"
+            android:layout_width="wrap_content"
+            android:layout_height="57dp"
+            android:text="Primary Contact" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="77dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/addbttn"
+            android:layout_width="111dp"
+            android:layout_height="64dp"
+            android:background="@drawable/cancel_button"
+            android:layout_centerInParent = "true"
+            android:text="ADD" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancelbttn"
+            android:layout_width="167dp"
+            android:layout_height="57dp"
+            android:background="@drawable/cancel_button"
+            android:text="BACK"
+            android:layout_weight="0.71" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/finishbttn"
+            android:layout_width="163dp"
+            android:layout_height="59dp"
+            android:background="@drawable/button_custom"
+            android:text="NEXT" />
+    </LinearLayout>
+</LinearLayout>
