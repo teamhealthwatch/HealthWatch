@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:background="#DbDbDb"
     android:orientation="vertical"
-    android:weightSum="1"
-    tools:context="com.example.android.healthwatch.RegisterActivity">
+    tools:context="com.example.android.healthwatch.RegisterActivity"
+    android:weightSum="1">
 
     <ImageView
         android:id="@+id/imageView2"
