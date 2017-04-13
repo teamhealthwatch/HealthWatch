@@ -9,31 +9,16 @@
     android:orientation="vertical"
     android:background="#e1e1e1">
 
+
+
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="162dp"
+        android:layout_height="53dp"
         android:padding="5dp"
-        app:layout_box="all">
+        app:layout_box="all"><![CDATA[
 
 
-        <ImageView
-            android:id="@+id/hwicon"
-            android:layout_width="55dp"
-            android:layout_height="36dp"
-            android:layout_above="@+id/linearLayout"
-            android:layout_below="@+id/space3"
-            android:layout_toStartOf="@+id/imageView8"
-            android:cropToPadding="true"
-            android:src="@drawable/logo" />
 
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="82dp"
-            android:layout_height="51dp"
-            android:layout_gravity="right"
-            android:text="@string/welcome"
-            android:textAppearance="@style/TextAppearance.WearDiag.Message"
-            android:textColor="#ba0c0c" /><![CDATA[
 
 
 
@@ -41,39 +26,84 @@
 
 
 
-]]>
+
+        ]]>
+
+        <ImageView
+            android:id="@+id/hwicon"
+            android:layout_width="54dp"
+            android:layout_height="36dp"
+            android:layout_above="@+id/linearLayout"
+            android:layout_below="@+id/space3"
+            android:layout_toStartOf="@+id/imageView8"
+            android:cropToPadding="true"
+            android:src="@drawable/logo"
+            android:onClick="onMenu"/>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="86dp"
+            android:layout_height="51dp"
+            android:layout_gravity="right"
+            android:text="@string/welcome"
+            android:textAppearance="@style/TextAppearance.WearDiag.Message"
+            android:textColor="#ba0c0c" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="46dp"
             android:layout_height="match_parent"
+            android:layout_weight="1.92"
             android:src="@drawable/heart" />
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="74dp"
-            android:layout_height="86dp"
-            
+            android:layout_width="72dp"
+            android:layout_height="94dp"
             android:text="75"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Wearable.Large"
-            android:textSize="50dp" />
+            android:textSize="50dp"
+            android:layout_weight="0.51" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="BPM"
+            android:textAlignment="center"
             android:textColor="#000000" />
 
+    </LinearLayout>
 
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:background="@drawable/watch_button"
+            android:text="Stop" />
 
 
     </FrameLayout>
-    
-    w<FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></FrameLayout>
 
 
 </android.support.wearable.view.BoxInsetLayout>
