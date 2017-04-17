@@ -49,7 +49,7 @@
             android:id="@+id/passwordPic"
             android:layout_width="49dp"
             android:layout_height="57dp"
-            app:srcCompat="@drawable/phone" />
+            />
 
         <EditText
             android:id="@+id/phonenumber"
