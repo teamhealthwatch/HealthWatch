@@ -112,6 +112,7 @@
             android:layout_width="163dp"
             android:layout_height="59dp"
             android:background="@drawable/button_custom"
-            android:text="NEXT" />
+            android:text="NEXT"
+            android:onClick="medicationClick"/>
     </LinearLayout>
 </LinearLayout>

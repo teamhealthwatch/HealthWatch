@@ -141,7 +141,8 @@
             android:layout_width="163dp"
             android:layout_height="match_parent"
             android:background="@drawable/button_custom"
-            android:text="FINISH" />
+            android:text="SUBMIT"
+           />
 
     </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.example.android.healthwatch;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     //finish buttonRegister
     Button buttonRegister;
+    boolean isNextButtonClicked = false;
 
     //new instance of a user
     User newUser = new User();
@@ -75,10 +77,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         else{
                             response = "New account successfully created.";
                             Toast.makeText(RegisterActivity.this,response,Toast.LENGTH_LONG).show();
+                            isNextButtonClicked = true;
+                            buttonRegister.setText("NEXT");
 
                         }
-
-
                     }
                 },
                 new Response.ErrorListener() {
@@ -104,9 +106,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         requestQueue.add(stringRequest);
     }
 
+    public void emcontact(View view){
+        startActivity(new Intent(RegisterActivity.this, EmContactActivity.class));
+    }
+
     @Override
     public void onClick(View v){
-        if(v == buttonRegister){
+        if(v == buttonRegister && isNextButtonClicked == true)
+        {
+            emcontact(v);
+        }
+        else{
+
             registerUser();
         }
     }
