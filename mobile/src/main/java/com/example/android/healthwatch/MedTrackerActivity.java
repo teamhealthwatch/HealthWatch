@@ -5,16 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class EmContactActivity extends AppCompatActivity {
+public class MedTrackerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_emcontact);
+        setContentView(R.layout.activity_med_tracker);
     }
-
-   public void medicationClick(View v)
-   {
-       startActivity(new Intent(EmContactActivity.this, MedTrackerActivity.class));
-   }
+    public void conditionClick(View v)
+    {
+        startActivity(new Intent(MedTrackerActivity.this, MedConditionActivity.class));
+    }
 }
