@@ -36,6 +36,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     //finish buttonRegister
     Button buttonRegister;
+    boolean isNextButtonClicked = false;
+
+    //used to pass login to next activities
+    private String login;
 
     //new instance of a user
     User newUser = new User();
@@ -56,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void registerUser(){
-        final String login = editTextLogin.getText().toString().trim();
+        login = editTextLogin.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
         final String first_name = editTextFirstName.getText().toString().trim();
         final String last_name = editTextLastName.getText().toString().trim();
@@ -76,10 +80,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         else{
                             response = "New account successfully created.";
                             Toast.makeText(RegisterActivity.this,response,Toast.LENGTH_LONG).show();
+                            isNextButtonClicked = true;
+                            buttonRegister.setText("NEXT");
 
                         }
-
-
                     }
                 },
                 new Response.ErrorListener() {
@@ -105,9 +109,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         requestQueue.add(stringRequest);
     }
 
+    public void emcontact(View view){
+        Intent intent = new Intent(this, EmContactActivity.class);
+        intent.putExtra(KEY_LOGIN, login);
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v){
-        if(v == buttonRegister){
+        if(v == buttonRegister && isNextButtonClicked == true)
+        {
+            emcontact(v);
+        }
+        else{
+
             registerUser();
         }
     }

@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:background="#DbDbDb"
     android:orientation="vertical"
-    android:weightSum="1"
-    tools:context="com.example.android.healthwatch.RegisterActivity">
+    tools:context="com.example.android.healthwatch.RegisterActivity"
+    android:weightSum="1">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -36,7 +36,9 @@
             android:layout_marginRight="50dp"
             android:layout_weight="0.06"
             android:background="@android:color/background_light"
-            android:hint="Username" />
+            android:hint="Username"
+            android:maxLength="30"
+            android:singleLine="true"/>
 
     </LinearLayout>
 
@@ -47,7 +49,9 @@
         android:layout_height="wrap_content"
         android:hint="First Name"
         tools:layout_editor_absoluteX="85dp"
-        tools:layout_editor_absoluteY="244dp" />
+        tools:layout_editor_absoluteY="244dp"
+        android:maxLength="30"
+        android:singleLine="true"/>
 
 
     <EditText
@@ -56,7 +60,9 @@
         android:layout_height="wrap_content"
         android:hint="Last Name"
         tools:layout_editor_absoluteX="85dp"
-        tools:layout_editor_absoluteY="244dp" />
+        tools:layout_editor_absoluteY="244dp"
+        android:maxLength="30"
+        android:singleLine="true"/>
 
 
     <LinearLayout
@@ -76,7 +82,9 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             tools:layout_editor_absoluteX="85dp"
-            tools:layout_editor_absoluteY="244dp" />
+            tools:layout_editor_absoluteY="244dp"
+            android:maxLength="30"
+            android:singleLine="true"/>
     </LinearLayout>
 
     <LinearLayout
@@ -98,7 +106,9 @@
             android:hint="Password"
             android:scaleType="centerCrop"
             tools:layout_editor_absoluteX="85dp"
-            tools:layout_editor_absoluteY="244dp" />
+            tools:layout_editor_absoluteY="244dp"
+            android:maxLength="30"
+            android:singleLine="true"/>
 
     </LinearLayout>
 
@@ -115,11 +125,13 @@
             android:hint="Confirm Password"
             android:scaleType="centerCrop"
             tools:layout_editor_absoluteX="85dp"
-            tools:layout_editor_absoluteY="244dp" />
+            tools:layout_editor_absoluteY="244dp"
+            android:maxLength="30"
+            android:singleLine="true"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="380dp"
+        android:layout_width="match_parent"
         android:layout_height="37dp"
         android:weightSum="1">
 
@@ -141,7 +153,8 @@
             android:layout_width="163dp"
             android:layout_height="match_parent"
             android:background="@drawable/button_custom"
-            android:text="FINISH" />
+            android:text="SUBMIT"
+           />
 
     </LinearLayout>
 
