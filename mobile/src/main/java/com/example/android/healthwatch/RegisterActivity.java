@@ -38,6 +38,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     Button buttonRegister;
     boolean isNextButtonClicked = false;
 
+    //used to pass login to next activities
+    private String login;
+
     //new instance of a user
     User newUser = new User();
 
@@ -57,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void registerUser(){
-        final String login = editTextLogin.getText().toString().trim();
+        login = editTextLogin.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
         final String first_name = editTextFirstName.getText().toString().trim();
         final String last_name = editTextLastName.getText().toString().trim();
@@ -107,7 +110,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void emcontact(View view){
-        startActivity(new Intent(RegisterActivity.this, EmContactActivity.class));
+        Intent intent = new Intent(this, EmContactActivity.class);
+        intent.putExtra(KEY_LOGIN, login);
+        startActivity(intent);
     }
 
     @Override
