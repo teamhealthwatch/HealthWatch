@@ -44,6 +44,7 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
     private GoogleApiClient googleApiClient;
 
     private int currentHeartRate;
+    private int heartRate;
 
     private static final String KEY_HEART_RATE = "com.example.key.current_heart_rate";
 
@@ -83,6 +84,8 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
 
         currentHeartRate = 0;
 
+//        setupOnHeartRateChanged();
+
 
         measureHeartRate();
     }
@@ -106,6 +109,15 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
 
     }
 
+    private void setupOnHeartRateChanged() {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/heartrate");
+        putDataMapReq.getDataMap().putInt(KEY_HEART_RATE, currentHeartRate);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+
+    }
+
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
@@ -126,8 +138,12 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
 
         Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
 
+        setupOnHeartRateChanged();
+
 //        onDataChanged();
     }
+
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
@@ -190,7 +206,7 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
                 DataItem item = event.getDataItem();
-                if (item.getUri().getPath().compareTo("/heart_rate") == 0) {
+                if (item.getUri().getPath().compareTo("/heartrate") == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     updateHeartRate(dataMap.getInt(KEY_HEART_RATE));
 
@@ -202,11 +218,12 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
     }
 
     private void updateHeartRate(int anInt) {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/heart_rate");
-        putDataMapReq.getDataMap().putInt(KEY_HEART_RATE, anInt);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+//        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/heart_rate");
+//        putDataMapReq.getDataMap().putInt(KEY_HEART_RATE, anInt);
+//        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+//        PendingResult<DataApi.DataItemResult> pendingResult =
+//
+        Log.i("TAG", "update heart rate.");
 
 //        if (googleApiClient.isConnected()) {
 //            Wearable.DataApi.putDataItem(googleApiClient, putDataReq).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
