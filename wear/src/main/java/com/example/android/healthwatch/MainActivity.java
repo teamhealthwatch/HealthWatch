@@ -154,8 +154,5 @@ public class MainActivity extends Activity implements SensorEventListener{
 
             Log.i("start button", "Resume measuring");
         }
-
-
-
     }
 }
