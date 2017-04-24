@@ -84,16 +84,16 @@
 
         ]]>
 
-        <ImageView
+        <Button
             android:id="@+id/hwicon"
-            android:layout_width="54dp"
+            android:layout_width="58dp"
             android:layout_height="36dp"
             android:layout_above="@+id/linearLayout"
             android:layout_below="@+id/space3"
             android:layout_toStartOf="@+id/imageView8"
             android:cropToPadding="true"
-            android:onClick="onMenu"
-            android:src="@drawable/logo" />
+            android:background="@drawable/logo"
+            android:onClick="onMenu"/>
 
         <TextView
             android:id="@+id/text"
