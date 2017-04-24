@@ -48,6 +48,8 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
 
     private static final String KEY_HEART_RATE = "com.example.key.current_heart_rate";
 
+    PutDataRequest putDataReq = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,10 +114,27 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
     private void setupOnHeartRateChanged() {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/heartrate");
         putDataMapReq.getDataMap().putInt(KEY_HEART_RATE, currentHeartRate);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
 
+//        sendHeartRate(putDataReq);
+
+
+
+    }
+
+    public void sendHeartRate(PutDataRequest putDataRequest) {
+
+        Log.i("TAG", "send heart rate !!!!!!");
+//        if (validateConnection()) {
+//            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+//                @Override
+//                public void onResult(DataApi.DataItemResult dataItemResult) {
+//                    Log.v("TAG", "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -208,7 +227,7 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
                 DataItem item = event.getDataItem();
                 if (item.getUri().getPath().compareTo("/heartrate") == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                    updateHeartRate(dataMap.getInt(KEY_HEART_RATE));
+                    updateHeartRate(dataMap);
 
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
@@ -217,22 +236,25 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
         }
     }
 
-    private void updateHeartRate(int anInt) {
-//        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/heart_rate");
-//        putDataMapReq.getDataMap().putInt(KEY_HEART_RATE, anInt);
-//        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-//        PendingResult<DataApi.DataItemResult> pendingResult =
-//
+    private void updateHeartRate(final DataMap dataMap) {
+
         Log.i("TAG", "update heart rate.");
 
-//        if (googleApiClient.isConnected()) {
-//            Wearable.DataApi.putDataItem(googleApiClient, putDataReq).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-//                @Override
-//                public void onResult(DataApi.DataItemResult dataItemResult) {
-//                    Log.i("Success: ", "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
-//                }
-//            });
-//        }
+        if (putDataReq != null) {
+            if (googleApiClient.isConnected()) {
+                Wearable.DataApi.putDataItem(googleApiClient, putDataReq).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                    @Override
+                    public void onResult(DataApi.DataItemResult dataItemResult) {
+                        Log.i("Sent data: ", putDataReq.toString());
+                        Log.i("Success: ", "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
+                    }
+                });
+            }
+        }
+
+//        putDataMapReq.asPutDataRequest()
+
+
     }
 
     @Override
