@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "976021362110",
+    "firebase_url": "https://healthwatch-f3a1e.firebaseio.com",
+    "project_id": "healthwatch-f3a1e",
+    "storage_bucket": "healthwatch-f3a1e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976021362110:android:4a32996d1b791747",
+        "android_client_info": {
+          "package_name": "com.example.android.healthwatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976021362110-cb5jghsvnnctleasq4am5feb6l5rrhcb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.healthwatch",
+            "certificate_hash": "183b6d4fc86c178b9152e389743a7676691966f3"
+          }
+        },
+        {
+          "client_id": "976021362110-hsrriqtsb2to18e898lutbmf1i7hb7qu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeMPgDBsDcP0n0URGUMxL1v199nB7D0PU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976021362110-hsrriqtsb2to18e898lutbmf1i7hb7qu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,13 +9,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +50,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
 
     public void registerContact(){
 
-        final String full_name = editTextFullName.getText().toString().trim();
+        /*final String full_name = editTextFullName.getText().toString().trim();
         final String phone_number = editTextPhoneNumber.getText().toString().trim();
         String primary_contact = "0";
         if(pc.isChecked()){
@@ -106,7 +99,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        requestQueue.add(stringRequest);*/
     }
 
     public void finishContact(){

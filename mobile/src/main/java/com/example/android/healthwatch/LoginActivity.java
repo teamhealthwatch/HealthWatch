@@ -4,39 +4,34 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
-    public static final String LOGIN_URL = "http://136.60.172.18/login_user.php";
+    private static final String TAG = "EmailPassword";
 
     public static final String KEY_LOGIN="login";
-    public static final String KEY_PASSWORD="password";
 
     private EditText editTextLogin;
     private EditText editTextPassword;
     private Button buttonLogin;
+    private Button buttonCreate;
 
-    private String login;
-    private String password;
+    // [START declare_auth]
+    private FirebaseAuth mAuth;
+    // [END declare_auth]
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,56 +42,92 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextPassword = (EditText) findViewById(R.id.password);
 
         buttonLogin = (Button) findViewById(R.id.btn_login);
+        buttonCreate = (Button) findViewById(R.id.btn_signup);
 
         buttonLogin.setOnClickListener(this);
+        buttonCreate.setOnClickListener(this);
+
+        // [START initialize_auth]
+        mAuth = FirebaseAuth.getInstance();
+        // [END initialize_auth]
     }
 
+    private void signIn(String email, String password) {
+        Log.d(TAG, "signIn:" + email);
+        if (!validateForm()) {
+            return;
+        }
 
-    private void userLogin() {
-        login = editTextLogin.getText().toString().trim();
-        password = editTextPassword.getText().toString().trim();
-
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                new Response.Listener<String>() {
+        // [START sign_in_with_email]
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onResponse(String response) {
-                        String results[] = response.split("\\r?\\n");
-                        if(results[1].equals("success")){
-                            openProfile();
-                        }else{
-                            String wrongInfo = "Incorrect account info entered.";
-                            Toast.makeText(LoginActivity.this,wrongInfo,Toast.LENGTH_LONG).show();
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(LoginActivity.this,error.toString(),Toast.LENGTH_LONG ).show();
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> map = new HashMap<String,String>();
-                map.put(KEY_LOGIN,login);
-                map.put(KEY_PASSWORD,password);
-                return map;
-            }
-        };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+                        // [START_EXCLUDE]
+                        if (task.isSuccessful()) {
+                            openProfile();
+                        }
+                        // [END_EXCLUDE]
+                    }
+                });
+        // [END sign_in_with_email]
     }
 
     private void openProfile(){
         Intent intent = new Intent(this, HomePageActivity.class);
-        intent.putExtra(KEY_LOGIN, login);
+        intent.putExtra(KEY_LOGIN, usernameFromEmail(mAuth.getCurrentUser().getEmail()));
         startActivity(intent);
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String email = editTextLogin.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            editTextPassword.setError("Required.");
+            valid = false;
+        } else {
+            editTextLogin.setError(null);
+        }
+
+        String password = editTextPassword.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            editTextPassword.setError("Required.");
+            valid = false;
+        } else {
+            editTextPassword.setError(null);
+        }
+
+        return valid;
+    }
+
+    private String usernameFromEmail(String email) {
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
     }
 
     @Override
     public void onClick(View v) {
-        userLogin();
+        if(v == buttonLogin){
+            signIn(editTextLogin.getText().toString().trim(), editTextPassword.getText().toString().trim());
+        }
+        if(v == buttonCreate){
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
+        }
     }
 }

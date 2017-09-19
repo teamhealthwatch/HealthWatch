@@ -7,21 +7,14 @@ package com.example.android.healthwatch;
 public class User {
 
     int Id; //auto generated in DB
-    private String firstName;
-    private String lastName;
-    private String userName;
-    private String email;
-    private String password;
+    public String firstName;
+    public String lastName;
+    public String userName;
+    public String email;
+    public String password;
 
-    public User()
-    {
-        this.Id = -1;
-        this.firstName = "";
-        this.lastName = "";
-        this.userName = "";
-        this.password = " ";
-        this.email = "noname@email.com";
-    }
+    public User(){}
+
     public User(int ID)
     {
         //DB Connection and request existing user
@@ -33,8 +26,15 @@ public class User {
 
     }
 
+    public User(String email, String fname, String lname, String password){
+        this.email = email;
+        this.firstName = fname;
+        this.lastName = lname;
+        this.password = password;
+    }
+
     //check if user is in DB
-    public boolean existingUserLogin()
+    /*public boolean existingUserLogin()
     {
         return false;
     }
@@ -85,5 +85,5 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
+    }*/
 }
