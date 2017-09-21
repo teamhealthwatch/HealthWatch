@@ -27,10 +27,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     public static final String KEY_LOGIN = "login";
-    /*public static final String KEY_PASSWORD = "password";
-    public static final String KEY_FIRST_NAME = "first_name";
-    public static final String KEY_LAST_NAME = "last_name";
-*/
+
     private EditText editTextEmail;
     private EditText editTextPassword;
     private EditText editTextFirstName;
@@ -146,12 +143,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void onAuthSuccess(FirebaseUser user) {
         String username = usernameFromEmail(user.getEmail());
-
-        // Write new user
-        //writeNewUser(user.getUid(), username, user.getEmail());
-
-        // Go to MainActivity
-        //startActivity(new Intent(RegisterActivity.this, HomePageActivity.class));
         Intent intent = new Intent(this, HomePageActivity.class);
         intent.putExtra(KEY_LOGIN, username);
         startActivity(intent);

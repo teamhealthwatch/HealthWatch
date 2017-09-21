@@ -41,7 +41,6 @@ import com.google.android.gms.wearable.Wearable;
 @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
 public class MainActivity extends Activity implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-//    private TextView mTextView;
     private final String HEART_RATE = "/heart_rate";
 
     private SensorManager sensorManager;
@@ -49,32 +48,20 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
     private TextView heartRateView;
     private Button heartRateButton;
     private boolean isMeasuring;
-//    private DataController dataController;
 
     private GoogleApiClient googleApiClient;
     private NodeApi.NodeListener nodeListener;
     private String remoteNodeId;
 
     private int currentHeartRate;
-    private int heartRate;
-
-    private static final String KEY_HEART_RATE = "com.example.key.current_heart_rate";
-
-    PutDataRequest putDataReq = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        // For some unknown reason, this line does not initialize heartRateView.
-        // But I'll leave it here for now
         heartRateView = (TextView) findViewById(R.id.heartRateView);
-
         heartRateButton = (Button) findViewById(R.id.heartRateButton);
-
         isMeasuring = true;
 
         nodeListener = new NodeApi.NodeListener() {
@@ -104,19 +91,15 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
                     public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
                         if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
                             remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-
                         }
                     }
                 });
             }
-
             @Override
             public void onConnectionSuspended(int i) {
             }
         }).addApi(Wearable.API).build();
-
         currentHeartRate = 0;
-
         measureHeartRate();
     }
 
@@ -131,9 +114,7 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
             } else {
                 Log.w("tag", "No heart rate found");
             }
-
         }
-
         Log.i("heartRate", "measuring");
 
     }
@@ -161,25 +142,17 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
 
                 if (sendMessageResult.getStatus().isSuccess()) {
                     Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
-                    //intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION);
-                    //intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.message1_sent));
                 } else {
                     Log.i("heart rate", "problem sending heart rate");
-                    //intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION);
-                    //intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.error_message1));
                 }
 
             }
         });
-
-//        onDataChanged();
     }
 
-
-
     @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-        Log.i("Accuracy", "Accuracy changed");
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
     protected void onResume() {
@@ -206,7 +179,7 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
         super.onPause();
         sensorManager.unregisterListener(this);
         // Unregister Node and Message listeners, disconnect GoogleApiClient and disable buttons
-        //Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
+        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
         googleApiClient.disconnect();
         super.onPause();
     }
