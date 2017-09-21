@@ -14,9 +14,7 @@ import java.util.Map;
 
 public class EmContactActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String REGISTER_URL = "http://136.60.172.18/insert_contact.php";
-
-    public static final String KEY_LOGIN = "login";
+    public static final String KEY_LOGIN = "email";
     public static final String KEY_FULLNAME = "full_name";
     public static final String KEY_PHONENUMBER = "phone_number";
     public static final String KEY_PRIMARYCONTACT = "primary_contact";
@@ -36,7 +34,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emcontact);
 
-        editTextFullName = (EditText) findViewById(R.id.emmName);
+        editTextFullName = (EditText) findViewById(R.id.emName);
         editTextPhoneNumber = (EditText) findViewById(R.id.phonenumber);
 
         buttonNext = (Button) findViewById(R.id.finishbttn);
@@ -48,7 +46,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
         login = intent.getStringExtra(LoginActivity.KEY_LOGIN);
     }
 
-    public void registerContact(){
+    public void storeContact(){
 
         /*final String full_name = editTextFullName.getText().toString().trim();
         final String phone_number = editTextPhoneNumber.getText().toString().trim();
@@ -111,7 +109,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
             finishContact();
         }
         else if(v == buttonAdd) {
-            registerContact();
+            storeContact();
         }
     }
 
