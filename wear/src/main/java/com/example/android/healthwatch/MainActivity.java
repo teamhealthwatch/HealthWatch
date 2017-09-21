@@ -1,6 +1,8 @@
 package com.example.android.healthwatch;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -26,13 +29,17 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
-public class MainActivity extends Activity implements SensorEventListener, DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class MainActivity extends Activity implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
 //    private TextView mTextView;
+    private final String HEART_RATE = "/heart_rate";
 
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -42,6 +49,8 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
 //    private DataController dataController;
 
     private GoogleApiClient googleApiClient;
+    private NodeApi.NodeListener nodeListener;
+    private String remoteNodeId;
 
     private int currentHeartRate;
     private int heartRate;
@@ -65,29 +74,45 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
 
         isMeasuring = true;
 
+        nodeListener = new NodeApi.NodeListener() {
+            @Override
+            public void onPeerConnected(Node node) {
+                remoteNodeId = node.getId();
+                Log.i("Node", "Node id connected to is " + remoteNodeId);
 
-//        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-//        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-//            @Override
-//            public void onLayoutInflated(WatchViewStub stub) {
-////                mTextView = (TextView) stub.findViewById(R.id.text);
-//
-//
-//            }
-//        });
+            }
 
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
+            @Override
+            public void onPeerDisconnected(Node node) {
+                Log.i("Node", "Node disconnected" + currentHeartRate);
 
-        googleApiClient.connect();
+            }
+
+            };
+
+        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(Bundle bundle) {
+                // Register Node and Message listeners
+                Wearable.NodeApi.addListener(googleApiClient, nodeListener);
+                // If there is a connected node, get it's id that is used when sending messages
+                Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                    @Override
+                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                        if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
+                            remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
+
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+            }
+        }).addApi(Wearable.API).build();
 
         currentHeartRate = 0;
-
-//        setupOnHeartRateChanged();
-
 
         measureHeartRate();
     }
@@ -104,46 +129,16 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
                 Log.w("tag", "No heart rate found");
             }
 
-//        sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_FASTEST);
         }
 
         Log.i("heartRate", "measuring");
 
     }
 
-    private void setupOnHeartRateChanged() {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/heartrate");
-        putDataMapReq.getDataMap().putInt(KEY_HEART_RATE, currentHeartRate);
-        putDataReq = putDataMapReq.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
 
-//        sendHeartRate(putDataReq);
-
-
-
-    }
-
-    public void sendHeartRate(PutDataRequest putDataRequest) {
-
-        Log.i("TAG", "send heart rate !!!!!!");
-//        if (validateConnection()) {
-//            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-//                @Override
-//                public void onResult(DataApi.DataItemResult dataItemResult) {
-//                    Log.v("TAG", "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
-//                }
-//            });
-//        }
-    }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-
-//        int heartRate = (int)sensorEvent.values[0];
-//
-//        heartRateView.setText(heartRate);
-
 
         currentHeartRate = (int)(sensorEvent.values.length > 0 ? sensorEvent.values[0] : 0.0f);
 
@@ -157,7 +152,22 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
 
         Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
 
-        setupOnHeartRateChanged();
+        Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, null).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+            @Override
+            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+
+                if (sendMessageResult.getStatus().isSuccess()) {
+                    Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
+                    //intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION);
+                    //intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.message1_sent));
+                } else {
+                    Log.i("heart rate", "problem sending heart rate");
+                    //intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION);
+                    //intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.error_message1));
+                }
+
+            }
+        });
 
 //        onDataChanged();
     }
@@ -172,13 +182,30 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
     protected void onResume() {
         super.onResume();
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        googleApiClient.connect();
+        googleApiClient.reconnect();
+        // Check is Google Play Services available
+        /*int connectionResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+
+        if (connectionResult != ConnectionResult.SUCCESS) {
+            // Google Play Services is NOT available. Show appropriate error dialog
+            GooglePlayServicesUtil.showErrorDialogFragment(connectionResult, this, 0, new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    finish();
+                }
+            });
+        } else {
+            googleApiClient.connect();
+        }*/
     }
 
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+        // Unregister Node and Message listeners, disconnect GoogleApiClient and disable buttons
+        //Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
         googleApiClient.disconnect();
+        super.onPause();
     }
 
     public void onHeartRateButton(View v) {
@@ -215,51 +242,8 @@ public class MainActivity extends Activity implements SensorEventListener, DataA
 
 
     @Override
-    public void onDataChanged(DataEventBuffer dataEventBuffer) {
-
-        Log.i("DATA CHANGED: ", "onDataChanged is executed.");
-
-        for (DataEvent event : dataEventBuffer) {
-            Log.i("DATA CHANGED: ", "inside for loop.");
-
-            if (event.getType() == DataEvent.TYPE_CHANGED) {
-                // DataItem changed
-                DataItem item = event.getDataItem();
-                if (item.getUri().getPath().compareTo("/heartrate") == 0) {
-                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                    updateHeartRate(dataMap);
-
-                }
-            } else if (event.getType() == DataEvent.TYPE_DELETED) {
-                // DataItem deleted
-            }
-        }
-    }
-
-    private void updateHeartRate(final DataMap dataMap) {
-
-        Log.i("TAG", "update heart rate.");
-
-        if (putDataReq != null) {
-            if (googleApiClient.isConnected()) {
-                Wearable.DataApi.putDataItem(googleApiClient, putDataReq).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-                    @Override
-                    public void onResult(DataApi.DataItemResult dataItemResult) {
-                        Log.i("Sent data: ", putDataReq.toString());
-                        Log.i("Success: ", "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
-                    }
-                });
-            }
-        }
-
-//        putDataMapReq.asPutDataRequest()
-
-
-    }
-
-    @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Wearable.DataApi.addListener(googleApiClient, this);
+
     }
 
     @Override

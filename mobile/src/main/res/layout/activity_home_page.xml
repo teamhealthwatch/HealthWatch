@@ -25,4 +25,11 @@
         android:layout_centerInParent = "true"
         android:text="Sign Out" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Heart Rate Here"
+        android:id="@+id/heart_rate"
+        android:layout_gravity="center_horizontal"/>
+
 </LinearLayout>
