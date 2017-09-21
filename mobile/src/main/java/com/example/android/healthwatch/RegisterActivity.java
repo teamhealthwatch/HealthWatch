@@ -30,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private EditText editTextEmail;
     private EditText editTextPassword;
+    private EditText editTextPasswordConfirmation;
     private EditText editTextFirstName;
     private EditText editTextLastName;
 
@@ -37,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     //finish buttonRegister
     Button buttonRegister;
+    Button buttonCancel;
     boolean isNextButtonClicked = false;
 
     //used to pass login to next activities
@@ -52,11 +54,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         editTextEmail = (EditText) findViewById(R.id.usertxt);
         editTextPassword = (EditText) findViewById(R.id.passwordText);
+        editTextPasswordConfirmation = (EditText) findViewById(R.id.confirmPassword);
         editTextFirstName = (EditText) findViewById(R.id.First_nameText);
         editTextLastName = (EditText) findViewById(R.id.Last_nameText);
 
         buttonRegister = (Button) findViewById(R.id.finishbttn);
         buttonRegister.setOnClickListener(this);
+
+        buttonCancel = (Button) findViewById(R.id.cancelbttn);
+        buttonCancel.setOnClickListener(this);
 
         //initialize authentication
         mAuth = FirebaseAuth.getInstance();
@@ -72,6 +78,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    //If valid, creates a new user and stores information in the database
     private void registerUser(){
         email = editTextEmail.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
@@ -83,16 +90,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
+
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
 
         myRef.child("users").child(usernameFromEmail(email)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    String response = "Duplicate here";
+                    String response = "Duplicate account found. Please make a new account.";
                     Toast.makeText(RegisterActivity.this,response,Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(RegisterActivity.this,"Hi",Toast.LENGTH_LONG).show();
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("users");
                     usersRef.child(usernameFromEmail(email)).setValue(new User(email, first_name, last_name, password), new DatabaseReference.CompletionListener(){
@@ -119,6 +126,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
+    //Invokes a new authentication procedure in Firebase
     private void createAccount(String email, String password){
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -143,12 +151,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void onAuthSuccess(FirebaseUser user) {
         String username = usernameFromEmail(user.getEmail());
-        Intent intent = new Intent(this, HomePageActivity.class);
+        Intent intent = new Intent(this, EmContactActivity.class);
         intent.putExtra(KEY_LOGIN, username);
         startActivity(intent);
         finish();
     }
 
+    //Removes the email part of the string, producing a username
     private String usernameFromEmail(String email) {
         if (email.contains("@")) {
             return email.split("@")[0];
@@ -157,6 +166,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    //Used to ensure the input given by the user is correct and can be stored in the database
     private boolean validateForm() {
         boolean valid = true;
 
@@ -168,12 +178,26 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             editTextEmail.setError(null);
         }
 
+        String confirmPass = editTextPasswordConfirmation.getText().toString();
         String password = editTextPassword.getText().toString();
+
         if (TextUtils.isEmpty(password)) {
             editTextPassword.setError("Required.");
             valid = false;
+        } else if (!confirmPass.equals(password)) {
+            Toast.makeText(RegisterActivity.this, "Passwords must match.",
+                    Toast.LENGTH_SHORT).show();
+            editTextPassword.setError("Don't Match");
+            editTextPasswordConfirmation.setError("Don't Match");
+            valid = false;
+
+        } else if(password.length() < 6) {
+                Toast.makeText(RegisterActivity.this, "Password must be at least 6 characters",
+                        Toast.LENGTH_SHORT).show();
+                editTextPassword.setError("Not Long Enough");
+                valid = false;
         } else {
-            editTextPassword.setError(null);
+                editTextPassword.setError(null);
         }
 
         String fname = editTextFirstName.getText().toString();
@@ -195,17 +219,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return valid;
     }
 
-    public void emcontact(View view){
-        Intent intent = new Intent(this, EmContactActivity.class);
-        intent.putExtra(KEY_LOGIN, email);
-        startActivity(intent);
-    }
 
     @Override
     public void onClick(View v){
-        if(v == buttonRegister && isNextButtonClicked)
+        if(v == buttonCancel){
+            finish();
+        }
+        else if(v == buttonRegister && isNextButtonClicked)
         {
-            emcontact(v);
         }
         else{
 

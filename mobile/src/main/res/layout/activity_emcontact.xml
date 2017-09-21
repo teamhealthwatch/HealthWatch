@@ -28,7 +28,7 @@
             tools:layout_editor_absoluteY="244dp" />
 
         <EditText
-            android:id="@+id/emmName"
+            android:id="@+id/emName"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.06"
@@ -54,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:hint="Phone Number"
+            android:inputType="phone"
             tools:layout_editor_absoluteX="85dp"
             tools:layout_editor_absoluteY="244dp" />
     </LinearLayout>

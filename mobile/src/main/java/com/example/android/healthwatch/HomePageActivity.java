@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -73,10 +74,16 @@ public class HomePageActivity extends AppCompatActivity{
         messageListener = new MessageApi.MessageListener() {
             @Override
             public void onMessageReceived(MessageEvent messageEvent) {
+
                 if (messageEvent.getPath().equals(HEART_RATE)) {
-                    String value = messageEvent.getData().toString();
+                    //Log.i("heart rate info", "made it here");
+                    String value = new String(messageEvent.getData());
+                    Log.i("heart rate info", messageEvent.getData().toString());
                     heart_rate.setText(value);
                     //heart_rate.setText(messageEvent.getData().length.);
+                }
+                else{
+                    Log.i("heart rate info", "couldn't get in");
                 }
             }
         };
