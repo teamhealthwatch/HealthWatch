@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,7 +27,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextLogin;
     private EditText editTextPassword;
     private Button buttonLogin;
-    private Button buttonCreate;
+    private TextView buttonCreate;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -43,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextPassword = (EditText) findViewById(R.id.password);
 
         buttonLogin = (Button) findViewById(R.id.btn_login);
-        buttonCreate = (Button) findViewById(R.id.btn_signup);
+        buttonCreate = (TextView) findViewById(R.id.btn_signup);
 
         buttonLogin.setOnClickListener(this);
         buttonCreate.setOnClickListener(this);
