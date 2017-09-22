@@ -3,6 +3,7 @@ package com.example.android.healthwatch;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -37,6 +39,9 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.hitomi.cmlibrary.CircleMenu;
+import com.hitomi.cmlibrary.OnMenuSelectedListener;
+import com.hitomi.cmlibrary.OnMenuStatusChangeListener;
 
 @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
 public class MainActivity extends Activity implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -56,13 +61,73 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
 
     private int currentHeartRate;
 
+    private CircleMenu circleMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+            @Override
+            public void onLayoutInflated(WatchViewStub stub) {
+//                mTextView = (TextView) stub.findViewById(R.id.text);
+                circleMenu = (CircleMenu)findViewById(R.id.circle_menu);
+
+                circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.mipmap.menu_icon, R.mipmap.cancel_icon);
+                circleMenu.addSubMenu(Color.parseColor("#B6FCD5"), R.drawable.heart)
+                        .addSubMenu(Color.parseColor("#F6D7B2"), R.mipmap.med)
+                        .addSubMenu(Color.parseColor("#CD9294"), R.mipmap.contact_icon)
+                        .addSubMenu(Color.parseColor("#9F5A4F"), R.mipmap.personal_info_icon);
+
+                circleMenu.setOnMenuSelectedListener(new OnMenuSelectedListener() {
+                    @Override
+                    public void onMenuSelected(int i) {
+                        switch (i) {
+                            case 0:
+                                Toast.makeText(MainActivity.this, "Main page", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 1:
+                                Toast.makeText(MainActivity.this, "Track Medication", Toast.LENGTH_SHORT).show();
+//                                Intent newIntent = new Intent(MainActivity.this, MedConditionActivity.class);
+//                                startActivity(newIntent);
+//                                finish();
+                                break;
+                            case 2:
+                                Toast.makeText(MainActivity.this, "Emergency Contact", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 3:
+                                Toast.makeText(MainActivity.this, "Personal Info", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                });
+
+//                circleMenu.setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
+//                    @Override
+//                    public void onMenuOpened() {
+//                        Toast.makeText(MainActivity.this, "Menu Open", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onMenuClosed() {
+//                        Toast.makeText(MainActivity.this, "Menu Closed", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+
+
+            }
+        });
+
+
+
         heartRateView = (TextView) findViewById(R.id.heartRateView);
         heartRateButton = (Button) findViewById(R.id.heartRateButton);
+//        circleMenu = (CircleMenu)findViewById(R.id.circle_menu);
+
+
         isMeasuring = true;
 
         nodeListener = new NodeApi.NodeListener() {
@@ -101,6 +166,10 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
             }
         }).addApi(Wearable.API).build();
         currentHeartRate = 0;
+
+
+
+
         measureHeartRate();
     }
 
@@ -215,9 +284,11 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
 
     }
 
-    public void onMenu(View v) {
-
-    }
+//    public void onMenu(View v) {
+//        Intent newIntent = new Intent(this, MenuActivity.class);
+//        startActivity(newIntent);
+//
+//    }
 
 
     @Override
@@ -233,5 +304,15 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(circleMenu.isOpened()){
+            circleMenu.closeMenu();
+        }
+        else{
+            finish();
+        }
     }
 }

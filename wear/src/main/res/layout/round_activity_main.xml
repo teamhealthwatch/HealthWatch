@@ -12,7 +12,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            android:text="Welcome!"
+            android:textAlignment="center"
+            android:gravity="center"
+
+            android:textAppearance="@style/TextAppearance.WearDiag.Message"
+            android:textColor="#ba0c0c" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:orientation="horizontal">
 
@@ -20,24 +37,24 @@
             android:id="@+id/imageView2"
             android:layout_width="46dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.92"
+            android:layout_weight="1.29"
             android:src="@drawable/heart" />
 
         <TextView
             android:id="@+id/heartRateView"
             android:layout_width="72dp"
             android:layout_height="94dp"
+            android:layout_weight="0.51"
             android:text="---"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Wearable.Large"
-            android:textSize="50dp"
-            android:layout_weight="0.51" />
+            android:textSize="40dp" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1.54"
             android:gravity="center"
             android:text="BPM"
             android:textAlignment="center"
@@ -45,17 +62,21 @@
 
     </LinearLayout>
 
+    <com.hitomi.cmlibrary.CircleMenu
+        android:id="@+id/circle_menu"
+        android:layout_width="match_parent"
+        android:layout_height="158dp" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="78dp"
+        android:layout_height="81dp"
         android:layout_gravity="bottom"
         android:layout_weight="1">
 
         <Button
             android:id="@+id/heartRateButton"
             android:layout_width="100dp"
-            android:layout_height="27dp"
+            android:layout_height="22dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
@@ -66,45 +87,46 @@
 
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="162dp"
-        android:layout_height="53dp"
-        android:padding="5dp"
-        app:layout_box="all"><![CDATA[
+    <!--<FrameLayout-->
+        <!--android:layout_width="162dp"-->
+        <!--android:layout_height="53dp"-->
+        <!--android:padding="5dp"-->
+        <!--app:layout_box="all"><![CDATA[-->
 
 
 
 
 
 
-    />
+    <!--/>-->
 
 
 
 
-        ]]>
+        <!--]]>-->
 
-        <Button
-            android:id="@+id/hwicon"
-            android:layout_width="58dp"
-            android:layout_height="36dp"
-            android:layout_above="@+id/linearLayout"
-            android:layout_below="@+id/space3"
-            android:layout_toStartOf="@+id/imageView8"
-            android:cropToPadding="true"
-            android:background="@drawable/logo"
-            android:onClick="onMenu"/>
+        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/hwicon"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="58dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="36dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_above="@+id/linearLayout"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_below="@+id/space3"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_toStartOf="@+id/imageView8"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:cropToPadding="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="@drawable/logo"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:onClick="onMenu"/>&ndash;&gt;-->
+        <!---->
 
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="86dp"
-            android:layout_height="35dp"
-            android:layout_gravity="right"
-            android:text="Welcome!"
+        <!--<TextView-->
+            <!--android:id="@+id/text"-->
+            <!--android:layout_width="86dp"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:text="Welcome!"-->
 
-            android:textAppearance="@style/TextAppearance.WearDiag.Message"
-            android:textColor="#ba0c0c" />
-    </FrameLayout>
+            <!--android:textAppearance="@style/TextAppearance.WearDiag.Message"-->
+            <!--android:textColor="#ba0c0c" />-->
+    <!--</FrameLayout>-->
 
 
 </android.support.wearable.view.BoxInsetLayout>

@@ -11,4 +11,5 @@
     tools:deviceIds="wear"
     android:background="@color/ambient_mode_text"
     android:layout_alignParentLeft="true">
+
 </android.support.wearable.view.WatchViewStub>
