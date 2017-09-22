@@ -42,6 +42,6 @@
             android:layout_centerVertical="true"
             android:layout_weight="1"
             android:textSize="35dp"
-            android:text="progress" />
+            android:text="Heartbeat" />
 
 </RelativeLayout>

@@ -52,7 +52,7 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
     private GoogleApiClient googleApiClient;
     private NodeApi.NodeListener nodeListener;
     private String remoteNodeId;
-    private String s;
+    private String t;
 
     private int currentHeartRate;
 
