@@ -127,8 +127,10 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
 
         currentHeartRate = (int)(sensorEvent.values.length > 0 ? sensorEvent.values[0] : 0.0f);
 
+        String strPayload = Integer.toString(currentHeartRate);
+        byte [] payload = strPayload.getBytes();
+
         String heartRateString = Integer.toString(currentHeartRate);
-        Log.i("heart rate", heartRateString);
 
         // This initialization is the one working.
         heartRateView = (TextView) findViewById(R.id.heartRateView);
@@ -137,7 +139,7 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
 
         Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
 
-        Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, null).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+        Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, payload).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
             @Override
             public void onResult(MessageApi.SendMessageResult sendMessageResult) {
 
