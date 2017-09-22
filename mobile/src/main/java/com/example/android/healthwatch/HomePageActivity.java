@@ -48,6 +48,8 @@ public class HomePageActivity extends AppCompatActivity{
     private MessageApi.MessageListener messageListener;
     private TextView heartRate;
 
+    private String s;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
