@@ -54,15 +54,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         editTextEmail = (EditText) findViewById(R.id.usertxt);
         editTextPassword = (EditText) findViewById(R.id.passwordText);
-        editTextPasswordConfirmation = (EditText) findViewById(R.id.confirmPassword);
+        editTextPasswordConfirmation = (EditText) findViewById(R.id.confirmText);
         editTextFirstName = (EditText) findViewById(R.id.First_nameText);
         editTextLastName = (EditText) findViewById(R.id.Last_nameText);
 
         buttonRegister = (Button) findViewById(R.id.finishbttn);
         buttonRegister.setOnClickListener(this);
 
-        buttonCancel = (Button) findViewById(R.id.cancelbttn);
-        buttonCancel.setOnClickListener(this);
+        //buttonCancel = (Button) findViewById(R.id.cancelbttn);
+        //buttonCancel.setOnClickListener(this);
 
         //initialize authentication
         mAuth = FirebaseAuth.getInstance();
@@ -234,9 +234,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void main_acitivity(View view){
+    public void main_activity(View view){
         Intent intent = new Intent(this, MainActivity.class);
         startActivityForResult(intent, 999);
+        finish();
     }
 
 }

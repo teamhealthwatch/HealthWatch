@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class HomePageActivity extends AppCompatActivity{
     private TextView textView;
-    private TextView heart_rate;
+    //private TextView heart_rate;
     Button btnSignOut;
 //    Button btnSignOut;
 
@@ -40,6 +40,7 @@ public class HomePageActivity extends AppCompatActivity{
     private NodeApi.NodeListener nodeListener;
     private String remoteNodeId;
     private MessageApi.MessageListener messageListener;
+    private TextView heartRate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class HomePageActivity extends AppCompatActivity{
         setContentView(R.layout.activity_home_page);
 
         textView = (TextView) findViewById(R.id.textViewUsername);
-        heart_rate = (TextView) findViewById(R.id.heart_rate);
+        heartRate = (TextView) findViewById(R.id.heartRate);
 
 //        btnSignOut = (Button) findViewById(R.id.btn_signout);
 //        btnSignOut.setOnClickListener(this);
@@ -79,7 +80,8 @@ public class HomePageActivity extends AppCompatActivity{
                     //Log.i("heart rate info", "made it here");
                     String value = new String(messageEvent.getData());
                     Log.i("heart rate info", messageEvent.getData().toString());
-                    heart_rate.setText(value);
+                    heartRate.setText(messageEvent.getData().toString());
+                    //heart_rate.setText(value);
                     //heart_rate.setText(messageEvent.getData().length.);
                 }
                 else{
@@ -121,7 +123,7 @@ public class HomePageActivity extends AppCompatActivity{
 
         ProgressBar pb = (ProgressBar)findViewById(R.id.circulaprogbar);
         pb.setProgress(30);
-        ((TextView)findViewById(R.id.heartRate)).setText("80BMP");
+        //((TextView)findViewById(R.id.heartRate)).setText("80BMP");
     }
 
 //    @Override

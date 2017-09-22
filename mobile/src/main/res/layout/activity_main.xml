@@ -35,12 +35,11 @@
             />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btn_signin"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sign in"
-            android:onClick="login"
             android:layout_gravity="center_horizontal"
             android:layout_alignLeft="@+id/button2"
             android:layout_alignStart="@+id/button2"
@@ -50,13 +49,12 @@
             android:textColor="@color/colorPrimaryDark"/>
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/hwicon"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:onClick="register"
             android:text="Sign up"
             android:textSize="18dp"
             android:background="@android:color/holo_blue_dark"

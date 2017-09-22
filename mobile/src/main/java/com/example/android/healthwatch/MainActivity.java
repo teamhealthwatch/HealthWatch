@@ -4,16 +4,19 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     public static final String KEY_LOGIN = "login";
     private FirebaseAuth mAuth;
+    Button buttonSignIn;
+    Button buttonSignUp;
 
 
 
@@ -23,6 +26,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+
+        buttonSignIn = (Button) findViewById(R.id.btn_signin);
+        buttonSignIn.setOnClickListener(this);
+
+        buttonSignUp = (Button) findViewById(R.id.btn_signup);
+        buttonSignUp.setOnClickListener(this);
     }
 
     @Override
@@ -69,5 +78,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == buttonSignIn){
+            login(v);
+        }
+        else{
+            register(v);
+        }
     }
 }
