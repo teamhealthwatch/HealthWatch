@@ -88,12 +88,9 @@ public class HomePageActivity extends AppCompatActivity{
                     catch(UnsupportedEncodingException e){
                         Log.i("Exception", "thrown encoding");
                     }
-                    Log.i("heart rate info", "made it here");
-                    //String value = new String(messageEvent.getData());
-                    //Log.i("heart rate info", messageEvent.getData().toString());
+
+                    int hR = (Integer.getInteger(payload));
                     heartRate.setText(payload);
-                    //heart_rate.setText(value);
-                    //heart_rate.setText(messageEvent.getData().length.);
                 }
                 else{
                     Log.i("heart rate info", "couldn't get in");
