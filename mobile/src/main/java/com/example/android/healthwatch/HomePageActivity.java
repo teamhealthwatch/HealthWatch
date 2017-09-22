@@ -1,7 +1,11 @@
 package com.example.android.healthwatch;
+import android.*;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -91,6 +95,7 @@ public class HomePageActivity extends AppCompatActivity{
 
                     int hR = (Integer.getInteger(payload));
                     heartRate.setText(payload);
+                    makePhoneCall(hR);
                 }
                 else{
                     Log.i("heart rate info", "couldn't get in");
@@ -131,19 +136,9 @@ public class HomePageActivity extends AppCompatActivity{
 
         ProgressBar pb = (ProgressBar)findViewById(R.id.circulaprogbar);
         pb.setProgress(30);
-        //((TextView)findViewById(R.id.heartRate)).setText("80BMP");
     }
 
-//    @Override
-//    public void onClick(View v){
-//        if(v == btnSignOut)
-//        {
-//            mAuth.signOut();
-//            Intent intent = new Intent(this, MainActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
-//    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -216,6 +211,22 @@ public class HomePageActivity extends AppCompatActivity{
         super.onPause();
     }
 
+    public void makePhoneCall(int heartRate)
+    {
+
+        if (heartRate >= 80 &&  heartRate <= 30)
+        {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:2027024724"));
+
+            if (ActivityCompat.checkSelfPermission(this,
+                    android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            startActivity(callIntent);
+        }
+
+    }
 
 }
 
