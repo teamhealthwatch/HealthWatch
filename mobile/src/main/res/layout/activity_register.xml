@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="password"
-            android:inputType="numberPassword"
+            android:inputType="textPassword"
             android:textColor="@color/colorPrimaryDark"/>
 
         <EditText
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="confirm password"
-            android:inputType="numberPassword"
+            android:inputType="textPassword"
             android:textColor="@color/colorPrimaryDark"/>
 
         <Button

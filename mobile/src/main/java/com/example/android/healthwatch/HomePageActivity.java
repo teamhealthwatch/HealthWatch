@@ -97,6 +97,7 @@ public class HomePageActivity extends AppCompatActivity{
 
                     heartRate.setText(payload);
                     if(payload != null) {
+                        //setProgressBar(Integer.parseInt(payload));
                         int hR = (Integer.parseInt(payload));
                         makePhoneCall(hR);
                     }
@@ -138,8 +139,7 @@ public class HomePageActivity extends AppCompatActivity{
         }).addApi(Wearable.API).build();
         textView.setText("Welcome " + intent.getStringExtra(LoginActivity.KEY_LOGIN));
 
-        ProgressBar pb = (ProgressBar)findViewById(R.id.circulaprogbar);
-        pb.setProgress(30);
+
     }
 
 
@@ -218,7 +218,8 @@ public class HomePageActivity extends AppCompatActivity{
     public void makePhoneCall(int heartRate)
     {
 
-        if (heartRate >= 60 ||  heartRate <= 30)
+
+        if (heartRate >= 50 ||  heartRate <= 30)
         {
             Log.i("Phone call", "heart rate is correct");
             Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -231,6 +232,22 @@ public class HomePageActivity extends AppCompatActivity{
             startActivity(callIntent);
         }
 
+    }
+
+    private void setProgressBar(int heartRate){
+        ProgressBar pb = (ProgressBar)findViewById(R.id.circulaprogbar);
+        if(heartRate < 60){
+            pb.setProgress(30);
+        }
+        else if(60 <= heartRate && heartRate < 80){
+            pb.setProgress(20);
+        }
+        else if(80 <= heartRate && heartRate < 100){
+            pb.setProgress(10);
+        }
+        else{
+            pb.setProgress(0);
+        }
     }
 
 }
