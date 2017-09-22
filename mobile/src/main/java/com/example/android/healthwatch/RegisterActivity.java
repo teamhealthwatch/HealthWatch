@@ -54,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         editTextEmail = (EditText) findViewById(R.id.usertxt);
         editTextPassword = (EditText) findViewById(R.id.passwordText);
-        editTextPasswordConfirmation = (EditText) findViewById(R.id.confirmPassword);
+        editTextPasswordConfirmation = (EditText) findViewById(R.id.comfirmText);
         editTextFirstName = (EditText) findViewById(R.id.First_nameText);
         editTextLastName = (EditText) findViewById(R.id.Last_nameText);
 
