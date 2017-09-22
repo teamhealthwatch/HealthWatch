@@ -26,6 +26,8 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.UnsupportedEncodingException;
+
 public class HomePageActivity extends AppCompatActivity{
     private TextView textView;
     //private TextView heart_rate;
@@ -42,6 +44,7 @@ public class HomePageActivity extends AppCompatActivity{
     private MessageApi.MessageListener messageListener;
     private TextView heartRate;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class HomePageActivity extends AppCompatActivity{
 
         Intent intent = getIntent();
         mAuth = FirebaseAuth.getInstance();
+        String payload = null;
 
         textView.setText("Welcome User " + intent.getStringExtra(LoginActivity.KEY_LOGIN));
 
@@ -76,13 +80,17 @@ public class HomePageActivity extends AppCompatActivity{
             @Override
             public void onMessageReceived(MessageEvent messageEvent) {
 
+                String payload = null;
                 if (messageEvent.getPath().equals(HEART_RATE)) {
-                    //Log.i("heart rate info", "made it here");
-                    String value = new String(messageEvent.getData());
-                    Log.i("heart rate info", messageEvent.getData().toString());
-                    heartRate.setText(messageEvent.getData().toString());
-                    //heart_rate.setText(value);
-                    //heart_rate.setText(messageEvent.getData().length.);
+                    try {
+                        payload = new String(messageEvent.getData(), "utf-8");
+                    }
+                    catch(UnsupportedEncodingException e){
+                        Log.i("Exception", "thrown encoding");
+                    }
+
+                    int hR = (Integer.getInteger(payload));
+                    heartRate.setText(payload);
                 }
                 else{
                     Log.i("heart rate info", "couldn't get in");
