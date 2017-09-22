@@ -95,9 +95,11 @@ public class HomePageActivity extends AppCompatActivity{
                         Log.i("Exception", "thrown encoding");
                     }
 
-                    int hR = (Integer.getInteger(payload));
                     heartRate.setText(payload);
-                    makePhoneCall(hR);
+                    if(payload != null) {
+                        int hR = (Integer.parseInt(payload));
+                        makePhoneCall(hR);
+                    }
                 }
                 else{
                     Log.i("heart rate info", "couldn't get in");
@@ -216,10 +218,11 @@ public class HomePageActivity extends AppCompatActivity{
     public void makePhoneCall(int heartRate)
     {
 
-        if (heartRate >= 80 &&  heartRate <= 30)
+        if (heartRate >= 60 ||  heartRate <= 30)
         {
+            Log.i("Phone call", "heart rate is correct");
             Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:2027024724"));
+            callIntent.setData(Uri.parse("tel:8016960277"));
 
             if (ActivityCompat.checkSelfPermission(this,
                     android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
