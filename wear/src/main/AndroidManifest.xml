@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.healthwatch">
+    package="com.example.android.healthwatch"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.hardware.type.watch" />
 
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+
+    <uses-sdk tools:overrideLibrary="android.support.wear"/>
 
 
     <application
@@ -14,9 +17,8 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <uses-library android:name="com.google.android.wearable" android:required="false" />
-        <uses-library android:name="com.google.android.support:wearable:2.0.0-beta2" android:required="false" />
+        <uses-library android:name="com.google.android.support:wearable:2.0.4" android:required="false" />
 
-        <!--<uses-library android:name="com.github.Hitomis:CircleMenu:v1.1.0" android:required="false" />-->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">

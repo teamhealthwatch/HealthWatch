@@ -10,11 +10,5 @@
     tools:context="com.example.android.healthwatch.MedConditionActivity"
     tools:deviceIds="wear">
 
-    <android.support.wear.view.WearableRecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/med_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+
 </android.support.wearable.view.WatchViewStub>

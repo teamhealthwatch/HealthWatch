@@ -91,9 +91,9 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
                                 break;
                             case 1:
                                 Toast.makeText(MainActivity.this, "Track Medication", Toast.LENGTH_SHORT).show();
-//                                Intent newIntent = new Intent(MainActivity.this, MedConditionActivity.class);
-//                                startActivity(newIntent);
-//                                finish();
+                                Intent newIntent = new Intent(MainActivity.this, MedConditionActivity.class);
+                                startActivity(newIntent);
+                                finish();
                                 break;
                             case 2:
                                 Toast.makeText(MainActivity.this, "Emergency Contact", Toast.LENGTH_SHORT).show();
@@ -120,7 +120,6 @@ public class MainActivity extends Activity implements SensorEventListener, Googl
 
             }
         });
-
 
 
         heartRateView = (TextView) findViewById(R.id.heartRateView);
