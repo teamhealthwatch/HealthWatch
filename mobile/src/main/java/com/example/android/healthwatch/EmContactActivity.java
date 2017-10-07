@@ -3,12 +3,24 @@ package com.example.android.healthwatch;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +41,10 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
     Button buttonAdd;
     CheckBox pc;
 
+    ListView listView;
+    ArrayList<String> values;
+    int index;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +52,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
 
         editTextFullName = (EditText) findViewById(R.id.emName);
         editTextPhoneNumber = (EditText) findViewById(R.id.phonenumber);
+        editTextPhoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         buttonNext = (Button) findViewById(R.id.finishbttn);
         buttonNext.setOnClickListener(this);
@@ -44,60 +61,101 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
         pc = (CheckBox) findViewById(R.id.PrimaryCont);
         Intent intent = getIntent();
         login = intent.getStringExtra(LoginActivity.KEY_LOGIN);
+
+        listView = (ListView) findViewById(R.id.list);
+
+        values = new ArrayList<String>();
+        index = 0;
     }
 
     public void storeContact(){
-
-        /*final String full_name = editTextFullName.getText().toString().trim();
-        final String phone_number = editTextPhoneNumber.getText().toString().trim();
-        String primary_contact = "0";
+        final String name = editTextFullName.getText().toString().trim();
+        final String phoneNumber = editTextPhoneNumber.getText().toString().trim();
+        boolean primaryContact = false;
         if(pc.isChecked()){
-            primary_contact = "1";
+            primaryContact = true;
         }
-        final String p_contact = primary_contact;
-        System.out.println(login + " " + full_name + " " + phone_number + " " + p_contact);
+        final boolean pContact = primaryContact;
+        values.add(name);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        System.out.println(response);
-                        if(response.contains("Duplicate entry")){
-                            Intent intent = getIntent();
-                            finish();
-                            startActivity(intent);
-                            response = "Duplicate contact found, try a new contact.";
-                            Toast.makeText(EmContactActivity.this,response,Toast.LENGTH_LONG).show();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+        listView.setAdapter(adapter);
 
-                        }
-                        else{
-                            response = "New contact successfully added.";
-                            Toast.makeText(EmContactActivity.this,response,Toast.LENGTH_LONG).show();
 
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(EmContactActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+        Log.i("Phone Number", phoneNumber);
 
-                    }
-                }){
+        //Log.d(TAG, "createAccount:" + email);
+        if (!validateForm()) {
+            return;
+        }
+
+
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+
+        myRef.child("contacts").child(login).child(name).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<String, String>();
-                params.put(KEY_LOGIN,login);
-                params.put(KEY_FULLNAME,full_name);
-                params.put(KEY_PHONENUMBER, phone_number);
-                params.put(KEY_PRIMARYCONTACT, p_contact);
-                return params;
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                        Log.v("Children",""+ childDataSnapshot.getKey()); //displays the key for the node
+                        Log.v("Children",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
+                    }
+                    String response = "Duplicate account found. Please make a new account.";
+                    Toast.makeText(EmContactActivity.this,response,Toast.LENGTH_LONG).show();
+                } else {
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference usersRef = database.getReference("contacts");
+                    usersRef.child(login).child(name).setValue(new Contact(phoneNumber, pContact), new DatabaseReference.CompletionListener(){
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                System.out.println("Data could not be saved " + databaseError.getMessage());
+                            } else {
+                                System.out.println("Data saved successfully.");
+                            }
+                        }
+                    });
+                    //createAccount(email, password);
+
+                }
             }
 
-        };
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);*/
+            }
+        });
+
+    }
+
+    //Used to ensure the input given by the user is correct and can be stored in the database
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String contactName = editTextFullName.getText().toString();
+        if (TextUtils.isEmpty(contactName)) {
+            editTextFullName.setError("Required.");
+            valid = false;
+        } else {
+            editTextFullName.setError(null);
+        }
+
+        String phone = editTextPhoneNumber.getText().toString();
+
+        if (TextUtils.isEmpty(phone)) {
+            editTextPhoneNumber.setError("Required.");
+            valid = false;
+        } else if (phone.length() < 14) {
+            Toast.makeText(EmContactActivity.this, "Please enter 10-digit phone number",
+                    Toast.LENGTH_SHORT).show();
+            valid = false;
+
+        } else {
+            editTextPhoneNumber.setError(null);
+        }
+
+        return valid;
     }
 
     public void finishContact(){

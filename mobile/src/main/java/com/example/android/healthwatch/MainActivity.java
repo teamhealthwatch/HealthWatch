@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     Button buttonSignIn;
     Button buttonSignUp;
+    Button skip;
 
 
 
@@ -32,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         buttonSignUp = (Button) findViewById(R.id.btn_signup);
         buttonSignUp.setOnClickListener(this);
+
+        skip = (Button) findViewById(R.id.skip);
+        skip.setOnClickListener(this);
     }
 
     @Override
@@ -85,8 +89,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(v == buttonSignIn){
             login(v);
         }
-        else{
+        else if(v == buttonSignUp){
             register(v);
+        }
+        else if(v == skip){
+            Intent intent = new Intent(this, EmContactActivity.class);
+            intent.putExtra(KEY_LOGIN, "testUser");
+            startActivity(intent);
         }
     }
 }
