@@ -26,8 +26,11 @@
             android:layout_height="match_parent"
             android:layout_weight="0.06"
             android:hint="Full Name"
+            android:inputType="text"
             tools:layout_editor_absoluteX="85dp"
-            tools:layout_editor_absoluteY="244dp" />
+            tools:layout_editor_absoluteY="244dp"
+            android:maxLines="1"
+            android:imeOptions="actionNext"/>
 
     </LinearLayout>
 
@@ -90,7 +93,7 @@
         <ListView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="119dp"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true">

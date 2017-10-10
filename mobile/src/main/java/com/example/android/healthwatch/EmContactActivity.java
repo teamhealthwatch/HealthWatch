@@ -1,5 +1,6 @@
 package com.example.android.healthwatch;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,12 +28,6 @@ import java.util.Map;
 
 public class EmContactActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String KEY_LOGIN = "email";
-    public static final String KEY_FULLNAME = "full_name";
-    public static final String KEY_PHONENUMBER = "phone_number";
-    public static final String KEY_PRIMARYCONTACT = "primary_contact";
-
-
     private String login;
     private EditText editTextFullName;
     private EditText editTextPhoneNumber;
@@ -42,7 +38,8 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
     CheckBox pc;
 
     ListView listView;
-    ArrayList<String> values;
+    ArrayList<Contact> contacts;
+    private static CustomAdapter adapter;
     int index;
 
     @Override
@@ -64,8 +61,9 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
 
         listView = (ListView) findViewById(R.id.list);
 
-        values = new ArrayList<String>();
+        contacts = new ArrayList<Contact>();
         index = 0;
+
     }
 
     public void storeContact(){
@@ -76,11 +74,11 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
             primaryContact = true;
         }
         final boolean pContact = primaryContact;
-        values.add(name);
+        contacts.add(new Contact(name, phoneNumber, pContact));
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+        adapter = new CustomAdapter(contacts, getApplicationContext());
         listView.setAdapter(adapter);
+
 
 
         Log.i("Phone Number", phoneNumber);
@@ -115,7 +113,10 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
                                 System.out.println("Data saved successfully.");
                             }
                         }
+
                     });
+                    editTextFullName.setText("");
+                    editTextPhoneNumber.setText("");
                     //createAccount(email, password);
 
                 }
@@ -169,6 +170,8 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
         else if(v == buttonAdd) {
             storeContact();
         }
+
     }
+
 
 }

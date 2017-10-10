@@ -21,4 +21,12 @@ public class Contact {
         this.phoneNumber = phoneNumber;
         this.primaryContact = primaryContact;
     }
+
+    public String getName(){
+        return name;
+    }
+
+    public String getPhoneNumber(){
+        return phoneNumber;
+    }
 }
