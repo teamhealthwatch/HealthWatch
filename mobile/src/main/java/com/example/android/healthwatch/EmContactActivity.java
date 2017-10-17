@@ -1,103 +1,102 @@
 package com.example.android.healthwatch;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EmContactActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String KEY_LOGIN = "email";
-    public static final String KEY_FULLNAME = "full_name";
-    public static final String KEY_PHONENUMBER = "phone_number";
-    public static final String KEY_PRIMARYCONTACT = "primary_contact";
+    public String login;
+    public static final String KEY_LOGIN="login";
+    FloatingActionButton fab;
 
+    ListView listView;
+    ArrayList<Contact> contacts;
+    Bundle contact;
+    private static CustomAdapter adapter;
+    int index;
 
-    private String login;
-    private EditText editTextFullName;
-    private EditText editTextPhoneNumber;
-
-
-    Button buttonNext;
-    Button buttonAdd;
-    CheckBox pc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_emcontact);
+        setContentView(R.layout.activity_emergency_contact);
 
-        editTextFullName = (EditText) findViewById(R.id.emName);
-        editTextPhoneNumber = (EditText) findViewById(R.id.phonenumber);
-
-        buttonNext = (Button) findViewById(R.id.finishbttn);
-        buttonNext.setOnClickListener(this);
-        buttonAdd = (Button) findViewById(R.id.addbttn);
-        buttonAdd.setOnClickListener(this);
-        pc = (CheckBox) findViewById(R.id.PrimaryCont);
+        getSupportActionBar().setTitle("Emergency Contacts");
         Intent intent = getIntent();
         login = intent.getStringExtra(LoginActivity.KEY_LOGIN);
+
+        fab = (FloatingActionButton) findViewById(R.id.float_button);
+        fab.setOnClickListener(this);
+
+        listView = (ListView) findViewById(R.id.list);
+
+        contact = null;
+        contacts = new ArrayList<Contact>();
+        index = 0;
+
     }
 
-    public void storeContact(){
+    private void displayContacts(Bundle contact){
 
-        /*final String full_name = editTextFullName.getText().toString().trim();
-        final String phone_number = editTextPhoneNumber.getText().toString().trim();
-        String primary_contact = "0";
-        if(pc.isChecked()){
-            primary_contact = "1";
-        }
-        final String p_contact = primary_contact;
-        System.out.println(login + " " + full_name + " " + phone_number + " " + p_contact);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        System.out.println(response);
-                        if(response.contains("Duplicate entry")){
-                            Intent intent = getIntent();
-                            finish();
-                            startActivity(intent);
-                            response = "Duplicate contact found, try a new contact.";
-                            Toast.makeText(EmContactActivity.this,response,Toast.LENGTH_LONG).show();
+        contacts.add(new Contact(contact.getString("fullName"), contact.getString("phoneNumber"), contact.getBoolean("pc")));
+        adapter = new CustomAdapter(contacts, getApplicationContext());
+        listView.setAdapter(adapter);
 
-                        }
-                        else{
-                            response = "New contact successfully added.";
-                            Toast.makeText(EmContactActivity.this,response,Toast.LENGTH_LONG).show();
 
-                        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                if(extras != null){
+                    
+                    String d = extras.getString("fullName");
+                    //Log.e("Name is", d);
+                    if(d == null){
+                        Toast.makeText(EmContactActivity.this,"Made it to displayContacts.",Toast.LENGTH_LONG).show();
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(EmContactActivity.this,error.toString(),Toast.LENGTH_LONG).show();
-
-                    }
-                }){
-            @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<String, String>();
-                params.put(KEY_LOGIN,login);
-                params.put(KEY_FULLNAME,full_name);
-                params.put(KEY_PHONENUMBER, phone_number);
-                params.put(KEY_PRIMARYCONTACT, p_contact);
-                return params;
+                    displayContacts(extras);
+                }
+                else{
+                    Toast.makeText(EmContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+                }
             }
+        }
+    }
 
-        };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);*/
+
+    public void startPopUp(){
+        Intent intent = new Intent(this, EmergencyPopUp.class);
+        intent.putExtra(KEY_LOGIN, login);
+        startActivityForResult(intent, 1);
     }
 
     public void finishContact(){
@@ -105,12 +104,11 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
     }
 
     public void onClick(View v){
-        if(v == buttonNext){
-            finishContact();
+        if(v == fab){
+            startPopUp();
         }
-        else if(v == buttonAdd) {
-            storeContact();
-        }
+
     }
+
 
 }

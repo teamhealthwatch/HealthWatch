@@ -60,6 +60,12 @@
             android:background="@android:color/holo_blue_dark"
             android:textColor="@color/colorPrimaryDark"/>
 
+        <Button
+            android:id="@+id/skip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Skip to Contacts Form" />
+
 
 
     </LinearLayout>

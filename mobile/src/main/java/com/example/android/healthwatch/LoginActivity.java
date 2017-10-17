@@ -36,7 +36,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String s;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -69,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            openProfile(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         // [START_EXCLUDE]
                         if (task.isSuccessful()) {
-                            openProfile();
                         }
                         // [END_EXCLUDE]
                     }
@@ -86,9 +85,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // [END sign_in_with_email]
     }
 
-    private void openProfile(){
+    private void openProfile(FirebaseUser user){
         Intent intent = new Intent(this, HomePageActivity.class);
-        intent.putExtra(KEY_LOGIN, usernameFromEmail(mAuth.getCurrentUser().getEmail()));
+        intent.putExtra(KEY_LOGIN, usernameFromEmail(user.getEmail()));
         startActivity(intent);
     }
 

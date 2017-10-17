@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:text="Desvenlafaxine"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/Time"
+            android:layout_width="70dp"
+            android:layout_height="75dp"
+            android:text="12:00pm"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/Name"
+            android:layout_toEndOf="@+id/Name" />
+
+        <TextView
+            android:id="@+id/Dosage"
+            android:layout_width="40dp"
+            android:layout_height="75dp"
+            android:text="2"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/Time"
+            android:layout_toEndOf="@+id/Time" />
+
+        <TextView
+            android:id="@+id/Date"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:gravity="center"
+            android:text="6 WED 2017"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/Dosage"
+            android:layout_toEndOf="@+id/Dosage" />
+
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="75dp"
+            android:text="Alarm On/Off"
+            android:id="@+id/alarmToggle"
+            android:layout_toRightOf="@+id/Date"
+            android:onClick="onToggleClicked"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>
