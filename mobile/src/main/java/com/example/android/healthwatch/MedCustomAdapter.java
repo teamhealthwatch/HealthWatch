@@ -39,7 +39,7 @@ public class MedCustomAdapter extends BaseAdapter implements View.OnClickListene
         public TextView _date;
         public TextView _dosage;
         public TextView _name;
-        
+
     }
 
     @Override
