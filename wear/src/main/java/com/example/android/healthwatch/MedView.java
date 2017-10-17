@@ -1,10 +1,16 @@
 package com.example.android.healthwatch;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
+import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class MedView extends Activity {
 
@@ -12,6 +18,11 @@ public class MedView extends Activity {
     private TextView medDosageView;
 
     public static final String MED_ITEM ="med item";
+
+    private TimePicker timePicker;
+
+    private Button timeButton;
+    private Button dateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +43,49 @@ public class MedView extends Activity {
                 medNameView.setText(medication.getMedName());
                 medDosageView.setText(medication.getDosage());
 
+                timeButton = findViewById(R.id.time_button);
+                dateButton = findViewById(R.id.date_button);
+
+                timeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showTimePicker();
+                    }
+                });
+
+                dateButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showDatePicker();
+                    }
+                });
+
 
             }
         });
+    }
+
+    private void showTimePicker(){
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(MedView.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+
+            }
+        }, 12, 0, false);
+        timePickerDialog.show();
+
+    }
+
+    private void showDatePicker(){
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(MedView.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+
+            }
+        }, 2017, 1, 1);
+        datePickerDialog.show();
+
     }
 }

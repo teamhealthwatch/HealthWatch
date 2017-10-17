@@ -25,8 +25,7 @@ public class MedConditionActivity extends WearableActivity{
     private MedAdapter medAdapter;
     private ArrayList<Medication> medication;
 
-    private TimePicker timePicker;
-    private TimePickerDialog timePickerDialog;
+
 
     private AdapterView.OnItemClickListener onItemClickListener;
     private MedAdapter.MedClickListener medClickListener;
