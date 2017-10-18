@@ -5,12 +5,18 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.wear.widget.WearableLinearLayoutManager;
+import android.support.wear.widget.WearableRecyclerView;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import java.util.ArrayList;
 
 public class MedView extends Activity {
 
@@ -19,15 +25,26 @@ public class MedView extends Activity {
 
     public static final String MED_ITEM ="med item";
 
-    private TimePicker timePicker;
-
     private Button timeButton;
     private Button dateButton;
+
+    private RecyclerView alarmRecyclerView;
+
+    private AlarmAdapter alarmAdapter;
+
+    private ArrayList<String> alarmList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_view);
+
+        alarmList = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++){
+            alarmList.add("12:0" + i + " PM");
+        }
+
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
@@ -60,6 +77,17 @@ public class MedView extends Activity {
                     }
                 });
 
+                alarmRecyclerView = findViewById(R.id.alarm_recycler_view);
+                alarmRecyclerView.setLayoutManager(new LinearLayoutManager(MedView.this));
+
+                // Create adapter for alarm list
+
+                alarmAdapter = new AlarmAdapter(alarmList, MedView.this);
+                alarmRecyclerView.setAdapter(alarmAdapter);
+                alarmRecyclerView.setFocusable(true);
+
+                // TODO: Add listener
+
 
             }
         });
@@ -70,6 +98,8 @@ public class MedView extends Activity {
         TimePickerDialog timePickerDialog = new TimePickerDialog(MedView.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
+
+
 
             }
         }, 12, 0, false);
