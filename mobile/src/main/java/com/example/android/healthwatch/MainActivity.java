@@ -51,10 +51,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (mAuth.getCurrentUser() != null) {
-            Toast.makeText(this,mAuth.getCurrentUser().getEmail(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(this,mAuth.getCurrentUser().getEmail(),Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, HomePageActivity.class);
             intent.putExtra(KEY_LOGIN, usernameFromEmail(mAuth.getCurrentUser().getEmail()));
             startActivity(intent);
+            finish();
         }
     }
 
