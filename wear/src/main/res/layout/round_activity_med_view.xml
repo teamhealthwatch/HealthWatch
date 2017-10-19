@@ -45,29 +45,26 @@
 
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
                 android:background="@drawable/time"
                 android:id="@+id/time_button"/>
-            <Space
-                android:layout_width="10dp"
-                android:layout_height="wrap_content" />
 
             <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
                 android:background="@drawable/date"
                 android:id="@+id/date_button"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
@@ -75,9 +72,6 @@
             android:orientation="vertical"
             android:clickable="true"
             android:id="@+id/alarm_recycler_view">
-
-
-            
 
         </android.support.v7.widget.RecyclerView>
 
