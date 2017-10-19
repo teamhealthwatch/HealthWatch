@@ -41,11 +41,6 @@
         <activity android:name=".EmContactActivity" />
         <activity android:name=".MedTrackerActivity" />
         <activity android:name=".MedConditionActivity"/>
-        <activity
-            android:name=".EmergencyPopUp"
-            android:label="Add Emergency Contact">
-        </activity>
-        <activity android:name=".MedConditionActivity" />
         <!--<activity android:name=".CreateMedicationTimer" />-->
         <activity android:name=".MedicationForm"></activity>
         <service
