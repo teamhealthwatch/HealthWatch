@@ -1,30 +1,20 @@
 package com.example.android.healthwatch;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.DialogFragment;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.wear.widget.WearableLinearLayoutManager;
-import android.support.wear.widget.WearableRecyclerView;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
-
-import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class MedView extends WearableActivity {
+public class MedInfoActivity extends WearableActivity {
 
     private TextView medNameView;
     private TextView medDosageView;
@@ -40,15 +30,14 @@ public class MedView extends WearableActivity {
 
     private ArrayList<String> alarmList;
 
-    private Calendar calendar;
+    private String tempTime;
 
-    private int selectedHour;
-    private int selectedMinute;
+    private android.app.FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_med_view);
+        setContentView(R.layout.activity_med_info);
 
         alarmList = new ArrayList<>();
 
@@ -77,22 +66,7 @@ public class MedView extends WearableActivity {
                 timeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-
-                        Log.i("TIME ICON", "time icon is clicked!");
-
-                        TimePickerDialog timePickerDialog = new TimePickerDialog(MedView.this, new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                                Log.i("TimePickerDialog", "onTimeSet is called!");
-
-                            }
-                        }, 0, 0, true);
-                        timePickerDialog.show();
-
-//                        showTimePicker();
-
+                        showTimePicker();
                     }
                 });
 
@@ -104,11 +78,11 @@ public class MedView extends WearableActivity {
                 });
 
                 alarmRecyclerView = findViewById(R.id.alarm_recycler_view);
-                alarmRecyclerView.setLayoutManager(new LinearLayoutManager(MedView.this));
+                alarmRecyclerView.setLayoutManager(new LinearLayoutManager(MedInfoActivity.this));
 
                 // Create adapter for alarm list
 
-                alarmAdapter = new AlarmAdapter(alarmList, MedView.this);
+                alarmAdapter = new AlarmAdapter(alarmList, MedInfoActivity.this);
                 alarmRecyclerView.setAdapter(alarmAdapter);
                 alarmRecyclerView.setFocusable(true);
 
@@ -122,32 +96,25 @@ public class MedView extends WearableActivity {
     }
 
     private void showTimePicker(){
-
-        // TODO: Why is onTimeSet never called??!?!??!?!?
-        calendar = Calendar.getInstance();
-        selectedHour = calendar.get(calendar.HOUR_OF_DAY);
-        selectedMinute =calendar.get(calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(MedView.this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-
-
-            }
-        }, 12, 0, false);
-        timePickerDialog.show();
-
+        fm = getFragmentManager();
+        TimePickerFragment timePickerFragment = TimePickerFragment.newInstance("Some Title");
+        timePickerFragment.show(fm, "fragment_edit_name");
     }
 
     private void showDatePicker(){
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(MedView.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+    }
 
-            }
-        }, 2017, 1, 1);
-        datePickerDialog.show();
+    public ArrayList<String> getAlarmList() {
+        return alarmList;
+    }
 
+    public void addAlarm(String alarm){
+        alarmList.add(alarm);
+        alarmAdapter.notifyDataSetChanged();
+    }
+
+    public void setTempTime(String tempTime) {
+        this.tempTime = tempTime;
     }
 }

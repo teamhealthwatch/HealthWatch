@@ -10,21 +10,31 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"/>
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        android:text="12:00 AM"
-        android:id="@+id/time_view"/>
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:text="One time"
-        android:id="@+id/date_view"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/time_view"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/date_view"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="One time"
+            android:id="@+id/frequency_view"/>
+
+    </LinearLayout>
+
+
     <Button
         android:layout_width="20dp"
         android:layout_height="20dp"
