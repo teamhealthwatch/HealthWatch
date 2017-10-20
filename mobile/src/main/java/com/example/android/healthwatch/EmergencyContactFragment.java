@@ -52,9 +52,9 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
-        add = (Button) view.findViewById(R.id.addbttn);
+        add = view.findViewById(R.id.addbttn);
         add.setOnClickListener(this);
-        cancel = (Button) view.findViewById(R.id.cancelbttn);
+        cancel = view.findViewById(R.id.cancelbttn);
         cancel.setOnClickListener(this);
         editTextFullName = (EditText) view.findViewById(R.id.emName);
         editTextPhoneNumber = (EditText) view.findViewById(R.id.phonenumber);
@@ -123,6 +123,9 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
     public void onClick(View v) {
         if(v == add){
             getFormData();
+        }
+        if(v == cancel){
+            dismiss();
         }
     }
 }
