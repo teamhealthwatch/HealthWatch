@@ -45,26 +45,12 @@
 
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/time"
-                android:id="@+id/time_button"/>
-
-            <Button
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/date"
-                android:id="@+id/date_button"/>
-
-        </RelativeLayout>
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/time"
+            android:layout_gravity="center"
+            android:id="@+id/time_button"/>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"

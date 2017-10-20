@@ -22,7 +22,7 @@ public class MedInfoActivity extends WearableActivity {
     public static final String MED_ITEM ="med item";
 
     private Button timeButton;
-    private Button dateButton;
+//    private Button dateButton;
 
     private RecyclerView alarmRecyclerView;
 
@@ -41,10 +41,6 @@ public class MedInfoActivity extends WearableActivity {
 
         alarmList = new ArrayList<>();
 
-//        for (int i = 0; i < 10; i++){
-//            alarmList.add("12:0" + i + " PM");
-//        }
-
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
@@ -61,7 +57,7 @@ public class MedInfoActivity extends WearableActivity {
                 medDosageView.setText(medication.getDosage());
 
                 timeButton = findViewById(R.id.time_button);
-                dateButton = findViewById(R.id.date_button);
+//                dateButton = findViewById(R.id.date_button);
 
                 timeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -70,12 +66,12 @@ public class MedInfoActivity extends WearableActivity {
                     }
                 });
 
-                dateButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showDatePicker();
-                    }
-                });
+//                dateButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        showDatePicker();
+//                    }
+//                });
 
                 alarmRecyclerView = findViewById(R.id.alarm_recycler_view);
                 alarmRecyclerView.setLayoutManager(new LinearLayoutManager(MedInfoActivity.this));
@@ -102,7 +98,8 @@ public class MedInfoActivity extends WearableActivity {
     }
 
     private void showDatePicker(){
-
+        DatePickerFragment datePickerFragment = DatePickerFragment.newInstance("Some Title");
+        datePickerFragment.show(fm, "fragment_edit_name");
     }
 
     public ArrayList<String> getAlarmList() {
@@ -110,11 +107,14 @@ public class MedInfoActivity extends WearableActivity {
     }
 
     public void addAlarm(String alarm){
-        alarmList.add(alarm);
+
+        tempTime += "\n" + alarm;
+        alarmList.add(tempTime);
         alarmAdapter.notifyDataSetChanged();
     }
 
     public void setTempTime(String tempTime) {
         this.tempTime = tempTime;
+        showDatePicker();
     }
 }
