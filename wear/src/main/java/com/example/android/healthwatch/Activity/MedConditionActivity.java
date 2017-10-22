@@ -1,4 +1,4 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.widget.AdapterView;
+
+import com.example.android.healthwatch.Adapter.MedAdapter;
+import com.example.android.healthwatch.Medication;
+import com.example.android.healthwatch.R;
 
 import java.util.ArrayList;
 

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#e1e1e1"
-    tools:context="com.example.android.healthwatch.MainActivity"
+    tools:context="com.example.android.healthwatch.Activity.MainActivity"
     tools:deviceIds="wear_square"
     android:weightSum="1">
 

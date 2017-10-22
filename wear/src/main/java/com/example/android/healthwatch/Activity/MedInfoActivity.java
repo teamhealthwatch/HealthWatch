@@ -1,6 +1,5 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activity;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,8 +8,13 @@ import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
+
+import com.example.android.healthwatch.Adapter.AlarmAdapter;
+import com.example.android.healthwatch.DatePickerFragment;
+import com.example.android.healthwatch.Medication;
+import com.example.android.healthwatch.R;
+import com.example.android.healthwatch.TimePickerFragment;
 
 import java.util.ArrayList;
 

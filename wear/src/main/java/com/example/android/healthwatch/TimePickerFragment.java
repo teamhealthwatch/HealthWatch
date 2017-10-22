@@ -8,6 +8,8 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.TimePicker;
 
+import com.example.android.healthwatch.Activity.MedInfoActivity;
+
 import java.util.Calendar;
 
 /**
