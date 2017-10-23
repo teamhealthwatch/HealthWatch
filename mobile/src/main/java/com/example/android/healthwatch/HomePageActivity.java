@@ -1,10 +1,8 @@
 package com.example.android.healthwatch;
-import android.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,7 +19,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
@@ -161,7 +157,7 @@ public class HomePageActivity extends AppCompatActivity{
                 return true;
             case R.id.contact:
                 Toast.makeText(this, "Emmergency Contact", Toast.LENGTH_SHORT).show();
-                Intent intent2 = new Intent(this, EmContactActivity.class);
+                Intent intent2 = new Intent(this, EmergencyContactActivity.class);
                 startActivity(intent2);
                 return true;
             case R.id.info:

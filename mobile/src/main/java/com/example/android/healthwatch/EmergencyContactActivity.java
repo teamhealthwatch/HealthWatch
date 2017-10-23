@@ -1,8 +1,5 @@
 package com.example.android.healthwatch;
 
-import android.app.ActionBar;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -10,20 +7,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -33,10 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-public class EmContactActivity extends AppCompatActivity implements View.OnClickListener {
+public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener {
 
     public String login;
     public static final String KEY_LOGIN="login";
@@ -45,7 +29,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
     ListView listView;
     ArrayList<Contact> contacts;
     Bundle contact;
-    private static CustomAdapter adapter;
+    private static EmergencyContactAdapter adapter;
     int index;
     String fullName;
     String phoneNumber;
@@ -72,6 +56,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
         index = 0;
 
 
+
     }
 
     private void showEditDialog() {
@@ -82,7 +67,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
 
 
     private void displayContacts(Bundle contact){
-        adapter = new CustomAdapter(contacts, getApplicationContext());
+        adapter = new EmergencyContactAdapter(contacts, getApplicationContext());
         listView.setAdapter(adapter);
 
     }
@@ -98,10 +83,10 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
                     phoneNumber = extras.getString("phoneNumber");
                     pc = extras.getBoolean("pc");
                     storeContact();
-                    displayContacts(extras);
+                    //displayContacts(extras);
                 }
                 else{
-                    Toast.makeText(EmContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(EmergencyContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -123,7 +108,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
                         Log.v("Children",""+ childDataSnapshot.getKey()); //displays the key for the node
                         Log.v("Children",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
                     }
-                    AlertDialog alertDialog = new AlertDialog.Builder(EmContactActivity.this).create();
+                    AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
                     alertDialog.setTitle("Duplicate Contact");
                     alertDialog.setMessage("A person with that same name was found, please enter a different contact.");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -159,7 +144,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
     }
 
     public void finishContact(){
-        startActivity(new Intent(EmContactActivity.this, MedTrackerActivity.class));
+        startActivity(new Intent(EmergencyContactActivity.this, MedTrackerActivity.class));
     }
 
     public void onClick(View v){

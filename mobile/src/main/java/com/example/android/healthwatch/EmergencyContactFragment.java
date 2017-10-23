@@ -1,6 +1,5 @@
 package com.example.android.healthwatch;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,7 +13,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -66,7 +64,7 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
 
     public void getFormData(){
         try {
-            EmContactActivity callingActivity = (EmContactActivity) getActivity();
+            EmergencyContactActivity callingActivity = (EmergencyContactActivity) getActivity();
             Intent myIntent = new Intent();
             Bundle contact = new Bundle();
             if(!validateForm()){

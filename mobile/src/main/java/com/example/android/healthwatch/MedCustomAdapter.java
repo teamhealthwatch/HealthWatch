@@ -102,7 +102,7 @@ public class MedCustomAdapter extends BaseAdapter implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        Log.v("CustomAdapter", "=====Row button clicked=====");
+        Log.v("EmergencyContactAdapter", "=====Row button clicked=====");
     }
 
     private class OnItemClickListener  implements View.OnClickListener {
