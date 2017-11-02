@@ -1,5 +1,7 @@
 package com.example.android.healthwatch;
 
+import android.widget.Button;
+
 /**
  * Created by faitholadele on 10/6/17.
  */
@@ -10,7 +12,20 @@ public class MedModel {
     String Date;
     String Name;
     String Dosage;
+    String AlarmButton;
 
+    public MedModel()
+    {
+
+    }
+
+    public String getAlarmButton() {
+        return AlarmButton;
+    }
+
+    public void setAlarmButton(String alarmButton) {
+        AlarmButton = alarmButton;
+    }
 
     public String getName() {
         return Name;
