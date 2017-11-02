@@ -136,7 +136,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }

@@ -8,9 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by faitholadele on 10/11/17.
@@ -39,6 +45,7 @@ public class MedCustomAdapter extends BaseAdapter implements View.OnClickListene
         public TextView _date;
         public TextView _dosage;
         public TextView _name;
+        public ToggleButton _alarmbttn;
 
     }
 
@@ -60,19 +67,37 @@ public class MedCustomAdapter extends BaseAdapter implements View.OnClickListene
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View vi = convertView;
         ViewHolder holder;
 
         if(convertView==null){
-            vi = inflater.inflate(R.layout.med_layout, null);
 
+            vi = inflater.inflate(R.layout.med_layout, null);
             holder = new ViewHolder();
             holder._name = (TextView) vi.findViewById(R.id.Name);
             holder._date = (TextView) vi.findViewById(R.id.Date);
             holder._time = (TextView) vi.findViewById(R.id.Time);
             holder._dosage = (TextView) vi.findViewById(R.id.Dosage);
+            holder._alarmbttn = (ToggleButton) vi.findViewById(R.id.alarmToggle);
+            holder._alarmbttn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ToggleButton tb = (ToggleButton)v;
+                    MedTrackerActivity mt = (MedTrackerActivity) activity;
+                    if(tb.isChecked())
+                    {
+                        mt.turnAlarmOnOrOff(position, true);
+                        Log.i(" TAG: ", "on");
+                    }
+                    else
+                    {
+                        mt.turnAlarmOnOrOff(position, false);
+                        Log.i(" TAG: ", "off");
+                    }
+                }
+            });
 
             vi.setTag( holder );
         }
@@ -83,6 +108,7 @@ public class MedCustomAdapter extends BaseAdapter implements View.OnClickListene
         if(data.size()<=0){
 
             holder._name.setText("No Data");
+            holder._alarmbttn.setVisibility(View.INVISIBLE);
 
         }
         else
@@ -94,6 +120,7 @@ public class MedCustomAdapter extends BaseAdapter implements View.OnClickListene
             holder._date.setText( tempValues.getDate() );
             holder._time.setText( tempValues.getTime() );
             holder._dosage.setText( tempValues.getDosage() );
+            holder._alarmbttn.setVisibility(View.VISIBLE);
 
             vi.setOnClickListener(new OnItemClickListener( position ));
         }
