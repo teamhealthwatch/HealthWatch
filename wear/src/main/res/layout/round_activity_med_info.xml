@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.android.healthwatch.MedView"
+    tools:context="com.example.android.healthwatch.MedInfoActivity"
     tools:deviceIds="wear_round"
     android:orientation="vertical"
     android:padding="15dp">
@@ -43,28 +43,33 @@
             android:layout_width="match_parent"
             android:layout_height="10dp" />
 
+
+
         <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@drawable/time"
+            android:layout_gravity="center"
             android:id="@+id/time_button"/>
 
-        <Space
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="10dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:id="@+id/alarm_recycler_view">
 
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="@drawable/date"
-            android:id="@+id/date_button"/>
+        </android.support.v7.widget.RecyclerView>
 
 
+        </LinearLayout>
 
 
-    </LinearLayout>
+
+
+
+
+
 
 
 

@@ -35,7 +35,7 @@
             android:name=".MedConditionActivity"
             android:label="@string/title_activity_med_condition" />
         <activity
-            android:name=".MedView"
+            android:name=".MedInfoActivity"
             android:label="@string/title_activity_med_view"></activity>
     </application>
 
