@@ -153,7 +153,6 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
