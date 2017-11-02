@@ -66,6 +66,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setAmbientEnabled();
+
         setContentView(R.layout.activity_main);
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
