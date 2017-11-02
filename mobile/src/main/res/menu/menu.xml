@@ -25,10 +25,17 @@
         android:id="@+id/history"
         android:orderInCategory="103"
         app:showAsAction="never"/>
+    
+    <item
+        android:title="Account"
+        android:id="@+id/account"
+        android:orderInCategory="103"
+        app:showAsAction="never"/>
 
     <item
         android:title="Sign Out"
         android:id="@+id/signout"
         android:orderInCategory="103"
         app:showAsAction="never"/>
+
 </menu>

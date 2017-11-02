@@ -41,8 +41,9 @@
         <activity
             android:name=".MedTrackerActivity"
             android:label="Medication Tracker" />
-        <activity android:name=".MedConditionActivity"
-            android:label="Emmergency Info"/>
+        <activity
+            android:name=".MedConditionActivity"
+            android:label="Emmergency Info" />
         <!-- <activity android:name=".CreateMedicationTimer" /> -->
         <activity
             android:name=".MedicationForm"
@@ -54,8 +55,10 @@
 
         <receiver android:name=".AlarmReceiver" />
 
-        <activity android:name=".EmmergencyInfo"
-            android:label="Emmergency Info" ></activity>
+        <activity
+            android:name=".EmmergencyInfo"
+            android:label="Emmergency Info" />
+        <activity android:name=".Account"></activity>
     </application>
 
 </manifest>
