@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.android.healthwatch.Medication;
+import com.example.android.healthwatch.Model.Medication;
 import com.example.android.healthwatch.R;
 
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ public class MedAdapter extends WearableRecyclerView.Adapter<MedAdapter.ViewHold
     private ArrayList<Medication> medList;
     private Context context;
     private MedClickListener medClickListener;
+
 
     public MedAdapter(ArrayList<Medication> medList, Context context, MedClickListener medClickListener) {
         this.medList = medList;
@@ -62,7 +63,9 @@ public class MedAdapter extends WearableRecyclerView.Adapter<MedAdapter.ViewHold
 
             titleView = itemView.findViewById(R.id.med_title_view);
             dosageView = itemView.findViewById(R.id.dosage_view);
-            timeView = itemView.findViewById(R.id.next_alarm_view);
+//            timeView = itemView.findViewById(R.id.next_alarm_view);
+
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -70,18 +73,20 @@ public class MedAdapter extends WearableRecyclerView.Adapter<MedAdapter.ViewHold
                     medClickListener.onMedClickListener(getLayoutPosition());
                 }
             });
+
         }
 
 
         public void setOnMedClickListener(MedClickListener newMedClickListener){
             medClickListener = newMedClickListener;
         }
+
+
     }
 
     public interface MedClickListener{
 
         void onMedClickListener(int pos);
-
     }
 
 }

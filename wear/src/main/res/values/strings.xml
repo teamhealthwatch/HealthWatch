@@ -8,4 +8,5 @@
     <string name="title_activity_menu">MenuActivity</string>
     <string name="title_activity_med_condition">MedConditionActivity</string>
     <string name="title_activity_med_view">MedView</string>
+    <string name="title_activity_emergency_contact">EmergencyContactActivity</string>
 </resources>

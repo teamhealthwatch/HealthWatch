@@ -1,34 +1,26 @@
 package com.example.android.healthwatch.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.wear.widget.drawer.WearableActionDrawerView;
-import android.support.wear.widget.drawer.WearableDrawerLayout;
 import android.support.wear.widget.drawer.WearableNavigationDrawerView;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.wearable.view.drawer.WearableActionDrawer;
-import android.support.wearable.view.drawer.WearableNavigationDrawer;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ActionMenuView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.Adapter.NavigationAdapter;
-import com.example.android.healthwatch.NavigationItem;
+import com.example.android.healthwatch.Model.NavigationItem;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,8 +29,6 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-import com.hitomi.cmlibrary.CircleMenu;
-import com.hitomi.cmlibrary.OnMenuSelectedListener;
 
 import java.util.ArrayList;
 
@@ -82,9 +72,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-            // Top navigation drawer
-                // TODO:https://github.com/boswelja/WearAlarm/search?utf8=%E2%9C%93&q=navigationAdapter&type=
 
+                // Top navigation drawer
                 intialDrawer();
 
             }
@@ -292,18 +281,23 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     public void onItemSelected(int pos) {
         Log.i("Drawer", "OnItemSelected!");
 
+        Intent newIntent;
+
         switch (pos) {
             case 0:
                 Toast.makeText(MainActivity.this, "Main page", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 Toast.makeText(MainActivity.this, "Medication Tracker", Toast.LENGTH_SHORT).show();
-                Intent newIntent = new Intent(MainActivity.this, MedConditionActivity.class);
+                newIntent = new Intent(MainActivity.this, MedConditionActivity.class);
                 startActivity(newIntent);
                 finish();
                 break;
             case 2:
                 Toast.makeText(MainActivity.this, "Emergency Contact", Toast.LENGTH_SHORT).show();
+                newIntent = new Intent(MainActivity.this, EmergencyContactActivity.class);
+                startActivity(newIntent);
+                finish();
                 break;
             case 3:
                 Toast.makeText(MainActivity.this, "Personal Info", Toast.LENGTH_SHORT).show();

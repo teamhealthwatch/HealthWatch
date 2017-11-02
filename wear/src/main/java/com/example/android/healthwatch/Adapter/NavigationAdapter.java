@@ -2,10 +2,9 @@ package com.example.android.healthwatch.Adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v7.view.menu.ActionMenuItem;
 import android.support.wear.widget.drawer.WearableNavigationDrawerView;
 
-import com.example.android.healthwatch.NavigationItem;
+import com.example.android.healthwatch.Model.NavigationItem;
 
 import java.util.ArrayList;
 

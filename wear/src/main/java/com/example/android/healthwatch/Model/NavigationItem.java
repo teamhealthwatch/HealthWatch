@@ -1,4 +1,4 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Model;
 
 /**
  * Created by Yan Tan on 10/21/2017.

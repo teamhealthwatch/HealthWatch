@@ -8,7 +8,8 @@
         android:layout_height="20dp"
         android:background="@drawable/edit_icon"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:id="@+id/edit_alarm_button" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -35,6 +36,7 @@
         android:layout_height="20dp"
         android:background="@drawable/delete_icon"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:id="@+id/delete_alarm_button" />
 
 </RelativeLayout>

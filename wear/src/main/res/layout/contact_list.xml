@@ -6,20 +6,21 @@
     android:padding="15dp">
 
 
-
     <TextView
-        android:id="@+id/med_title_view"
+        android:id="@+id/name_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Medication Title"
         android:textAppearance="@style/TextAppearance.WearDiag.Message" />
 
     <TextView
-        android:id="@+id/dosage_view"
+        android:id="@+id/num_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dosage" />
+        android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/primary_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

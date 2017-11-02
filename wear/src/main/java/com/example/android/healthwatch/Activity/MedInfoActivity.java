@@ -6,13 +6,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.android.healthwatch.Adapter.AlarmAdapter;
 import com.example.android.healthwatch.DatePickerFragment;
-import com.example.android.healthwatch.Medication;
+import com.example.android.healthwatch.Model.Medication;
 import com.example.android.healthwatch.R;
 import com.example.android.healthwatch.TimePickerFragment;
 
@@ -38,6 +39,10 @@ public class MedInfoActivity extends WearableActivity {
 
     private android.app.FragmentManager fm;
 
+    private AlarmAdapter.AlarmClickListener alarmClickListener;
+
+    private int currentAlarmIndex;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +64,8 @@ public class MedInfoActivity extends WearableActivity {
 
                 medNameView.setText(medication.getMedName());
                 medDosageView.setText(medication.getDosage());
+
+                currentAlarmIndex = -1;
 
                 timeButton = findViewById(R.id.time_button);
 //                dateButton = findViewById(R.id.date_button);
@@ -82,11 +89,32 @@ public class MedInfoActivity extends WearableActivity {
 
                 // Create adapter for alarm list
 
-                alarmAdapter = new AlarmAdapter(alarmList, MedInfoActivity.this);
+                alarmClickListener = new AlarmAdapter.AlarmClickListener() {
+                    @Override
+                    public void onEditClickListener(View v, int pos) {
+                        Log.d("TAG", "editButton at position " + pos);
+                        currentAlarmIndex = pos;
+                        showTimePicker();
+                    }
+
+                    @Override
+                    public void onDeleteClickListener(View v, int pos) {
+                        Log.d("TAG", "deleteButton at position " + pos);
+
+                        alarmList.remove(pos);
+                        alarmAdapter.notifyItemRemoved(pos);
+                        alarmAdapter.notifyItemRangeChanged(pos, alarmList.size());
+                    }
+                };
+
+                alarmAdapter = new AlarmAdapter(alarmList, MedInfoActivity.this, alarmClickListener);
                 alarmRecyclerView.setAdapter(alarmAdapter);
                 alarmRecyclerView.setFocusable(true);
 
-                // TODO: Add listener
+                // Add listener to alarm
+
+
+
 
 
 
@@ -113,7 +141,15 @@ public class MedInfoActivity extends WearableActivity {
     public void addAlarm(String alarm){
 
         tempTime += "\n" + alarm;
-        alarmList.add(tempTime);
+
+        if (currentAlarmIndex < 0) {
+            alarmList.add(tempTime);
+
+        } else {
+            alarmList.set(currentAlarmIndex, tempTime);
+            currentAlarmIndex = -1;
+        }
+
         alarmAdapter.notifyDataSetChanged();
     }
 

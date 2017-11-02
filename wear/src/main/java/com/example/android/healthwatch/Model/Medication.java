@@ -1,9 +1,7 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.Serializable;
 
 /**
  * Created by Yan Tan on 9/30/2017.

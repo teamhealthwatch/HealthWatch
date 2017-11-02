@@ -36,7 +36,10 @@
             android:label="@string/title_activity_med_condition" />
         <activity
             android:name=".Activity.MedInfoActivity"
-            android:label="@string/title_activity_med_view"></activity>
+            android:label="@string/title_activity_med_view" />
+        <activity
+            android:name=".Activity.EmergencyContactActivity"
+            android:label="@string/title_activity_emergency_contact"></activity>
     </application>
 
 </manifest>
