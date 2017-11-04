@@ -25,8 +25,8 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
 
     FloatingActionButton floatingButton;
-    MedCustomAdapter adapter;
-    public ArrayList<MedModel> CustomListViewValuesArr = new ArrayList<MedModel>();
+    private static MedCustomAdapter adapter;
+    ArrayList<MedModel> CustomListViewValuesArr;
     ListView listView;
     String allTime;
     String allDate;
@@ -50,11 +50,11 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         return inst;
     }
 
-    @Override
+ /*   @Override
     public void onStart() {
         super.onStart();
         inst = this;
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +65,37 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         floatingButton = (FloatingActionButton)findViewById(R.id.fabButton);
         floatingButton.setOnClickListener(this);
 
-        displayMeds();
-        Resources res =getResources();
-        adapter=new MedCustomAdapter( this, CustomListViewValuesArr,res );
-        listView.setAdapter( adapter );
-
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
 
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+        CustomListViewValuesArr = new ArrayList<MedModel>();
+        CustomListViewValuesArr.add(new MedModel("test", "test", "test", "test"));
+        adapter=new MedCustomAdapter(CustomListViewValuesArr, getApplicationContext());
+        listView.setAdapter( adapter );
+    }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                if(extras != null){
+                    MedName = extras.getString("NAME");
+                    allTime = extras.getString("TIME");
+                    allDate = extras.getString("DATE");
+                    Dosage = extras.getString("DOSAGE");
+                    hour = extras.getString("HOUR");
+                    minute = extras.getString("MIN");
+                    Log.i("name", MedName + allTime + allDate + Dosage + hour + minute);
+                    CustomListViewValuesArr.add(new MedModel(allTime, allDate, MedName, Dosage));
+
+                }
+                else{
+                    Toast.makeText(MedTrackerActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
     public void conditionClick(View v)
     {
@@ -87,39 +108,9 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         if(v == floatingButton)
         {
             Intent intent = new Intent(this, MedicationForm.class);
-            startActivityForResult(intent, 999);
-            finish();
+            startActivityForResult(intent, 1);
         }
 
-    }
-
-    public void displayMeds()
-    {
-
-        Intent intent = getIntent();
-          if(intent.hasExtra("NAME"))
-          {
-              MedName = getIntent().getExtras().getString("NAME");
-              allTime = getIntent().getExtras().getString("TIME");
-              allDate = getIntent().getExtras().getString("DATE");
-              Dosage = getIntent().getExtras().getString("DOSAGE");
-              hour = getIntent().getExtras().getString("HOUR");
-              minute = getIntent().getExtras().getString("MIN");
-              Log.i("Name", MedName + allTime + allDate + Dosage + hour + minute);
-              setListData();
-          }
-
-    }
-
-    private void setListData() {
-
-        final MedModel sched = new MedModel();
-        sched.setName(MedName);
-        sched.setDate(allDate);
-        sched.setTime(allTime);
-        sched.setDosage(Dosage);
-
-        CustomListViewValuesArr.add( sched );
     }
 
     public void turnAlarmOnOrOff(int id, boolean ck) {
@@ -154,9 +145,9 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         MedModel tempValues = ( MedModel ) CustomListViewValuesArr.get(mPosition);
 
         Toast.makeText(this, " "+tempValues.getName()
-                        +"Time:"+tempValues.getTime()
-                        +"Date:"+tempValues.getDate()
-                        +"Dosage:"+tempValues.getDosage(),
+                        +"time:"+tempValues.getTime()
+                        +"date:"+tempValues.getDate()
+                        +"dosage:"+tempValues.getDosage(),
                 Toast.LENGTH_SHORT).show();
         Log.i("TAG NAME: " , tempValues.getName());
 

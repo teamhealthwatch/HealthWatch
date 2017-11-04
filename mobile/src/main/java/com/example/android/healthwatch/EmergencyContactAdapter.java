@@ -33,13 +33,10 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
         Switch pContact;
     }
 
-
-
     public EmergencyContactAdapter(ArrayList<Contact> data, Context context) {
-        super(context, R.layout.contact_item, data);
+        super(context, R.layout.med_item, data);
         this.dataSet = data;
         this.mContext=context;
-
     }
 
     @Override

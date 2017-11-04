@@ -119,7 +119,7 @@ public class MedicationForm extends AppCompatActivity {
                 }
 
                 allTime = hour + " : " + m + " " +formart;
-//                Log.i("Time", allTime);
+//                Log.i("time", allTime);
                 actualTime.setText(allTime);
                 hod = hourOfDay;
                 mint = minute;
@@ -156,7 +156,7 @@ public class MedicationForm extends AppCompatActivity {
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
                 String val = Integer.toString(newVal);
-                Log.i("Dosage: ", val);
+                Log.i("dosage: ", val);
                 Dsg = val;
                 DosageText.setText(val);
             }
@@ -165,17 +165,22 @@ public class MedicationForm extends AppCompatActivity {
 
     public  void getInfoForIntent()
     {
+
+
         MedName = MedicationName.getText().toString();
         Intent intent = new Intent(this, MedTrackerActivity.class);
-        intent.putExtra("NAME", MedName);
-        intent.putExtra("TIME", allTime);
-        intent.putExtra("DATE", allDate);
-        intent.putExtra("DOSAGE", Dsg);
-        intent.putExtra("HOUR", Integer.toString(hod));
-        intent.putExtra("MIN", Integer.toString(mint));
+        Bundle bundle = new Bundle();
+        bundle.putString("NAME", MedName);
+        bundle.putString("TIME", allTime);
+        bundle.putString("DATE", allDate);
+        bundle.putString("DOSAGE", Dsg);
+        bundle.putString("HOUR", Integer.toString(hod));
+        bundle.putString("MIN", Integer.toString(mint));
+        intent.putExtras(bundle);
 
-        Log.i("Name", MedName + allTime + allDate + Dsg);
-        startActivity(intent);
+        Log.i("name", MedName + allTime + allDate + Dsg);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
 
