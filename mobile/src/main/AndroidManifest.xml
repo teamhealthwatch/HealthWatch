@@ -36,17 +36,30 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".RegisterActivity"
-            android:label="Sign Up"/>
+            android:label="Sign Up" />
         <activity android:name=".HomePageActivity" />
         <activity android:name=".EmergencyContactActivity" />
-        <activity android:name=".MedTrackerActivity" />
-        <activity android:name=".MedConditionActivity"/>
-        <!--<activity android:name=".CreateMedicationTimer" />-->
-        <activity android:name=".MedicationForm"></activity>
+        <activity
+            android:name=".MedTrackerActivity"
+            android:label="Medication Tracker" />
+        <activity
+            android:name=".MedConditionActivity"
+            android:label="Emmergency Info" />
+        <!-- <activity android:name=".CreateMedicationTimer" /> -->
+        <activity
+            android:name=".MedicationForm"
+            android:label="Enter Medication" />
+
         <service
             android:name=".AlarmService"
             android:enabled="true" />
+
         <receiver android:name=".AlarmReceiver" />
+
+        <activity
+            android:name=".EmmergencyInfo"
+            android:label="Emmergency Info" />
+        <activity android:name=".Account"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 package com.example.android.healthwatch;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.design.widget.FloatingActionButton;
@@ -8,11 +10,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,29 +25,77 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
 
     FloatingActionButton floatingButton;
-    MedCustomAdapter adapter;
-    public ArrayList<MedModel> CustomListViewValuesArr = new ArrayList<MedModel>();
+    private static MedCustomAdapter adapter;
+    ArrayList<MedModel> CustomListViewValuesArr;
     ListView listView;
     String allTime;
     String allDate;
     String MedName;
     String Dosage;
+    String hour;
+    String minute;
+    Calendar calendar;
 
+    Intent myIntent;
+
+    PendingIntent pendingIntent;
+    AlarmManager alarm_manager;
+
+    ToggleButton toggleButton;
+    private static MedTrackerActivity inst;
+
+
+
+    public static MedTrackerActivity instance() {
+        return inst;
+    }
+
+ /*   @Override
+    public void onStart() {
+        super.onStart();
+        inst = this;
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_tracker);
+
         listView = (ListView)findViewById(R.id.listview);
         floatingButton = (FloatingActionButton)findViewById(R.id.fabButton);
         floatingButton.setOnClickListener(this);
 
-        displayMeds();
-        Resources res =getResources();
-        adapter=new MedCustomAdapter( this, CustomListViewValuesArr,res );
+        myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
+
+        alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        CustomListViewValuesArr = new ArrayList<MedModel>();
+        CustomListViewValuesArr.add(new MedModel("test", "test", "test", "test"));
+        adapter=new MedCustomAdapter(CustomListViewValuesArr, getApplicationContext());
         listView.setAdapter( adapter );
+    }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                if(extras != null){
+                    MedName = extras.getString("NAME");
+                    allTime = extras.getString("TIME");
+                    allDate = extras.getString("DATE");
+                    Dosage = extras.getString("DOSAGE");
+                    hour = extras.getString("HOUR");
+                    minute = extras.getString("MIN");
+                    Log.i("name", MedName + allTime + allDate + Dosage + hour + minute);
+                    CustomListViewValuesArr.add(new MedModel(allTime, allDate, MedName, Dosage));
 
+                }
+                else{
+                    Toast.makeText(MedTrackerActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
     public void conditionClick(View v)
     {
@@ -55,38 +108,36 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         if(v == floatingButton)
         {
             Intent intent = new Intent(this, MedicationForm.class);
-            startActivityForResult(intent, 999);
-            finish();
+            startActivityForResult(intent, 1);
         }
 
     }
 
-    public void displayMeds()
-    {
+    public void turnAlarmOnOrOff(int id, boolean ck) {
 
-        Intent intent = getIntent();
-          if(intent.hasExtra("NAME"))
-          {
-              MedName = getIntent().getExtras().getString("NAME");
-              allTime = getIntent().getExtras().getString("TIME");
-              allDate = getIntent().getExtras().getString("DATE");
-              Dosage = getIntent().getExtras().getString("DOSAGE");;
-//              Log.i("Name", MedName + allTime + allDate + Dosage);
-              setListData();
-          }
 
-    }
+        String n = Integer.toString(id);
+            if (ck )
+            {
+                int hod = Integer.parseInt(hour);
+                int mint = Integer.parseInt(minute);
+                calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, hod);
+                calendar.set(Calendar.MINUTE, mint);
+                Log.d("MyActivity", "Alarm ON " + n);
+                myIntent.putExtra("extra", "alarm on");
+                pendingIntent = PendingIntent.getBroadcast(MedTrackerActivity.this, id, myIntent, 0);
+                alarm_manager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
 
-    private void setListData() {
-
-        final MedModel sched = new MedModel();
-        sched.setName(MedName);
-        sched.setDate(allDate);
-        sched.setTime(allTime);
-        sched.setDosage(Dosage);
-
-        CustomListViewValuesArr.add( sched );
-
+            }
+            else
+            {
+//                pendingIntent.cancel();
+                alarm_manager.cancel(pendingIntent);
+                Log.d("MyActivity", "Alarm OFF " + n);
+                myIntent.putExtra("extra", "alarm off");
+                sendBroadcast(myIntent);
+            }
     }
 
     public void onItemClick(int mPosition)
@@ -94,11 +145,12 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         MedModel tempValues = ( MedModel ) CustomListViewValuesArr.get(mPosition);
 
         Toast.makeText(this, " "+tempValues.getName()
-                        +"Time:"+tempValues.getTime()
-                        +"Date:"+tempValues.getDate()
-                        +"Dosage:"+tempValues.getDosage(),
+                        +"time:"+tempValues.getTime()
+                        +"date:"+tempValues.getDate()
+                        +"dosage:"+tempValues.getDosage(),
                 Toast.LENGTH_SHORT).show();
         Log.i("TAG NAME: " , tempValues.getName());
 
     }
+
 }

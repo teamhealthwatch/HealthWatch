@@ -28,11 +28,14 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
     ListView listView;
     ArrayList<Contact> contacts;
+    Bundle contact;
     private static EmergencyContactAdapter adapter;
     int index;
     String fullName;
     String phoneNumber;
     boolean pc;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
