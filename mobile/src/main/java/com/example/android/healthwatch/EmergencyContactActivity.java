@@ -66,12 +66,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
-
-    private void displayContacts(Bundle contact){
-
-
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1){
@@ -83,9 +77,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                     phoneNumber = extras.getString("phoneNumber");
                     pc = extras.getBoolean("pc");
                     storeContact();
-                    Contact c = new Contact(fullName, phoneNumber, pc);
-                    contacts.add(c);
-                    //displayContacts(extras);
+
                 }
                 else{
                     Toast.makeText(EmergencyContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
@@ -134,6 +126,8 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                         }
 
                     });
+                    Contact c = new Contact(fullName, phoneNumber, pc);
+                    contacts.add(c);
                 }
             }
 

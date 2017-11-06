@@ -34,7 +34,7 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
     }
 
     public EmergencyContactAdapter(ArrayList<Contact> data, Context context) {
-        super(context, R.layout.med_item, data);
+        super(context, R.layout.contact_item, data);
         this.dataSet = data;
         this.mContext=context;
     }
@@ -42,7 +42,7 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        final Contact contact = getItem(position);
+        Contact contact = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolderItem viewHolder; // view lookup cache stored in tag
 

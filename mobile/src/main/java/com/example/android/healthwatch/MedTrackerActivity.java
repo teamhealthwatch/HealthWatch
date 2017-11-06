@@ -3,29 +3,23 @@ package com.example.android.healthwatch;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MedTrackerActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     FloatingActionButton floatingButton;
-    private static MedCustomAdapter adapter;
+    private static MedTrackerAdapter adapter;
     ArrayList<MedModel> CustomListViewValuesArr;
     ListView listView;
     String allTime;
@@ -69,9 +63,9 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        CustomListViewValuesArr = new ArrayList<MedModel>();
+        CustomListViewValuesArr = new ArrayList<>();
         CustomListViewValuesArr.add(new MedModel("test", "test", "test", "test"));
-        adapter=new MedCustomAdapter(CustomListViewValuesArr, getApplicationContext());
+        adapter=new MedTrackerAdapter(CustomListViewValuesArr, getApplicationContext());
         listView.setAdapter( adapter );
     }
 
@@ -87,7 +81,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                     Dosage = extras.getString("DOSAGE");
                     hour = extras.getString("HOUR");
                     minute = extras.getString("MIN");
-                    Log.i("name", MedName + allTime + allDate + Dosage + hour + minute);
+                    Log.d("name", MedName + allTime + allDate + Dosage + hour + minute);
                     CustomListViewValuesArr.add(new MedModel(allTime, allDate, MedName, Dosage));
 
                 }
@@ -107,7 +101,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
         if(v == floatingButton)
         {
-            Intent intent = new Intent(this, MedicationForm.class);
+            Intent intent = new Intent(this, MedTrackerForm.class);
             startActivityForResult(intent, 1);
         }
 

@@ -23,15 +23,15 @@ import static java.security.AccessController.getContext;
  * Created by faitholadele on 10/11/17.
  */
 
-public class MedCustomAdapter extends ArrayAdapter<MedModel> implements View.OnClickListener {
+public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.OnClickListener {
 
-    MedModel tempValues=null;
+    MedModel tempValues;
     private ArrayList<MedModel> dataSet;
     Context mContext;
 
 
-    public MedCustomAdapter(ArrayList<MedModel> data, Context context) {
-        super(context, R.layout.contact_item, data);
+    public MedTrackerAdapter(ArrayList<MedModel> data, Context context) {
+        super(context, R.layout.med_item, data);
         this.dataSet = data;
         this.mContext=context;
     }
@@ -48,13 +48,15 @@ public class MedCustomAdapter extends ArrayAdapter<MedModel> implements View.OnC
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
+        MedModel dataModel = getItem(position);
         ViewHolder holder;
 
         if(convertView==null){
 
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.contact_item, parent, false);
             holder = new ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.med_item, parent, false);
+
             holder._name = (TextView) convertView.findViewById(R.id.Name);
             holder._date = (TextView) convertView.findViewById(R.id.Date);
             holder._time = (TextView) convertView.findViewById(R.id.Time);
@@ -92,13 +94,12 @@ public class MedCustomAdapter extends ArrayAdapter<MedModel> implements View.OnC
         }
         else
         {
-            tempValues=null;
-            tempValues = ( MedModel ) dataSet.get( position );
 
-            holder._name.setText( tempValues.getName() );
-            holder._date.setText( tempValues.getDate() );
-            holder._time.setText( tempValues.getTime() );
-            holder._dosage.setText( tempValues.getDosage() );
+
+            holder._name.setText( dataModel.getName() );
+            holder._date.setText( dataModel.getDate() );
+            holder._time.setText( dataModel.getTime() );
+            holder._dosage.setText( dataModel.getDosage() );
             holder._alarmbttn.setVisibility(View.VISIBLE);
 
             convertView.setOnClickListener(new OnItemClickListener( position ));

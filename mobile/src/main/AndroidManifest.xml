@@ -47,7 +47,7 @@
             android:label="Emmergency Info" />
         <!-- <activity android:name=".CreateMedicationTimer" /> -->
         <activity
-            android:name=".MedicationForm"
+            android:name=".MedTrackerForm"
             android:label="Enter Medication" />
 
         <service
