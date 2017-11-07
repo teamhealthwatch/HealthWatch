@@ -1,16 +1,17 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class EmmergencyInfo extends AppCompatActivity {
+import com.example.android.healthwatch.Activities.MedConditionActivity;
+import com.example.android.healthwatch.R;
+
+public class EmergencyInfo extends AppCompatActivity {
 
     EditText Med_Cond;
     EditText Allergies;

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.android.healthwatch.MainActivity"
+    tools:context="com.example.android.healthwatch.Activities.MainActivity"
     tools:deviceIds="wear_round"
     android:orientation="vertical"
     android:background="#e1e1e1">

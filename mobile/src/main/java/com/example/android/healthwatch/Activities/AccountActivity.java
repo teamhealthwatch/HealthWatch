@@ -1,9 +1,11 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class Account extends AppCompatActivity {
+import com.example.android.healthwatch.R;
+
+public class AccountActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

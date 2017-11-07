@@ -14,6 +14,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.intent.action.CALL_PRIVILEGED" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:theme="@style/AppThemeNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,22 +32,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".Activities.RegisterActivity"
             android:label="Sign Up" />
-        <activity android:name=".HomePageActivity" />
-        <activity android:name=".EmContactActivity" />
+        <activity android:name=".Activities.HomePageActivity" />
+        <activity android:name=".Activities.EmContactActivity" />
         <activity
-            android:name=".MedTrackerActivity"
+            android:name=".Activities.MedTrackerActivity"
             android:label="Medication Tracker" />
         <activity
-            android:name=".MedConditionActivity"
-            android:label="Emmergency Info" />
+            android:name=".Activities.MedConditionActivity"
+            android:label="Emergency Info" />
         <!-- <activity android:name=".CreateMedicationTimer" /> -->
         <activity
-            android:name=".MedicationForm"
+            android:name=".Activities.MedicationForm"
             android:label="Enter Medication" />
 
         <service
@@ -56,9 +57,9 @@
         <receiver android:name=".AlarmReceiver" />
 
         <activity
-            android:name=".EmmergencyInfo"
-            android:label="Emmergency Info" />
-        <activity android:name=".Account"></activity>
+            android:name=".Activities.EmergencyInfo"
+            android:label="Emergency Info" />
+        <activity android:name=".Activities.AccountActivity"></activity>
     </application>
 
 </manifest>
