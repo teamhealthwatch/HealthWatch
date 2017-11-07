@@ -44,7 +44,6 @@ public class HomePageActivity extends AppCompatActivity{
     private MessageApi.MessageListener messageListener;
     private TextView heartRate;
 
-    private String s;
 
 
     @Override
@@ -55,14 +54,9 @@ public class HomePageActivity extends AppCompatActivity{
         textView = (TextView) findViewById(R.id.textViewUsername);
         heartRate = (TextView) findViewById(R.id.heartRate);
 
-//        btnSignOut = (Button) findViewById(R.id.btn_signout);
-//        btnSignOut.setOnClickListener(this);
-
         Intent intent = getIntent();
         mAuth = FirebaseAuth.getInstance();
         String payload = null;
-
-        textView.setText("Welcome User " + intent.getStringExtra(LoginActivity.KEY_LOGIN));
 
         // Create NodeListener that enables buttons when a node is connected and disables buttons when a node is disconnected
         nodeListener = new NodeApi.NodeListener() {
@@ -133,7 +127,10 @@ public class HomePageActivity extends AppCompatActivity{
                     //Toast.makeText(getApplicationContext(), getString(R.string.wearable_api_unavailable), Toast.LENGTH_LONG).show();
             }
         }).addApi(Wearable.API).build();
-        textView.setText("Welcome " + intent.getStringExtra(LoginActivity.KEY_LOGIN));
+
+        Bundle extras = intent.getExtras();
+        String display = "Welcome User " + extras.getString("KEY_LOGIN");
+        textView.setText(display);
 
 
     }
@@ -156,7 +153,7 @@ public class HomePageActivity extends AppCompatActivity{
                 startActivity(intent);
                 return true;
             case R.id.contact:
-                Toast.makeText(this, "Emmergency Contact", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Emergency Contact", Toast.LENGTH_SHORT).show();
                 Intent intent2 = new Intent(this, EmergencyContactActivity.class);
                 startActivity(intent2);
                 return true;

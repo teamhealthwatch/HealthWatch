@@ -26,7 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
 
-    public static final String KEY_LOGIN = "login";
+    public static final String KEY_LOGIN = "";
+    public static final String NOT_REGISTERED = "";
 
     private EditText editTextEmail;
     private EditText editTextPassword;
@@ -153,6 +154,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String username = usernameFromEmail(user.getEmail());
         Intent intent = new Intent(this, EmergencyContactActivity.class);
         intent.putExtra(KEY_LOGIN, username);
+        intent.putExtra(NOT_REGISTERED, "TRUE");
         startActivity(intent);
         finish();
     }
@@ -234,10 +236,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void main_activity(View view){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivityForResult(intent, 999);
-        finish();
-    }
+
 
 }

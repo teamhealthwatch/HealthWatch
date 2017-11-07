@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             register(v);
         }
         else if(v == skip){
-            Intent intent = new Intent(this, EmergencyContactActivity.class);
-            intent.putExtra(KEY_LOGIN, "testUser");
+            Intent intent = new Intent(this, MedTrackerActivity.class);
+            intent.putExtra("login", "testUser");
             startActivity(intent);
         }
     }

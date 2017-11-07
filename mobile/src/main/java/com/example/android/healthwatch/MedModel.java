@@ -23,6 +23,12 @@ public class MedModel {
         this.dosage = dosage;
     }
 
+    public MedModel(String time, String date, String dosage){
+        this.time = time;
+        this.date = date;
+        this.dosage = dosage;
+    }
+
 
     public String getName() {
         return name;

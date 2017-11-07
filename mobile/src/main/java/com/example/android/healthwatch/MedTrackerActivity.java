@@ -2,8 +2,10 @@ package com.example.android.healthwatch;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,12 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,11 +32,12 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     ListView listView;
     String allTime;
     String allDate;
-    String MedName;
-    String Dosage;
+    String medName;
+    String dosage;
     String hour;
     String minute;
     Calendar calendar;
+    String login;
 
     Intent myIntent;
 
@@ -59,14 +68,20 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         floatingButton = (FloatingActionButton)findViewById(R.id.fabButton);
         floatingButton.setOnClickListener(this);
 
+        Intent intent = getIntent();
+        login = intent.getStringExtra("login");
+        if(!intent.hasExtra("Not_Registered")){
+            getMedications();
+        }
+
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
 
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         CustomListViewValuesArr = new ArrayList<>();
-        CustomListViewValuesArr.add(new MedModel("test", "test", "test", "test"));
-        adapter=new MedTrackerAdapter(CustomListViewValuesArr, getApplicationContext());
-        listView.setAdapter( adapter );
+        CustomListViewValuesArr.add(new MedModel(login, "test", "test", "test"));
+
+        displayMedications();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -75,14 +90,16 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
             if(resultCode == RESULT_OK){
                 Bundle extras = data.getExtras();
                 if(extras != null){
-                    MedName = extras.getString("NAME");
+                    medName = extras.getString("NAME");
                     allTime = extras.getString("TIME");
                     allDate = extras.getString("DATE");
-                    Dosage = extras.getString("DOSAGE");
+                    dosage = extras.getString("DOSAGE");
                     hour = extras.getString("HOUR");
                     minute = extras.getString("MIN");
-                    Log.d("name", MedName + allTime + allDate + Dosage + hour + minute);
-                    CustomListViewValuesArr.add(new MedModel(allTime, allDate, MedName, Dosage));
+                    storeMedication();
+                    Log.d("name", medName + allTime + allDate + dosage + hour + minute);
+                    CustomListViewValuesArr.add(new MedModel(allTime, allDate, medName, dosage));
+                    displayMedications();
 
                 }
                 else{
@@ -91,6 +108,67 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
             }
         }
     }
+
+    public void displayMedications(){
+        adapter=new MedTrackerAdapter(CustomListViewValuesArr, getApplicationContext());
+        listView.setAdapter( adapter );
+    }
+
+    public void storeMedication(){
+        final String finalName = medName;
+        final String finalTime = allTime;
+        final String finalDate = allDate;
+        final String finalDosage = dosage;
+
+
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+
+        myRef.child("contacts").child(login).child(medName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                        Log.v("Children",""+ childDataSnapshot.getKey()); //displays the key for the node
+                        //Log.v("Children",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
+                    }
+                    /*AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
+                    alertDialog.setTitle("Duplicate Contact");
+                    alertDialog.setMessage("A person with that same name was found, please enter a different contact.");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();*/
+                } else {
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference usersRef = database.getReference("medication");
+                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage), new DatabaseReference.CompletionListener(){
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                System.out.println("Data could not be saved " + databaseError.getMessage());
+                            } else {
+                                System.out.println("Data saved successfully.");
+                            }
+                        }
+
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getMedications(){
+
+    }
+
     public void conditionClick(View v)
     {
         startActivity(new Intent(MedTrackerActivity.this, MedConditionActivity.class));
