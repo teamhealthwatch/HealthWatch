@@ -306,4 +306,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 break;
         }
     }
+
+
 }
