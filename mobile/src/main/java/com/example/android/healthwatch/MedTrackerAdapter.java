@@ -95,7 +95,6 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
         else
         {
 
-
             holder._name.setText( dataModel.getName() );
             holder._date.setText( dataModel.getDate() );
             holder._time.setText( dataModel.getTime() );

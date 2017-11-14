@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class EmmergencyInfo extends AppCompatActivity {
+public class EmergencyInfo extends AppCompatActivity {
 
     EditText Med_Cond;
     EditText Allergies;

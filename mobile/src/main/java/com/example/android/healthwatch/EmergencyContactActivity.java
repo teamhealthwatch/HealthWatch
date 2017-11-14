@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,7 +44,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     String phoneNumber;
     boolean pc;
 
-    boolean firstTime = false;
+    boolean firstTime;
 
 
 
@@ -51,20 +52,28 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergency_contact);
-
-        mAuth = FirebaseAuth.getInstance();
-        fab = findViewById(R.id.float_button);
-        fab.setOnClickListener(this);
-        listView = findViewById(R.id.list);
-        contacts = new ArrayList<Contact>();
-        index = 0;
-
-        getSupportActionBar().setTitle("Emergency Contacts");
+        //Get Username and check if this page is being called through registration or through home page
+        firstTime = false;
         Intent intent = getIntent();
         login = intent.getStringExtra("login");
         if(!intent.hasExtra("Not_Registered")){
             getContacts();
         }
+        else{
+            firstTime = true;
+        }
+        //Initialize Firebase Authenticator
+        mAuth = FirebaseAuth.getInstance();
+        //Initialize Floating Button
+        fab = findViewById(R.id.float_button);
+        fab.setOnClickListener(this);
+        //Setup listview
+        listView = findViewById(R.id.list);
+
+        index = 0;
+
+        getSupportActionBar().setTitle("Emergency Contacts");
+
     }
 
 
@@ -188,9 +197,17 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater mi = getMenuInflater();
-        mi.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        if(firstTime){
+            MenuInflater mi = getMenuInflater();
+            mi.inflate(R.menu.menu_next, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+        else{
+            MenuInflater mi = getMenuInflater();
+            mi.inflate(R.menu.menu, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+
     }
 
     @Override
@@ -199,21 +216,25 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
             case R.id.med_tracker:
                 Toast.makeText(this, "Medication Tracker", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MedTrackerActivity.class);
+                intent.putExtra("login", login);
                 startActivity(intent);
                 return true;
             case R.id.contact:
                 Toast.makeText(this, "Emergency Contact", Toast.LENGTH_SHORT).show();
                 Intent intent2 = new Intent(this, EmergencyContactActivity.class);
+                intent2.putExtra("login", login);
                 startActivity(intent2);
                 return true;
             case R.id.info:
                 Toast.makeText(this, "Personal Info", Toast.LENGTH_SHORT).show();
                 Intent intent3 = new Intent(this, MedConditionActivity.class);
+                intent3.putExtra("login", login);
                 startActivity(intent3);
                 return true;
             case R.id.history:
                 Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
                 Intent intent4 = new Intent(this, MainActivity.class);
+                intent4.putExtra("login", login);
                 startActivity(intent4);
                 return true;
             case R.id.signout:
@@ -223,13 +244,18 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                 startActivity(intent1);
                 finish();
                 return true;
+            case R.id.action_next:
+                finishContact();
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     public void finishContact(){
-        startActivity(new Intent(EmergencyContactActivity.this, MedTrackerActivity.class));
+        Intent intent = new Intent(this, MedTrackerActivity.class);
+        intent.putExtra("login", login);
+        intent.putExtra("Not_Registered", "TRUE");
+        startActivity(intent);
     }
 
     public void onClick(View v){

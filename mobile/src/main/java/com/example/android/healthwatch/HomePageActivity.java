@@ -43,6 +43,7 @@ public class HomePageActivity extends AppCompatActivity{
     private String remoteNodeId;
     private MessageApi.MessageListener messageListener;
     private TextView heartRate;
+    private String login;
 
 
 
@@ -129,7 +130,8 @@ public class HomePageActivity extends AppCompatActivity{
         }).addApi(Wearable.API).build();
 
         Bundle extras = intent.getExtras();
-        String display = "Welcome User " + extras.getString("KEY_LOGIN");
+        login = extras.getString("login");
+        String display = "Welcome User " + login;
         textView.setText(display);
 
 
@@ -150,21 +152,25 @@ public class HomePageActivity extends AppCompatActivity{
             case R.id.med_tracker:
                 Toast.makeText(this, "Medication Tracker", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MedTrackerActivity.class);
+                intent.putExtra("login", login);
                 startActivity(intent);
                 return true;
             case R.id.contact:
                 Toast.makeText(this, "Emergency Contact", Toast.LENGTH_SHORT).show();
                 Intent intent2 = new Intent(this, EmergencyContactActivity.class);
+                intent2.putExtra("login", login);
                 startActivity(intent2);
                 return true;
             case R.id.info:
                 Toast.makeText(this, "Personal Info", Toast.LENGTH_SHORT).show();
                 Intent intent3 = new Intent(this, MedConditionActivity.class);
+                intent3.putExtra("login", login);
                 startActivity(intent3);
                 return true;
             case R.id.history:
                 Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
                 Intent intent4 = new Intent(this, MainActivity.class);
+                intent4.putExtra("login", login);
                 startActivity(intent4);
                 return true;
             case R.id.signout:

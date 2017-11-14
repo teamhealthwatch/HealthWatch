@@ -2,18 +2,21 @@ package com.example.android.healthwatch;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +31,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
     FloatingActionButton floatingButton;
     private static MedTrackerAdapter adapter;
-    ArrayList<MedModel> CustomListViewValuesArr;
+    ArrayList<MedModel> medications;
     ListView listView;
     String allTime;
     String allDate;
@@ -37,7 +40,12 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     String hour;
     String minute;
     Calendar calendar;
+
+    //Declare authentication
+    private FirebaseAuth mAuth;
+
     String login;
+    boolean firstTime;
 
     Intent myIntent;
 
@@ -68,20 +76,22 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         floatingButton = (FloatingActionButton)findViewById(R.id.fabButton);
         floatingButton.setOnClickListener(this);
 
+        //Initialize Firebase Authenticator
+        mAuth = FirebaseAuth.getInstance();
+
+        firstTime = false;
         Intent intent = getIntent();
-        login = intent.getStringExtra("login");
+        login = intent.getExtras().getString("login");
         if(!intent.hasExtra("Not_Registered")){
             getMedications();
         }
+        else{
+            firstTime = true;
+        }
 
-        myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
 
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        CustomListViewValuesArr = new ArrayList<>();
-        CustomListViewValuesArr.add(new MedModel(login, "test", "test", "test"));
-
-        displayMedications();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -97,10 +107,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                     hour = extras.getString("HOUR");
                     minute = extras.getString("MIN");
                     storeMedication();
-                    Log.d("name", medName + allTime + allDate + dosage + hour + minute);
-                    CustomListViewValuesArr.add(new MedModel(allTime, allDate, medName, dosage));
-                    displayMedications();
-
                 }
                 else{
                     Toast.makeText(MedTrackerActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
@@ -109,21 +115,15 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    public void displayMedications(){
-        adapter=new MedTrackerAdapter(CustomListViewValuesArr, getApplicationContext());
-        listView.setAdapter( adapter );
+    public void displayMedications(ArrayList<MedModel> m){
+        adapter=new MedTrackerAdapter(m, getApplicationContext());
+        listView.setAdapter(adapter);
     }
 
     public void storeMedication(){
-        final String finalName = medName;
-        final String finalTime = allTime;
-        final String finalDate = allDate;
-        final String finalDosage = dosage;
-
-
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
 
-        myRef.child("contacts").child(login).child(medName).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child("medication").child(login).child(medName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
@@ -167,6 +167,48 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
     public void getMedications(){
 
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        medications = new ArrayList<>();
+        myRef.child("medication").child(login).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String medName = dataSnapshot.getKey();
+                String medTime = (String) dataSnapshot.child("time").getValue().toString();
+                String medDay = (String) dataSnapshot.child("date").getValue().toString();
+                String medDosage = (String) dataSnapshot.child("dosage").getValue().toString();
+
+                MedModel m = new MedModel(medName,medTime,medDay,medDosage);
+                medications.add(m);
+                displayMedications(medications);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void finishMedication(){
+        Intent intent = new Intent(this, EmergencyInfo.class);
+        intent.putExtra("login", login);
+        intent.putExtra("Is_Registered", "TRUE");
+        startActivity(intent);
     }
 
     public void conditionClick(View v)
@@ -214,7 +256,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
     public void onItemClick(int mPosition)
     {
-        MedModel tempValues = ( MedModel ) CustomListViewValuesArr.get(mPosition);
+        MedModel tempValues = ( MedModel ) medications.get(mPosition);
 
         Toast.makeText(this, " "+tempValues.getName()
                         +"time:"+tempValues.getTime()
@@ -223,6 +265,62 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 Toast.LENGTH_SHORT).show();
         Log.i("TAG NAME: " , tempValues.getName());
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(firstTime){
+            MenuInflater mi = getMenuInflater();
+            mi.inflate(R.menu.menu_next, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+        else{
+            MenuInflater mi = getMenuInflater();
+            mi.inflate(R.menu.menu, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.med_tracker:
+                Toast.makeText(this, "Medication Tracker", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MedTrackerActivity.class);
+                intent.putExtra("login", login);
+                startActivity(intent);
+                return true;
+            case R.id.contact:
+                Toast.makeText(this, "Emergency Contact", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(this, EmergencyContactActivity.class);
+                intent2.putExtra("login", login);
+                startActivity(intent2);
+                return true;
+            case R.id.info:
+                Toast.makeText(this, "Personal Info", Toast.LENGTH_SHORT).show();
+                Intent intent3 = new Intent(this, MedConditionActivity.class);
+                intent3.putExtra("login", login);
+                startActivity(intent3);
+                return true;
+            case R.id.history:
+                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
+                Intent intent4 = new Intent(this, MainActivity.class);
+                intent4.putExtra("login", login);
+                startActivity(intent4);
+                return true;
+            case R.id.signout:
+                Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+                Intent intent1 = new Intent(this, MainActivity.class);
+                startActivity(intent1);
+                finish();
+                return true;
+            case R.id.action_next:
+                finishMedication();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

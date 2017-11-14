@@ -28,38 +28,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="23"
+        android:text="(235) 265-8877"
         android:textAppearance="?android:attr/textAppearanceButton"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:textSize="20dp"/>
 
-<!--    <android.support.v7.widget.SwitchCompat
-        android:id="@+id/switchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:checked="false"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Primary Contact" />-->
-<!--    <Button
-        android:id="@+id/pay_removePay"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text="Remove Pay"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:onClick="removePayOnClickHandler" />-->
     <Switch
         android:id="@+id/simpleSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Primary Contact"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+
         android:layout_centerVertical="true"/>
 
 
