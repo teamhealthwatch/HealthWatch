@@ -54,8 +54,9 @@
             android:label="@string/title_activity_alarm_notification" />
 
         <service
-            android:name=".AlarmNotificationIntentService"
-            android:exported="false"></service>
+            android:name=".HeartRateService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
