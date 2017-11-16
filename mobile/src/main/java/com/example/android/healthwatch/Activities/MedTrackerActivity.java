@@ -43,9 +43,8 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     ToggleButton toggleButton;
     private static MedTrackerActivity inst;
 
-
-
-    public static MedTrackerActivity instance() {
+    public static MedTrackerActivity instance()
+    {
         return inst;
     }
 
