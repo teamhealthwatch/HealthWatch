@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +20,7 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class MedTrackerForm extends AppCompatActivity {
+public class MedTrackerForm extends AppCompatActivity{
 
     int hod;
     int mint;
@@ -31,12 +32,12 @@ public class MedTrackerForm extends AppCompatActivity {
     TextView actualTime;
     TextView actualDate;
     TextView alarmTextView;
-    TextView MedicationName;
-    TextView DosageText;
+    TextView medicationName;
+    TextView dosageText;
     String allTime;
     String allDate;
-    String MedName;
-    String Dsg;
+    String medName;
+    String dsg;
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -45,18 +46,14 @@ public class MedTrackerForm extends AppCompatActivity {
         setContentView(R.layout.activity_medication_form);
 
 
-        MedicationName = (TextView)findViewById(R.id.med_name);
+        medicationName = (TextView)findViewById(R.id.med_name);
         actualTime = (TextView)findViewById(R.id.actualTime);
         setDate = (ImageView)findViewById(R.id.date);
         setTime = (ImageView)findViewById(R.id.Alarm);
         alarmTextView = (TextView)findViewById(R.id.alarmText);
-        DosageText = (TextView)findViewById(R.id.Dosagetxt);
+        dosageText = (TextView)findViewById(R.id.Dosagetxt);
         actualDate = (TextView)findViewById(R.id.actualDate);
         numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
-
-        selectDosage();
-        calendar = Calendar.getInstance();
-
 
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,13 +68,15 @@ public class MedTrackerForm extends AppCompatActivity {
                 selectDate();
             }
         });
+        selectDosage();
+        calendar = Calendar.getInstance();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public void selectTime()
     {
 
-        TimePickerDialog TimePicker = new TimePickerDialog(MedTrackerForm.this, new TimePickerDialog.OnTimeSetListener(){
+        TimePickerDialog timePicker = new TimePickerDialog(MedTrackerForm.this, new TimePickerDialog.OnTimeSetListener(){
             @Override
             public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute)
             {
@@ -119,12 +118,12 @@ public class MedTrackerForm extends AppCompatActivity {
                 mint = minute;
             }
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(this));
-        TimePicker.show();
+        timePicker.show();
     }
 
     public void selectDate()
     {
-        DatePickerDialog DatePicker = new DatePickerDialog(MedTrackerForm.this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog datePicker = new DatePickerDialog(MedTrackerForm.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(android.widget.DatePicker DatePicker, int year, int month, int dayOfMonth) {
                 calendar.set(Calendar.YEAR, year);
@@ -137,7 +136,7 @@ public class MedTrackerForm extends AppCompatActivity {
                 actualDate.setText(allDate);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        DatePicker.show();
+        datePicker.show();
     }
 
     public void selectDosage()
@@ -151,30 +150,61 @@ public class MedTrackerForm extends AppCompatActivity {
 
                 String val = Integer.toString(newVal);
                 Log.i("dosage: ", val);
-                Dsg = val;
-                DosageText.setText(val);
+                dsg = val;
+                dosageText.setText(val);
             }
         });
     }
 
-    public  void getInfoForIntent()
+    public void getInfoForIntent()
     {
-
-
-        MedName = MedicationName.getText().toString();
+        medName = medicationName.getText().toString();
         Intent intent = new Intent(this, MedTrackerActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("NAME", MedName);
+        bundle.putString("NAME", medName);
         bundle.putString("TIME", allTime);
         bundle.putString("DATE", allDate);
-        bundle.putString("DOSAGE", Dsg);
+        if(dsg == null){
+            dsg = "";
+        }
+        bundle.putString("DOSAGE", dsg);
         bundle.putString("HOUR", Integer.toString(hod));
         bundle.putString("MIN", Integer.toString(mint));
         intent.putExtras(bundle);
 
-        Log.i("name", MedName + allTime + allDate + Dsg);
+        Log.i("name", medName + allTime + allDate + dsg);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String medName = medicationName.getText().toString();
+        if (TextUtils.isEmpty(medName)) {
+            medicationName.setError("Required.");
+            valid = false;
+        } else {
+            medicationName.setError(null);
+        }
+
+        String dateText = actualDate.getText().toString();
+        if (dateText.equals("Date")) {
+            actualDate.setError("Required.");
+            valid = false;
+        } else {
+            actualDate.setError(null);
+        }
+
+        String timeText = actualTime.getText().toString();
+        if (timeText.equals("Time")) {
+            actualTime.setError("Required.");
+            valid = false;
+        } else {
+            actualTime.setError(null);
+        }
+
+        return valid;
     }
 
 
@@ -188,6 +218,9 @@ public class MedTrackerForm extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                if(!validateForm()){
+                    return true;
+                }
                 Toast.makeText(this, "Saved =)", Toast.LENGTH_SHORT).show();
                 getInfoForIntent();
                 finish();
@@ -196,5 +229,4 @@ public class MedTrackerForm extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

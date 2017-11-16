@@ -1,5 +1,7 @@
 package com.example.android.healthwatch;
 
+import java.util.ArrayList;
+
 /**
  * Created by Ryan on 9/28/2017.
  */
@@ -9,6 +11,7 @@ public class Contact {
     public String name;
     public String phoneNumber;
     public boolean primaryContact;
+    public ArrayList<Contact> contactList;
 
     public Contact(String name, String phoneNumber, boolean primaryContact){
         this.name = name;

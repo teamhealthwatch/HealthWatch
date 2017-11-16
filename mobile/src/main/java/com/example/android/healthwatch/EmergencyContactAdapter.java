@@ -21,11 +21,6 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
     private ArrayList<Contact> dataSet;
     Context mContext;
 
-    @Override
-    public void onClick(View v) {
-
-    }
-
     // View lookup cache
     private static class ViewHolderItem {
         TextView txtName;
@@ -57,6 +52,9 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.name);
             viewHolder.txtPhoneNumber = (TextView) convertView.findViewById(R.id.phone_number);
             viewHolder.pContact = (Switch) convertView.findViewById(R.id.simpleSwitch);
+            if(contact.primaryContact){
+                viewHolder.pContact.setChecked(true);
+            }
 
             result=convertView;
 
@@ -73,6 +71,35 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
         viewHolder.pContact.setTag(position);
         // Return the completed view to render on screen
         return convertView;
+    }
+
+    public void onClick(View v){
+        int position=(Integer) v.getTag();
+        Object object= getItem(position);
+        Contact dataModel=(Contact)object;
+
+        switch (v.getId()){
+            case R.id.simpleSwitch:
+                Switch button = (Switch) v.getTag();
+                if(dataModel.primaryContact){
+                    dataModel.primaryContact = false;
+                    updateList(dataModel, false);
+                }
+                if(!button.isChecked()){
+                    button.setChecked(true);
+                }
+        }
+    }
+
+    private void updateList(Contact c, boolean isSwitched){
+        for (Contact listContact: dataSet) {
+            if(listContact.getName().equals(c.getName())){
+                listContact.primaryContact = isSwitched;
+            }
+        }
+    }
+    public ArrayList<Contact> getList(){
+        return dataSet;
     }
 
 
