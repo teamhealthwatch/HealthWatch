@@ -21,7 +21,7 @@ import com.example.android.healthwatch.R;
 
 import java.util.Calendar;
 
-public class MedicationForm extends AppCompatActivity {
+public class MedTrackerForm extends AppCompatActivity {
 
     int hod;
     int mint;
@@ -79,7 +79,7 @@ public class MedicationForm extends AppCompatActivity {
     public void selectTime()
     {
 
-        TimePickerDialog TimePicker = new TimePickerDialog(MedicationForm.this, new TimePickerDialog.OnTimeSetListener(){
+        TimePickerDialog TimePicker = new TimePickerDialog(MedTrackerForm.this, new TimePickerDialog.OnTimeSetListener(){
             @Override
             public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute)
             {
@@ -126,7 +126,7 @@ public class MedicationForm extends AppCompatActivity {
 
     public void selectDate()
     {
-        DatePickerDialog DatePicker = new DatePickerDialog(MedicationForm.this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog DatePicker = new DatePickerDialog(MedTrackerForm.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(android.widget.DatePicker DatePicker, int year, int month, int dayOfMonth) {
                 calendar.set(Calendar.YEAR, year);

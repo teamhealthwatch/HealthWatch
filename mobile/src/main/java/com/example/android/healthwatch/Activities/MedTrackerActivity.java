@@ -84,7 +84,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
         if(v == floatingButton)
         {
-            Intent intent = new Intent(this, MedicationForm.class);
+            Intent intent = new Intent(this, MedTrackerForm.class);
             startActivityForResult(intent, 999);
             finish();
         }

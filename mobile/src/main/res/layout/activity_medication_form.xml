@@ -7,7 +7,7 @@
     android:id="@+id/create_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.healthwatch.Activities.MedicationForm">
+    tools:context="com.example.android.healthwatch.Activities.MedTrackerForm">
 
     <LinearLayout
         android:layout_width="match_parent"
