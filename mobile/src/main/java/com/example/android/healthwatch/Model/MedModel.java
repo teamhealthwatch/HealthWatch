@@ -1,62 +1,65 @@
 package com.example.android.healthwatch.Model;
 
-import android.widget.Button;
-
 /**
  * Created by faitholadele on 10/6/17.
  */
 
 public class MedModel {
 
-    String Time;
-    String Date;
-    String Name;
-    String Dosage;
-    String AlarmButton;
+    String time;
+    String date;
+    String name;
+    String dosage;
 
     public MedModel()
     {
 
     }
 
-    public String getAlarmButton() {
-        return AlarmButton;
+    public MedModel(String time, String date, String name, String dosage){
+        this.time = time;
+        this.date = date;
+        this.name = name;
+        this.dosage = dosage;
     }
 
-    public void setAlarmButton(String alarmButton) {
-        AlarmButton = alarmButton;
+    public MedModel(String time, String date, String dosage){
+        this.time = time;
+        this.date = date;
+        this.dosage = dosage;
     }
+
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getTime() {
-        return Time;
+        return time;
     }
 
     public void setTime(String time) {
-        Time = time;
+        this.time = time;
     }
 
     public String getDosage() {
 
-        return Dosage;
+        return dosage;
     }
 
     public void setDosage(String dosage) {
-        Dosage = dosage;
+        this.dosage = dosage;
     }
 
     public String getDate() {
-        return Date;
+        return date;
     }
 
     public void setDate(String date) {
-        Date = date;
+        this.date = date;
     }
 }
