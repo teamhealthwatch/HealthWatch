@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Created by faitholadele on 10/11/17.
  */
 
-public class MedCustomAdapter extends BaseAdapter implements View.OnClickListener {
+public class MedTrackerAdapter extends BaseAdapter implements View.OnClickListener {
 
     private Activity activity;
     private ArrayList data;
@@ -29,7 +29,7 @@ public class MedCustomAdapter extends BaseAdapter implements View.OnClickListene
     public Resources res;
     MedModel tempValues=null;
 
-    public MedCustomAdapter(Activity a, ArrayList d,Resources resLocal) {
+    public MedTrackerAdapter(Activity a, ArrayList d, Resources resLocal) {
 
         activity = a;
         data=d;
@@ -128,7 +128,7 @@ public class MedCustomAdapter extends BaseAdapter implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        Log.v("CustomAdapter", "=====Row button clicked=====");
+        Log.v("EmergencyContactAdapter", "=====Row button clicked=====");
     }
 
     private class OnItemClickListener  implements View.OnClickListener {

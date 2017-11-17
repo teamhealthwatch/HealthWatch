@@ -14,7 +14,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.healthwatch.AlarmReceiver;
-import com.example.android.healthwatch.Adapters.MedCustomAdapter;
+import com.example.android.healthwatch.Adapters.MedTrackerAdapter;
 import com.example.android.healthwatch.Model.MedModel;
 import com.example.android.healthwatch.R;
 
@@ -25,7 +25,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
 
     FloatingActionButton floatingButton;
-    MedCustomAdapter adapter;
+    MedTrackerAdapter adapter;
     public ArrayList<MedModel> CustomListViewValuesArr = new ArrayList<MedModel>();
     ListView listView;
     String allTime;
@@ -65,7 +65,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
         displayMeds();
         Resources res =getResources();
-        adapter=new MedCustomAdapter( this, CustomListViewValuesArr,res );
+        adapter=new MedTrackerAdapter( this, CustomListViewValuesArr,res );
         listView.setAdapter( adapter );
 
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
