@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,7 +23,7 @@ import com.example.android.healthwatch.R;
 
 import java.util.Calendar;
 
-public class MedicationForm extends AppCompatActivity {
+public class MedTrackerForm extends AppCompatActivity {
 
     int hod;
     int mint;
@@ -83,7 +82,7 @@ public class MedicationForm extends AppCompatActivity {
     public void selectTime()
     {
 
-        TimePickerDialog TimePicker = new TimePickerDialog(MedicationForm.this, new TimePickerDialog.OnTimeSetListener(){
+        TimePickerDialog TimePicker = new TimePickerDialog(MedTrackerForm.this, new TimePickerDialog.OnTimeSetListener(){
             @Override
             public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute)
             {
@@ -130,7 +129,7 @@ public class MedicationForm extends AppCompatActivity {
 
     public void selectDate()
     {
-        DatePickerDialog DatePicker = new DatePickerDialog(MedicationForm.this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog DatePicker = new DatePickerDialog(MedTrackerForm.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(android.widget.DatePicker DatePicker, int year, int month, int dayOfMonth) {
                 calendar.set(Calendar.YEAR, year);
@@ -202,7 +201,6 @@ public class MedicationForm extends AppCompatActivity {
             String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
             String m = Integer.toString(nowCalendar.get(Calendar.MONTH));
             String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH));
-
             allDate = day + "/" + m +  "/" + y;
             actualDate.setText(allDate);
         }
@@ -225,7 +223,6 @@ public class MedicationForm extends AppCompatActivity {
             String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
             String m = Integer.toString(nowCalendar.get(Calendar.MONTH));
             String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH) + 1);
-
             allDate = day + "/" + m +  "/" + y;
             actualDate.setText(allDate);
         }

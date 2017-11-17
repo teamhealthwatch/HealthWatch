@@ -33,7 +33,6 @@ public class DateAndTimeUtil {
             return READABLE_TIME_FORMAT.format(calendar.getTime());
         }
     }
-
     public static Long toLongDateAndTime(Calendar calendar) {
         return Long.parseLong(DATE_AND_TIME_FORMAT.format(calendar.getTime()));
     }
@@ -89,7 +88,6 @@ public class DateAndTimeUtil {
         }
         return weekDays;
     }
-
     private static Boolean isThisYear(Calendar calendar) {
         Calendar nowCalendar = Calendar.getInstance();
         return calendar.get(Calendar.YEAR) == nowCalendar.get(Calendar.YEAR);

@@ -12,8 +12,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.android.healthwatch.Adapters.EmergencyContactAdapter;
 import com.example.android.healthwatch.Model.Contact;
-import com.example.android.healthwatch.Adapters.CustomAdapter;
 import com.example.android.healthwatch.Fragments.EmergencyContactFragment;
 import com.example.android.healthwatch.R;
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class EmContactActivity extends AppCompatActivity implements View.OnClickListener {
+public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener {
 
     public String login;
     public static final String KEY_LOGIN="login";
@@ -33,7 +33,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
     ListView listView;
     ArrayList<Contact> contacts;
     Bundle contact;
-    private static CustomAdapter adapter;
+    private static EmergencyContactAdapter adapter;
     int index;
     String fullName;
     String phoneNumber;
@@ -70,7 +70,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
 
 
     private void displayContacts(Bundle contact){
-        adapter = new CustomAdapter(contacts, getApplicationContext());
+        adapter = new EmergencyContactAdapter(contacts, getApplicationContext());
         listView.setAdapter(adapter);
 
     }
@@ -89,7 +89,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
                     displayContacts(extras);
                 }
                 else{
-                    Toast.makeText(EmContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(EmergencyContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -111,7 +111,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
                         Log.v("Children",""+ childDataSnapshot.getKey()); //displays the key for the node
                         Log.v("Children",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
                     }
-                    AlertDialog alertDialog = new AlertDialog.Builder(EmContactActivity.this).create();
+                    AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
                     alertDialog.setTitle("Duplicate Contact");
                     alertDialog.setMessage("A person with that same name was found, please enter a different contact.");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -146,7 +146,7 @@ public class EmContactActivity extends AppCompatActivity implements View.OnClick
     }
 
     public void finishContact(){
-        startActivity(new Intent(EmContactActivity.this, MedTrackerActivity.class));
+        startActivity(new Intent(EmergencyContactActivity.this, MedTrackerActivity.class));
     }
 
     public void onClick(View v){

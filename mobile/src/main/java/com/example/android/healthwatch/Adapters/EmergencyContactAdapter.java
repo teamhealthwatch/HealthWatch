@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by anupamchugh on 09/02/16.
  */
-public class CustomAdapter extends ArrayAdapter<Contact> implements View.OnClickListener{
+public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements View.OnClickListener{
 
     private ArrayList<Contact> dataSet;
     Context mContext;
@@ -33,7 +33,7 @@ public class CustomAdapter extends ArrayAdapter<Contact> implements View.OnClick
 
 
 
-    public CustomAdapter(ArrayList<Contact> data, Context context) {
+    public EmergencyContactAdapter(ArrayList<Contact> data, Context context) {
         super(context, R.layout.contact_item, data);
         this.dataSet = data;
         this.mContext=context;

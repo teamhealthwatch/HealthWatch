@@ -165,7 +165,7 @@ public class HomePageActivity extends AppCompatActivity{
                 return true;
             case R.id.contact:
                 Toast.makeText(this, "Emmergency Contact", Toast.LENGTH_SHORT).show();
-                Intent intent2 = new Intent(this, EmContactActivity.class);
+                Intent intent2 = new Intent(this, EmergencyContactActivity.class);
                 startActivity(intent2);
                 return true;
             case R.id.info:

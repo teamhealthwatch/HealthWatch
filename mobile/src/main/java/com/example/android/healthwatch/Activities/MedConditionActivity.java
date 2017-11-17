@@ -55,10 +55,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         conditions();
         floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
         floatingButton.setOnClickListener(this);
-
-
-
-
     }
 
     public void homeClick(View v)

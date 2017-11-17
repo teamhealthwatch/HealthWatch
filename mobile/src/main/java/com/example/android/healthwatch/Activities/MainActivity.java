@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             register(v);
         }
         else if(v == skip){
-            Intent intent = new Intent(this, EmContactActivity.class);
+            Intent intent = new Intent(this, EmergencyContactActivity.class);
             intent.putExtra(KEY_LOGIN, "testUser");
             startActivity(intent);
         }

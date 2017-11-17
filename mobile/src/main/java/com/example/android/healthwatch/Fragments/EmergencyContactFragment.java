@@ -14,7 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.android.healthwatch.Activities.EmContactActivity;
+import com.example.android.healthwatch.Activities.EmergencyContactActivity;
 import com.example.android.healthwatch.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -67,7 +67,7 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
 
     public void getFormData(){
         try {
-            EmContactActivity callingActivity = (EmContactActivity) getActivity();
+            EmergencyContactActivity callingActivity = (EmergencyContactActivity) getActivity();
             Intent myIntent = new Intent();
             Bundle contact = new Bundle();
             if(!validateForm()){

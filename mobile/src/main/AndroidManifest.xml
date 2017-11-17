@@ -38,7 +38,7 @@
             android:name=".Activities.RegisterActivity"
             android:label="Sign Up" />
         <activity android:name=".Activities.HomePageActivity" />
-        <activity android:name=".Activities.EmContactActivity" />
+        <activity android:name=".Activities.EmergencyContactActivity" />
         <activity
             android:name=".Activities.MedTrackerActivity"
             android:label="Medication Tracker" />
@@ -47,7 +47,7 @@
             android:label="Emergency Info" />
         <!-- <activity android:name=".CreateMedicationTimer" /> -->
         <activity
-            android:name=".Activities.MedicationForm"
+            android:name=".Activities.MedTrackerForm"
             android:label="Enter Medication" />
 
         <service
