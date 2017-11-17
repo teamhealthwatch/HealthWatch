@@ -1,4 +1,4 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,7 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.example.android.healthwatch.Activities.MedTrackerActivity;
 import com.example.android.healthwatch.Model.MedModel;
+import com.example.android.healthwatch.R;
 
 import java.util.ArrayList;
 

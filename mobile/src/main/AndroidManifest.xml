@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:theme="@style/AppThemeNoActionBar">
 
             <intent-filter>
@@ -32,22 +32,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".Activities.RegisterActivity"
             android:label="Sign Up" />
-        <activity android:name=".HomePageActivity" />
-        <activity android:name=".EmergencyContactActivity" />
+        <activity android:name=".Activities.HomePageActivity" />
+        <activity android:name=".Activities.EmergencyContactActivity" />
         <activity
-            android:name=".MedTrackerActivity"
+            android:name=".Activities.MedTrackerActivity"
             android:label="Medication Tracker" />
         <activity
-            android:name=".MedConditionActivity"
+            android:name=".Activities.MedConditionActivity"
             android:label="Emmergency Info" />
         <!-- <activity android:name=".CreateMedicationTimer" /> -->
         <activity
-            android:name=".MedTrackerForm"
+            android:name=".Activities.MedTrackerForm"
             android:label="Enter Medication" />
 
         <service
@@ -57,7 +57,7 @@
         <receiver android:name=".AlarmReceiver" />
 
         <activity
-            android:name=".EmergencyInfo"
+            android:name=".Activities.EmergencyInfo"
             android:label="Emmergency Info" />
     </application>
 

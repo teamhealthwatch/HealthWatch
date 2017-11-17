@@ -1,9 +1,10 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,9 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.example.android.healthwatch.Model.MedModel;
+import com.example.android.healthwatch.Adapters.EmergencyContactAdapter;
+import com.example.android.healthwatch.Fragments.EmergencyContactFragment;
+import com.example.android.healthwatch.Model.Contact;
+import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -25,74 +28,67 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class MedTrackerActivity extends AppCompatActivity implements View.OnClickListener {
+public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener {
 
-
-    FloatingActionButton floatingButton;
-    private static MedTrackerAdapter adapter;
-    ArrayList<MedModel> medications;
-    ListView listView;
-    String allTime;
-    String allDate;
-    String medName;
-    String dosage;
-    String hour;
-    String minute;
-    Calendar calendar;
+    public String login;
+    public static final String KEY_LOGIN="login";
+    FloatingActionButton fab;
 
     //Declare authentication
     private FirebaseAuth mAuth;
 
-    String login;
+    ListView listView;
+    ArrayList<Contact> contacts;
+    Bundle contact;
+    private static EmergencyContactAdapter adapter;
+    int index;
+    String fullName;
+    String phoneNumber;
+    boolean pc;
+
     boolean firstTime;
 
-    Intent myIntent;
 
-    PendingIntent pendingIntent;
-    AlarmManager alarm_manager;
-
-    ToggleButton toggleButton;
-    private static MedTrackerActivity inst;
-
-
-
-    public static MedTrackerActivity instance() {
-        return inst;
-    }
-
- /*   @Override
-    public void onStart() {
-        super.onStart();
-        inst = this;
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_med_tracker);
-
-        listView = (ListView)findViewById(R.id.listview);
-        floatingButton = (FloatingActionButton)findViewById(R.id.fabButton);
-        floatingButton.setOnClickListener(this);
-
-        //Initialize Firebase Authenticator
-        mAuth = FirebaseAuth.getInstance();
-
+        setContentView(R.layout.activity_emergency_contact);
+        //Get Username and check if this page is being called through registration or through home page
         firstTime = false;
         Intent intent = getIntent();
-        login = intent.getExtras().getString("login");
+        login = intent.getStringExtra("login");
         if(!intent.hasExtra("Not_Registered")){
-            getMedications();
+            getContacts();
         }
         else{
             firstTime = true;
         }
+        //Initialize Firebase Authenticator
+        mAuth = FirebaseAuth.getInstance();
+        //Initialize Floating Button
+        fab = findViewById(R.id.float_button);
+        fab.setOnClickListener(this);
+        //Setup listview
+        listView = findViewById(R.id.list);
+
+        index = 0;
+
+        getSupportActionBar().setTitle("Emergency Contacts");
+
+    }
 
 
-        alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+    public void displayContacts(ArrayList<Contact> list){
+        adapter = new EmergencyContactAdapter(list, getApplicationContext());
+        listView.setAdapter(adapter);
+    }
 
+    private void showEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        EmergencyContactFragment editNameDialogFragment = EmergencyContactFragment.newInstance("Some Title");
+        editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -101,38 +97,37 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
             if(resultCode == RESULT_OK){
                 Bundle extras = data.getExtras();
                 if(extras != null){
-                    medName = extras.getString("NAME");
-                    allTime = extras.getString("TIME");
-                    allDate = extras.getString("DATE");
-                    dosage = extras.getString("DOSAGE");
-                    hour = extras.getString("HOUR");
-                    minute = extras.getString("MIN");
-                    storeMedication();
+
+                    fullName = extras.getString("fullName");
+                    phoneNumber = extras.getString("phoneNumber");
+                    pc = extras.getBoolean("pc");
+                    storeContact();
+
                 }
                 else{
-                    Toast.makeText(MedTrackerActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(EmergencyContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
                 }
             }
         }
     }
 
-    public void displayMedications(ArrayList<MedModel> m){
-        adapter=new MedTrackerAdapter(m, getApplicationContext());
-        listView.setAdapter(adapter);
-    }
+    public void storeContact(){
+        final String name = fullName;
+        final String pNumber = phoneNumber;
+        final boolean pContact = pc;
 
-    public void storeMedication(){
+        Log.i("Phone Number", phoneNumber);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
 
-        myRef.child("medication").child(login).child(medName).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child("contacts").child(login).child(name).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
                         Log.v("Children",""+ childDataSnapshot.getKey()); //displays the key for the node
-                        //Log.v("Children",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
+                        Log.v("Children",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
                     }
-                    /*AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
+                    AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
                     alertDialog.setTitle("Duplicate Contact");
                     alertDialog.setMessage("A person with that same name was found, please enter a different contact.");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -141,11 +136,11 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                                     dialog.dismiss();
                                 }
                             });
-                    alertDialog.show();*/
+                    alertDialog.show();
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference usersRef = database.getReference("medication");
-                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage), new DatabaseReference.CompletionListener(){
+                    DatabaseReference usersRef = database.getReference("contacts");
+                    usersRef.child(login).child(name).setValue(new Contact(phoneNumber, pContact), new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -156,6 +151,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                         }
 
                     });
+
                 }
             }
 
@@ -166,21 +162,18 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    public void getMedications(){
-
+    public void getContacts(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        medications = new ArrayList<>();
-        myRef.child("medication").child(login).addChildEventListener(new ChildEventListener() {
+        contacts = new ArrayList<>();
+        myRef.child("contacts").child(login).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String medName = dataSnapshot.getKey();
-                String medTime = (String) dataSnapshot.child("time").getValue().toString();
-                String medDay = (String) dataSnapshot.child("date").getValue().toString();
-                String medDosage = (String) dataSnapshot.child("dosage").getValue().toString();
-
-                MedModel m = new MedModel(medName,medTime,medDay,medDosage);
-                medications.add(m);
-                displayMedications(medications);
+                String name = dataSnapshot.getKey();
+                String phoneNumber = (String) dataSnapshot.child("phoneNumber").getValue().toString();
+                boolean primaryContact = (boolean) dataSnapshot.child("primaryContact").getValue();
+                Contact c = new Contact(name, phoneNumber, primaryContact);
+                contacts.add(c);
+                displayContacts(contacts);
             }
 
             @Override
@@ -203,69 +196,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
             }
         });
-    }
-
-    public void finishMedication(){
-        Intent intent = new Intent(this, EmergencyInfo.class);
-        intent.putExtra("login", login);
-        intent.putExtra("Is_Registered", "TRUE");
-        startActivity(intent);
-    }
-
-    public void conditionClick(View v)
-    {
-        startActivity(new Intent(MedTrackerActivity.this, MedConditionActivity.class));
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        if(v == floatingButton)
-        {
-            Intent intent = new Intent(this, MedTrackerForm.class);
-            startActivityForResult(intent, 1);
-        }
-
-    }
-
-    public void turnAlarmOnOrOff(int id, boolean ck) {
-
-
-        String n = Integer.toString(id);
-            if (ck )
-            {
-                int hod = Integer.parseInt(hour);
-                int mint = Integer.parseInt(minute);
-                calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, hod);
-                calendar.set(Calendar.MINUTE, mint);
-                Log.d("MyActivity", "Alarm ON " + n);
-                myIntent.putExtra("extra", "alarm on");
-                pendingIntent = PendingIntent.getBroadcast(MedTrackerActivity.this, id, myIntent, 0);
-                alarm_manager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-
-            }
-            else
-            {
-//                pendingIntent.cancel();
-                alarm_manager.cancel(pendingIntent);
-                Log.d("MyActivity", "Alarm OFF " + n);
-                myIntent.putExtra("extra", "alarm off");
-                sendBroadcast(myIntent);
-            }
-    }
-
-    public void onItemClick(int mPosition)
-    {
-        MedModel tempValues = ( MedModel ) medications.get(mPosition);
-
-        Toast.makeText(this, " "+tempValues.getName()
-                        +"time:"+tempValues.getTime()
-                        +"date:"+tempValues.getDate()
-                        +"dosage:"+tempValues.getDosage(),
-                Toast.LENGTH_SHORT).show();
-        Log.i("TAG NAME: " , tempValues.getName());
-
     }
 
     @Override
@@ -318,10 +248,25 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 return true;
             case R.id.action_next:
-                finishMedication();
+                finishContact();
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void finishContact(){
+        Intent intent = new Intent(this, MedTrackerActivity.class);
+        intent.putExtra("login", login);
+        intent.putExtra("Not_Registered", "TRUE");
+        startActivity(intent);
+    }
+
+    public void onClick(View v){
+        if(v == fab){
+            showEditDialog();
+        }
+
+    }
+
 
 }

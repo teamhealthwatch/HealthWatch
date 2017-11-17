@@ -1,4 +1,4 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.android.healthwatch.Activities.EmergencyContactActivity;
+import com.example.android.healthwatch.R;
 
 import static android.app.Activity.RESULT_OK;
 

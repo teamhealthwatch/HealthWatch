@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.android.healthwatch.Activities.MedTrackerActivity;
+
 /**
  * Created by faitholadele on 10/11/17.
  */
