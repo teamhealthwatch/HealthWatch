@@ -59,7 +59,6 @@
         <activity
             android:name=".EmergencyInfo"
             android:label="Emmergency Info" />
-        <activity android:name=".Account"></activity>
     </application>
 
 </manifest>
