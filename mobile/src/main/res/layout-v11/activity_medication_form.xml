@@ -124,7 +124,7 @@
                         android:gravity="center_vertical"
                         android:layout_marginLeft="22dp"
                         android:layout_marginStart="22dp"
-                        android:text="Date"
+                        android:text="@string/date_today"
                         android:textSize="16sp" />
 
                 </LinearLayout>

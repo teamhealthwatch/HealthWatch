@@ -18,6 +18,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.healthwatch.DateAndTimeUtil;
 import com.example.android.healthwatch.R;
 
 import java.util.Calendar;
@@ -40,6 +41,7 @@ public class MedTrackerForm extends AppCompatActivity{
     String allDate;
     String medName;
     String dsg;
+    int ChoosenHour;
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -84,7 +86,7 @@ public class MedTrackerForm extends AppCompatActivity{
             {
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 calendar.set(Calendar.MINUTE, minute);
-//                calendar.set(Calendar.AM_PM, Calendar.PM);
+                ChoosenHour = hourOfDay;
                 String hour = Integer.toString(hourOfDay);
                 String m = Integer.toString(minute);
                 String formart;
@@ -209,6 +211,61 @@ public class MedTrackerForm extends AppCompatActivity{
         return valid;
     }
 
+    private boolean validateForm() {
+        boolean valid = true;
+        Calendar nowCalendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
+        calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
+        calendar.set(Calendar.DAY_OF_MONTH, nowCalendar.get(Calendar.DAY_OF_MONTH));
+
+        calendar.set(Calendar.HOUR_OF_DAY, nowCalendar.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, nowCalendar.get(Calendar.MINUTE));
+
+        String medName = MedicationName.getText().toString();
+        if (TextUtils.isEmpty(medName)) {
+            MedicationName.setError("Required.");
+            valid = false;
+        } else {
+            MedicationName.setError(null);
+        }
+
+        String dateText = actualDate.getText().toString();
+        if (dateText.equals("Today")) {
+
+            String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
+            String m = Integer.toString(nowCalendar.get(Calendar.MONTH));
+            String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH));
+            allDate = day + "/" + m +  "/" + y;
+            actualDate.setText(allDate);
+        }
+        // check dates
+        else if (DateAndTimeUtil.toLongDateAndTime(calendar) < DateAndTimeUtil.toLongDateAndTime(nowCalendar)) {
+            Toast.makeText(this, "date cannot be in the past", Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
+        else {
+            actualDate.setError(null);
+        }
+
+        String timeText = actualTime.getText().toString();
+        if (timeText.equals("Time")) {
+            actualTime.setError("Required.");
+            valid = false;
+        }
+        else if(ChoosenHour < nowCalendar.get(Calendar.HOUR_OF_DAY))
+        {
+            String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
+            String m = Integer.toString(nowCalendar.get(Calendar.MONTH));
+            String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH) + 1);
+            allDate = day + "/" + m +  "/" + y;
+            actualDate.setText(allDate);
+        }
+        else {
+            actualTime.setError(null);
+        }
+
+        return valid;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

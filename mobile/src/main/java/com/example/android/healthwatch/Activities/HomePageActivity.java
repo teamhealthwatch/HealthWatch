@@ -1,11 +1,17 @@
 package com.example.android.healthwatch.Activities;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +52,9 @@ public class HomePageActivity extends AppCompatActivity{
     private TextView heartRate;
     private String login;
 
+    NotificationManager mNotificationManager;
+    int numMessages = 0;
+    private String s;
 
 
     @Override
@@ -168,6 +177,11 @@ public class HomePageActivity extends AppCompatActivity{
                 intent3.putExtra("login", login);
                 startActivity(intent3);
                 return true;
+            case R.id.acct:
+                Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
+                Intent intent5 = new Intent(this, AccountActivity.class);
+                startActivity(intent5);
+                return true;
             case R.id.history:
                 Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
                 Intent intent4 = new Intent(this, MainActivity.class);
@@ -217,8 +231,6 @@ public class HomePageActivity extends AppCompatActivity{
 
     public void makePhoneCall(int heartRate)
     {
-
-
         if (heartRate >= 50 ||  heartRate <= 30)
         {
             Log.i("Phone call", "heart rate is correct");
@@ -230,8 +242,29 @@ public class HomePageActivity extends AppCompatActivity{
                 return;
             }
             startActivity(callIntent);
-        }
+            // texting
+            textContacts();
 
+            //notification
+            addNotification();
+        }
+    }
+
+    public void textContacts()
+    {
+        String phoneNumber = "8016960277";
+        String text = "Be Safe!";
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNumber, null, text, null, null);
+            Toast.makeText(getApplicationContext(), "SMS Sent!",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),
+                    "SMS failed, please try again later!",
+                    Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 
     private void setProgressBar(int heartRate){
@@ -248,6 +281,59 @@ public class HomePageActivity extends AppCompatActivity{
         else{
             pb.setProgress(0);
         }
+    }
+
+    private void addNotification() {
+        Log.i("Start", "notification");
+
+   /* Invoking the default notification service */
+        NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this);
+
+        mBuilder.setContentTitle("New Message");
+        mBuilder.setContentText("You've received new message.");
+        mBuilder.setTicker("New Message Alert!");
+        mBuilder.setSmallIcon(R.drawable.newhrt);
+
+   /* Increase notification number every time a new notification arrives */
+        mBuilder.setNumber(++numMessages);
+
+   /* Add Big View Specific Configuration */
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+        String[] events = new String[5];
+        events[0] = new String("Medical condition:");
+        events[1] = new String("Allergies:");
+        events[2] = new String("current Medication:");
+        events[3] = new String("Blood Type:");
+        events[4] = new String("other: ");
+
+        // Sets a title for the Inbox style big view
+        inboxStyle.setBigContentTitle("Medication Condition:");
+
+        // Moves events into the big view
+        for (int i=0; i < events.length; i++) {
+            inboxStyle.addLine(events[i]);
+        }
+
+        mBuilder.setStyle(inboxStyle);
+
+        int notificationID = 990;
+
+   /* Creates an explicit intent for an Activity in your app */
+        Intent resultIntent = new Intent(this,MedConditionActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MedConditionActivity.class);
+
+   /* Adds the Intent that starts the Activity to the top of the stack */
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(resultPendingIntent);
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+   /* notificationID allows you to update the notification later on. */
+        mNotificationManager.notify(notificationID, mBuilder.build());
     }
 
 }

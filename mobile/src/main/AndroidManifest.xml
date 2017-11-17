@@ -14,6 +14,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.intent.action.CALL_PRIVILEGED" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -44,7 +45,7 @@
             android:label="Medication Tracker" />
         <activity
             android:name=".Activities.MedConditionActivity"
-            android:label="Emmergency Info" />
+            android:label="Emergency Info" />
         <!-- <activity android:name=".CreateMedicationTimer" /> -->
         <activity
             android:name=".Activities.MedTrackerForm"
@@ -58,7 +59,8 @@
 
         <activity
             android:name=".Activities.EmergencyInfo"
-            android:label="Emmergency Info" />
+            android:label="Emergency Info" />
+        <activity android:name=".Activities.AccountActivity"></activity>
     </application>
 
 </manifest>
