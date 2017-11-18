@@ -183,36 +183,6 @@ public class MedTrackerForm extends AppCompatActivity{
 
     private boolean validateForm() {
         boolean valid = true;
-
-        String medName = medicationName.getText().toString();
-        if (TextUtils.isEmpty(medName)) {
-            medicationName.setError("Required.");
-            valid = false;
-        } else {
-            medicationName.setError(null);
-        }
-
-        String dateText = actualDate.getText().toString();
-        if (dateText.equals("Date")) {
-            actualDate.setError("Required.");
-            valid = false;
-        } else {
-            actualDate.setError(null);
-        }
-
-        String timeText = actualTime.getText().toString();
-        if (timeText.equals("Time")) {
-            actualTime.setError("Required.");
-            valid = false;
-        } else {
-            actualTime.setError(null);
-        }
-
-        return valid;
-    }
-
-    private boolean validateForm() {
-        boolean valid = true;
         Calendar nowCalendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
         calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
@@ -221,12 +191,12 @@ public class MedTrackerForm extends AppCompatActivity{
         calendar.set(Calendar.HOUR_OF_DAY, nowCalendar.get(Calendar.HOUR_OF_DAY));
         calendar.set(Calendar.MINUTE, nowCalendar.get(Calendar.MINUTE));
 
-        String medName = MedicationName.getText().toString();
+        String medName = medicationName.getText().toString();
         if (TextUtils.isEmpty(medName)) {
-            MedicationName.setError("Required.");
+            medicationName.setError("Required.");
             valid = false;
         } else {
-            MedicationName.setError(null);
+            medicationName.setError(null);
         }
 
         String dateText = actualDate.getText().toString();

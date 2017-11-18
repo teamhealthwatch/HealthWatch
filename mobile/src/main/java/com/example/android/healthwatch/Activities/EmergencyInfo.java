@@ -27,7 +27,7 @@ public class EmergencyInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_emmergency_info);
+        setContentView(R.layout.activity_emergency_info);
 
         Med_Cond = (EditText) findViewById(R.id.MedCondTxt);
         Allergies = (EditText) findViewById(R.id.Allergiestxt);
