@@ -43,11 +43,12 @@ public class AlarmUtil {
         }
     }
 
-    /*public static void cancelAlarm(Context context, Intent intent, int notificationId) {
+    public static void cancelAlarm(Context context, Intent intent, int notificationId) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        intent.putExtra("extra", "alarm off");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
-    }*/
+    }
 
     /*public static void setNextAlarm(Context context, Reminder reminder, DatabaseHelper database) {
         Calendar calendar = DateAndTimeUtil.parseDateAndTime(reminder.getDateAndTime());

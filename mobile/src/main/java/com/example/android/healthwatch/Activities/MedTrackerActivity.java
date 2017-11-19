@@ -93,6 +93,10 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         else{
             firstTime = true;
         }
+        int medId = intent.getIntExtra("NOTIFICATION_ID", 0);
+        if(medId == 0){
+
+        }
 
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -120,7 +124,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void displayMedications(ArrayList<MedModel> m){
-        adapter=new MedTrackerAdapter(m, getApplicationContext());
+        adapter=new MedTrackerAdapter(this, m, getApplicationContext());
         listView.setAdapter(adapter);
     }
 
@@ -154,7 +158,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("medication");
-                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage), new DatabaseReference.CompletionListener(){
+                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage, 0), new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -186,8 +190,9 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 String medTime = (String) dataSnapshot.child("time").getValue().toString();
                 String medDay = (String) dataSnapshot.child("date").getValue().toString();
                 String medDosage = (String) dataSnapshot.child("dosage").getValue().toString();
+                //int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
 
-                MedModel m = new MedModel(medName,medTime,medDay,medDosage);
+                MedModel m = new MedModel(medName,medTime,medDay,medDosage, 0);
                 medications.add(m);
                 displayMedications(medications);
             }
@@ -241,6 +246,18 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         AlarmUtil.setAlarm(this, alarmIntent, 1, calendar, "alarm on");
 
+    }
+
+    public void getAlarmPosition(int position){
+        MedModel m = medications.get(position);
+        String mDate = m.getDate();
+        String mTime = m.getTime();
+        buildAlarm(mTime, mDate);
+    }
+
+    public void cancelAlarm(int position){
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        AlarmUtil.cancelAlarm(this, alarmIntent, 1);
     }
 
 
@@ -347,6 +364,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         if(v == floatingButton)
         {
             Intent intent = new Intent(this, MedTrackerForm.class);
+            intent.putExtra("New Alarm", "TRUE");
             startActivityForResult(intent, 1);
         }
 

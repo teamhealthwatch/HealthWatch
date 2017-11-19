@@ -8,9 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.example.android.healthwatch.Activities.MedTrackerActivity;
 import com.example.android.healthwatch.Model.MedModel;
@@ -31,10 +30,12 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
     MedModel tempValues;
     Context mContext;
 
-    public MedTrackerAdapter(ArrayList<MedModel> data, Context context) {
+    public MedTrackerAdapter(Activity a, ArrayList<MedModel> data, Context context) {
         super(context, R.layout.med_item, data);
         this.dataSet = data;
         this.mContext = context;
+        activity = a;
+
 
     }
     public static class ViewHolder{
@@ -43,7 +44,7 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
         public TextView _date;
         public TextView _dosage;
         public TextView _name;
-        public ToggleButton _alarmbttn;
+        public Switch _alarmbttn;
 
     }
 
@@ -75,20 +76,21 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
             holder._date = (TextView) convertView.findViewById(R.id.Date);
             holder._time = (TextView) convertView.findViewById(R.id.Time);
             holder._dosage = (TextView) convertView.findViewById(R.id.Dosage);
-            holder._alarmbttn = (ToggleButton) convertView.findViewById(R.id.alarmToggle);
+            holder._alarmbttn = (Switch) convertView.findViewById(R.id.alarm_switch);
+            holder._alarmbttn.setChecked(true);
             holder._alarmbttn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToggleButton tb = (ToggleButton)v;
+                    Switch tb = (Switch)v;
                     MedTrackerActivity mt = (MedTrackerActivity) activity;
-                    if(tb.isChecked())
+                    if(!tb.isChecked())
                     {
-                        mt.turnAlarmOnOrOff(position, true);
+                        mt.getAlarmPosition(position);
                         Log.i(" TAG: ", "on");
                     }
                     else
                     {
-                        mt.turnAlarmOnOrOff(position, false);
+                        mt.cancelAlarm(position);
                         Log.i(" TAG: ", "off");
                     }
                 }
@@ -123,6 +125,10 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
     @Override
     public void onClick(View v) {
         Log.v("EmergencyContactAdapter", "=====Row button clicked=====");
+
+        int position = (Integer) v.getTag();
+        Object object = getItem(position);
+        MedModel mm = (MedModel)object;
     }
 
     private class OnItemClickListener  implements View.OnClickListener {

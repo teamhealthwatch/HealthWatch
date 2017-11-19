@@ -50,7 +50,6 @@ public class MedTrackerForm extends AppCompatActivity{
         actualTime = (TextView)findViewById(R.id.actualTime);
         setDate = (ImageView)findViewById(R.id.date);
         setTime = (ImageView)findViewById(R.id.Alarm);
-        alarmTextView = (TextView)findViewById(R.id.alarmText);
         dosageText = (TextView)findViewById(R.id.Dosagetxt);
         actualDate = (TextView)findViewById(R.id.actualDate);
         numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
@@ -61,6 +60,8 @@ public class MedTrackerForm extends AppCompatActivity{
                 selectTime();
             }
         });
+
+
 
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
