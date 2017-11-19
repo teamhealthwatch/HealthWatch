@@ -25,9 +25,6 @@ import java.util.Calendar;
 
 public class MedTrackerForm extends AppCompatActivity{
 
-    int hod;
-    int mint;
-
     ImageView setTime;
     ImageView setDate;
     NumberPicker numberPicker = null;
@@ -41,7 +38,6 @@ public class MedTrackerForm extends AppCompatActivity{
     String allDate;
     String medName;
     String dsg;
-    int ChoosenHour;
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -86,40 +82,9 @@ public class MedTrackerForm extends AppCompatActivity{
             {
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 calendar.set(Calendar.MINUTE, minute);
-                ChoosenHour = hourOfDay;
-                String hour = Integer.toString(hourOfDay);
-                String m = Integer.toString(minute);
-                String formart;
-
-                if(hourOfDay == 0)
-                {
-                    hour = Integer.toString(hourOfDay+12);
-                    formart = "AM";
-                }
-                else if(hourOfDay == 12)
-                {
-                    formart = "PM";
-                }
-                else if(hourOfDay > 12)
-                {
-                    hour = Integer.toString(hourOfDay-12);
-                    formart = "PM";
-                }
-                else
-                {
-                    formart = "AM";
-                }
-
-                if(minute < 10)
-                {
-                    m = "0" + Integer.toString(minute);
-                }
-
-                allTime = hour + " : " + m + " " +formart;
+                allTime = buildTime(hourOfDay, minute);
 //                Log.i("time", allTime);
                 actualTime.setText(allTime);
-                hod = hourOfDay;
-                mint = minute;
             }
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(this));
         timePicker.show();
@@ -134,7 +99,7 @@ public class MedTrackerForm extends AppCompatActivity{
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 String y = Integer.toString(year);
-                String m = Integer.toString(month);
+                String m = Integer.toString(month+1);
                 String day = Integer.toString(dayOfMonth);
                 allDate = day + "/" + m +  "/" + y;
                 actualDate.setText(allDate);
@@ -172,8 +137,6 @@ public class MedTrackerForm extends AppCompatActivity{
             dsg = "";
         }
         bundle.putString("DOSAGE", dsg);
-        bundle.putString("HOUR", Integer.toString(hod));
-        bundle.putString("MIN", Integer.toString(mint));
         intent.putExtras(bundle);
 
         Log.i("name", medName + allTime + allDate + dsg);
@@ -203,14 +166,14 @@ public class MedTrackerForm extends AppCompatActivity{
         if (dateText.equals("Today")) {
 
             String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
-            String m = Integer.toString(nowCalendar.get(Calendar.MONTH));
+            String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
             String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH));
             allDate = day + "/" + m +  "/" + y;
             actualDate.setText(allDate);
         }
         // check dates
-        else if (DateAndTimeUtil.toLongDateAndTime(calendar) < DateAndTimeUtil.toLongDateAndTime(nowCalendar)) {
-            Toast.makeText(this, "date cannot be in the past", Toast.LENGTH_SHORT).show();
+        if (DateAndTimeUtil.toLongDateAndTime(calendar) < DateAndTimeUtil.toLongDateAndTime(nowCalendar)) {
+            Toast.makeText(this, "Date cannot be in the past", Toast.LENGTH_SHORT).show();
             valid = false;
         }
         else {
@@ -218,11 +181,13 @@ public class MedTrackerForm extends AppCompatActivity{
         }
 
         String timeText = actualTime.getText().toString();
-        if (timeText.equals("Time")) {
-            actualTime.setError("Required.");
-            valid = false;
+        if (timeText.equals("Now")) {
+            calendar.set(Calendar.HOUR_OF_DAY, nowCalendar.get(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, nowCalendar.get(Calendar.MINUTE));
+            allTime = buildTime(nowCalendar.get(Calendar.HOUR_OF_DAY), nowCalendar.get(Calendar.MINUTE));
+            actualTime.setText(allTime);
         }
-        else if(ChoosenHour < nowCalendar.get(Calendar.HOUR_OF_DAY))
+        else if(calendar.get(Calendar.HOUR_OF_DAY) < nowCalendar.get(Calendar.HOUR_OF_DAY))
         {
             String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
             String m = Integer.toString(nowCalendar.get(Calendar.MONTH));
@@ -235,6 +200,32 @@ public class MedTrackerForm extends AppCompatActivity{
         }
 
         return valid;
+    }
+
+    private String buildTime(int hour, int minute){
+
+        String m = Integer.toString(minute);
+        String format;
+
+        if(hour <= 11)
+        {
+            format = "AM";
+        }
+        else if(hour == 12)
+        {
+            format = "PM";
+        }
+        else
+        {
+            hour = hour - 12;
+            format = "PM";
+        }
+        if(minute < 10)
+        {
+            m = "0" + Integer.toString(minute);
+        }
+        String h = Integer.toString(hour);
+        return new String (h + " : " + m + " " + format);
     }
 
     @Override

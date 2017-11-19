@@ -36,7 +36,7 @@ public class AlarmService extends Service {
         sendNotification("Medication time!");
 
         String state = intent.getExtras().getString("extra");
-        Log.e("service", state);
+        //Log.e("service", state);
 
         assert state != null;
         switch (state) {
@@ -79,7 +79,7 @@ public class AlarmService extends Service {
         }
         else
         {
-            Log.e("stop reaching here", state);
+            //Log.e("stop reaching here", state);
 
         }
         return  START_NOT_STICKY;

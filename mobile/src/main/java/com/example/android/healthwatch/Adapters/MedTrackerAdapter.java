@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -21,21 +22,19 @@ import java.util.ArrayList;
  * Created by faitholadele on 10/11/17.
  */
 
-public class MedTrackerAdapter extends BaseAdapter implements View.OnClickListener {
+public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.OnClickListener {
 
     private Activity activity;
-    private ArrayList data;
+    private ArrayList<MedModel> dataSet;
     private static LayoutInflater inflater=null;
     public Resources res;
-    MedModel tempValues=null;
+    MedModel tempValues;
+    Context mContext;
 
-    public MedTrackerAdapter(Activity a, ArrayList d, Resources resLocal) {
-
-        activity = a;
-        data=d;
-        res = resLocal;
-        inflater = ( LayoutInflater )activity.
-                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public MedTrackerAdapter(ArrayList<MedModel> data, Context context) {
+        super(context, R.layout.med_item, data);
+        this.dataSet = data;
+        this.mContext = context;
 
     }
     public static class ViewHolder{
@@ -50,14 +49,9 @@ public class MedTrackerAdapter extends BaseAdapter implements View.OnClickListen
 
     @Override
     public int getCount() {
-        if(data.size()<=0)
+        if (dataSet.size() <= 0)
             return 1;
-        return data.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return position;
+        return dataSet.size();
     }
 
     @Override
@@ -68,18 +62,20 @@ public class MedTrackerAdapter extends BaseAdapter implements View.OnClickListen
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
+        MedModel dataModel = getItem(position);
         View vi = convertView;
         ViewHolder holder;
 
         if(convertView==null){
 
-            vi = inflater.inflate(R.layout.med_item, null);
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.med_item, parent, false);
             holder = new ViewHolder();
-            holder._name = (TextView) vi.findViewById(R.id.Name);
-            holder._date = (TextView) vi.findViewById(R.id.Date);
-            holder._time = (TextView) vi.findViewById(R.id.Time);
-            holder._dosage = (TextView) vi.findViewById(R.id.Dosage);
-            holder._alarmbttn = (ToggleButton) vi.findViewById(R.id.alarmToggle);
+            holder._name = (TextView) convertView.findViewById(R.id.Name);
+            holder._date = (TextView) convertView.findViewById(R.id.Date);
+            holder._time = (TextView) convertView.findViewById(R.id.Time);
+            holder._dosage = (TextView) convertView.findViewById(R.id.Dosage);
+            holder._alarmbttn = (ToggleButton) convertView.findViewById(R.id.alarmToggle);
             holder._alarmbttn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -98,13 +94,13 @@ public class MedTrackerAdapter extends BaseAdapter implements View.OnClickListen
                 }
             });
 
-            vi.setTag( holder );
+            convertView.setTag( holder );
         }
         else {
-            holder=(ViewHolder)vi.getTag();
+            holder=(ViewHolder)convertView.getTag();
         }
 
-        if(data.size()<=0){
+        if(dataSet.size()<=0){
 
             holder._name.setText("No Data");
             holder._alarmbttn.setVisibility(View.INVISIBLE);
@@ -112,18 +108,16 @@ public class MedTrackerAdapter extends BaseAdapter implements View.OnClickListen
         }
         else
         {
-            tempValues=null;
-            tempValues = ( MedModel ) data.get( position );
 
-            holder._name.setText( tempValues.getName() );
-            holder._date.setText( tempValues.getDate() );
-            holder._time.setText( tempValues.getTime() );
-            holder._dosage.setText( tempValues.getDosage() );
+            holder._name.setText( dataModel.getName() );
+            holder._date.setText( dataModel.getDate() );
+            holder._time.setText( dataModel.getTime() );
+            holder._dosage.setText( dataModel.getDosage() );
             holder._alarmbttn.setVisibility(View.VISIBLE);
 
-            vi.setOnClickListener(new OnItemClickListener( position ));
+            convertView.setOnClickListener(new OnItemClickListener( position ));
         }
-        return vi;
+        return convertView;
     }
 
     @Override
