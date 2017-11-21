@@ -15,7 +15,7 @@ import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 
 import com.example.android.healthwatch.Adapter.ContactAdapter;
-import com.example.android.healthwatch.Contact;
+import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.Model.SendThread;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;

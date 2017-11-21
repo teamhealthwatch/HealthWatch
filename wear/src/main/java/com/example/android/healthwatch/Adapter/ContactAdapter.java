@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.android.healthwatch.Contact;
+import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.R;
 
 import java.util.ArrayList;
