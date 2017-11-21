@@ -73,7 +73,7 @@ public class ListenerService extends WearableListenerService
     private ArrayList<Contact> implementTestList() {
         ArrayList<Contact> resultList = new ArrayList<Contact>();
         resultList.add(new Contact("aaa", "(656) 565-6565", false));
-        resultList.add(new Contact("bbb", "(656) 535-6585", false));
+        resultList.add(new Contact("bbb", "(656) 535-6585", true));
         resultList.add(new Contact("ccc", "(655) 533-6285", false));
         return resultList;
     }

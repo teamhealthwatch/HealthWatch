@@ -12,23 +12,27 @@ public class Contact implements Serializable {
     public String phoneNumber;
     public boolean primaryContact;
 
-    public Contact(String name, String phoneNumber, boolean primaryContact){
+    public Contact(String name, String phoneNumber, boolean primaryContact) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.primaryContact = primaryContact;
     }
 
-    public Contact(String phoneNumber, boolean primaryContact){
+    public Contact(String phoneNumber, boolean primaryContact) {
         this.name = null;
         this.phoneNumber = phoneNumber;
         this.primaryContact = primaryContact;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getPhoneNumber(){
+    public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public boolean getPrimary() {
+        return primaryContact;
     }
 }

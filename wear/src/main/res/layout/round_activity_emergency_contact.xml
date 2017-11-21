@@ -8,33 +8,19 @@
     tools:deviceIds="wear_round"
     android:scrollbars="vertical">
 
-    <!--<android.support.wear.widget.WearableRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <android.support.wear.widget.WearableRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
 
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:scrollbars="vertical"-->
-    <!--android:id="@+id/contact_recycler_view"-->
-    <!--android:clickable="true"-->
-    <!--android:focusable="true"-->
-
-    <!--&gt;-->
-
-
-    <!--</android.support.wear.widget.WearableRecyclerView>-->
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        apps:boxedEdges="all">
+        android:scrollbars="vertical"
+        android:id="@+id/contact_recycler_view"
+        android:clickable="true"
+        android:focusable="true"
+        apps:boxedEdges="right">
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No info found" />
 
-    </LinearLayout>
+    </android.support.wear.widget.WearableRecyclerView>
 
 
 </android.support.wear.widget.BoxInsetLayout>
