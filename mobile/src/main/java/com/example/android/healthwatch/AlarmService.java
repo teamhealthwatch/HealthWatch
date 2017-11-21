@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.android.healthwatch.Activities.MedTrackerActivity;
+
 /**
  * Created by faitholadele on 10/11/17.
  */
@@ -34,7 +36,7 @@ public class AlarmService extends Service {
         sendNotification("Medication time!");
 
         String state = intent.getExtras().getString("extra");
-        Log.e("service", state);
+        //Log.e("service", state);
 
         assert state != null;
         switch (state) {
@@ -77,7 +79,7 @@ public class AlarmService extends Service {
         }
         else
         {
-            Log.e("stop reaching here", state);
+            //Log.e("stop reaching here", state);
 
         }
         return  START_NOT_STICKY;

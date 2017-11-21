@@ -1,5 +1,6 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,11 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+
+import com.example.android.healthwatch.Adapters.EmergencyContactAdapter;
+import com.example.android.healthwatch.Fragments.EmergencyContactFragment;
+import com.example.android.healthwatch.Model.Contact;
+import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -52,6 +58,8 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergency_contact);
+        //Setup listview
+        listView = findViewById(R.id.list);
         //Get Username and check if this page is being called through registration or through home page
         firstTime = false;
         Intent intent = getIntent();
@@ -61,17 +69,16 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         }
         else{
             firstTime = true;
+            contacts = new ArrayList<>();
+            //displayContacts(contacts);
         }
         //Initialize Firebase Authenticator
         mAuth = FirebaseAuth.getInstance();
         //Initialize Floating Button
         fab = findViewById(R.id.float_button);
         fab.setOnClickListener(this);
-        //Setup listview
-        listView = findViewById(R.id.list);
 
         index = 0;
-
         getSupportActionBar().setTitle("Emergency Contacts");
 
     }
@@ -143,6 +150,10 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                             if (databaseError != null) {
                                 System.out.println("Data could not be saved " + databaseError.getMessage());
                             } else {
+                                if(firstTime){
+                                    contacts.add(new Contact(name, phoneNumber, pContact));
+                                    displayContacts(contacts);
+                                }
                                 System.out.println("Data saved successfully.");
                             }
                         }
@@ -220,10 +231,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                 startActivity(intent);
                 return true;
             case R.id.contact:
-                Toast.makeText(this, "Emergency Contact", Toast.LENGTH_SHORT).show();
-                Intent intent2 = new Intent(this, EmergencyContactActivity.class);
-                intent2.putExtra("login", login);
-                startActivity(intent2);
                 return true;
             case R.id.info:
                 Toast.makeText(this, "Personal Info", Toast.LENGTH_SHORT).show();

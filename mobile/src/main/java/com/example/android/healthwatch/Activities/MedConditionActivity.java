@@ -1,4 +1,4 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activities;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.healthwatch.R;
 
 public class MedConditionActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -53,10 +55,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         conditions();
         floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
         floatingButton.setOnClickListener(this);
-
-
-
-
     }
 
     public void homeClick(View v)

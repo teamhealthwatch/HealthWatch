@@ -44,23 +44,13 @@
             android:layout_toRightOf="@+id/Dosage"
             android:layout_toEndOf="@+id/Dosage" />
 
-        <ToggleButton
+        <Switch
+            android:id="@+id/alarm_switch"
             android:layout_width="wrap_content"
-            android:layout_height="75dp"
-            android:text="Alarm On/Off"
-            android:id="@+id/alarmToggle"
-            android:layout_toRightOf="@+id/Date"
-            android:checked="false"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="75dp"
-            android:text=""
-            android:id="@+id/alarmText"
-            android:layout_marginTop="20dp"
-            android:layout_toRightOf="@+id/alarmToggle" />
+            android:layout_centerVertical="true"/>
 
 
 

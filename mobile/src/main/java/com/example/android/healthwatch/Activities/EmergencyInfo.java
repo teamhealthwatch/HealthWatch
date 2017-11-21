@@ -1,14 +1,14 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.healthwatch.R;
 
 public class EmergencyInfo extends AppCompatActivity {
 
@@ -27,7 +27,7 @@ public class EmergencyInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_emmergency_info);
+        setContentView(R.layout.activity_emergency_info);
 
         Med_Cond = (EditText) findViewById(R.id.MedCondTxt);
         Allergies = (EditText) findViewById(R.id.Allergiestxt);

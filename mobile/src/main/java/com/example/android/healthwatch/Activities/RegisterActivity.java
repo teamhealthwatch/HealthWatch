@@ -1,4 +1,4 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.android.healthwatch.Model.User;
+import com.example.android.healthwatch.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -176,7 +178,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (TextUtils.isEmpty(email)) {
             editTextEmail.setError("Required.");
             valid = false;
-        } else {
+        } else if(!email.contains("@") || !email.contains(".com")){
+            editTextEmail.setError("Must be email format.");
+            valid = false;
+        }
+        else{
             editTextEmail.setError(null);
         }
 

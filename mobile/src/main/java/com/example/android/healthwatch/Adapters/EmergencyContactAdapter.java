@@ -1,15 +1,16 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Adapters;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.example.android.healthwatch.Model.Contact;
+import com.example.android.healthwatch.R;
+
 import java.util.ArrayList;
 
 
@@ -20,11 +21,6 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
 
     private ArrayList<Contact> dataSet;
     Context mContext;
-
-    @Override
-    public void onClick(View v) {
-
-    }
 
     // View lookup cache
     private static class ViewHolderItem {
@@ -57,6 +53,9 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.name);
             viewHolder.txtPhoneNumber = (TextView) convertView.findViewById(R.id.phone_number);
             viewHolder.pContact = (Switch) convertView.findViewById(R.id.simpleSwitch);
+            if(contact.primaryContact){
+                viewHolder.pContact.setChecked(true);
+            }
 
             result=convertView;
 
@@ -73,6 +72,35 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
         viewHolder.pContact.setTag(position);
         // Return the completed view to render on screen
         return convertView;
+    }
+
+    public void onClick(View v){
+        int position=(Integer) v.getTag();
+        Object object= getItem(position);
+        Contact dataModel=(Contact)object;
+
+        switch (v.getId()){
+            case R.id.simpleSwitch:
+                Switch button = (Switch) v.getTag();
+                if(dataModel.primaryContact){
+                    dataModel.primaryContact = false;
+                    updateList(dataModel, false);
+                }
+                if(!button.isChecked()){
+                    button.setChecked(true);
+                }
+        }
+    }
+
+    private void updateList(Contact c, boolean isSwitched){
+        for (Contact listContact: dataSet) {
+            if(listContact.getName().equals(c.getName())){
+                listContact.primaryContact = isSwitched;
+            }
+        }
+    }
+    public ArrayList<Contact> getList(){
+        return dataSet;
     }
 
 

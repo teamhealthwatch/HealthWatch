@@ -1,4 +1,4 @@
-package com.example.android.healthwatch;
+package com.example.android.healthwatch.Model;
 
 /**
  * Created by faitholadele on 10/6/17.
@@ -6,6 +6,7 @@ package com.example.android.healthwatch;
 
 public class MedModel {
 
+    private int id;
     String time;
     String date;
     String name;
@@ -16,17 +17,27 @@ public class MedModel {
 
     }
 
-    public MedModel(String time, String date, String name, String dosage){
+    public MedModel(String name, String time, String date, String dosage, int id){
         this.time = time;
         this.date = date;
         this.name = name;
         this.dosage = dosage;
+        this.id = id;
     }
 
-    public MedModel(String time, String date, String dosage){
+    public MedModel(String time, String date, String dosage, int id){
         this.time = time;
         this.date = date;
         this.dosage = dosage;
+        this.id = id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public int getId(){
+        return this.id;
     }
 
 

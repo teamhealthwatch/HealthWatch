@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#DbDbDb"
-    tools:context="com.example.android.healthwatch.EmergencyContactActivity">
+    tools:context="com.example.android.healthwatch.Activities.EmergencyContactActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

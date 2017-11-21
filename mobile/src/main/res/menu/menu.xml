@@ -21,21 +21,22 @@
         app:showAsAction="never"/>
 
     <item
-        android:title="History"
-        android:id="@+id/history"
+        android:title="Account"
+        android:id="@+id/acct"
         android:orderInCategory="103"
         app:showAsAction="never"/>
-    
+
     <item
-        android:title="Account"
-        android:id="@+id/account"
-        android:orderInCategory="103"
+        android:title="History"
+        android:id="@+id/history"
+        android:orderInCategory="104"
         app:showAsAction="never"/>
 
     <item
         android:title="Sign Out"
         android:id="@+id/signout"
-        android:orderInCategory="103"
+        android:orderInCategory="105"
         app:showAsAction="never"/>
+
 
 </menu>
