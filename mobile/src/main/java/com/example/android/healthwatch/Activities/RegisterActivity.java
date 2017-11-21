@@ -154,7 +154,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void onAuthSuccess(FirebaseUser user) {
         String username = usernameFromEmail(user.getEmail());
-        Intent intent = new Intent(this, EmergencyContactActivity.class);
+        Intent intent = new Intent(this, MedTrackerActivity.class);
         intent.putExtra(KEY_LOGIN, username);
         intent.putExtra("Not_Registered", "TRUE");
         startActivity(intent);
@@ -178,7 +178,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (TextUtils.isEmpty(email)) {
             editTextEmail.setError("Required.");
             valid = false;
-        } else {
+        } else if(!email.contains("@") || !email.contains(".com")){
+            editTextEmail.setError("Must be email format.");
+            valid = false;
+        }
+        else{
             editTextEmail.setError(null);
         }
 

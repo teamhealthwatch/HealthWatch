@@ -58,7 +58,8 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     PendingIntent pendingIntent;
     AlarmManager alarm_manager;
 
-    ToggleButton toggleButton;
+    private int alarmId;
+
     private static MedTrackerActivity inst;
 
     public static MedTrackerActivity instance()
@@ -93,7 +94,10 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         }
         else{
             firstTime = true;
+            medications = new ArrayList<>();
+            displayMedications(medications);
         }
+        alarmId = 0;
         //DatabaseHelper h = new DatabaseHelper();
         //int medId = h.getLastAlarmID(login);
         //if(medId == -1){
@@ -161,12 +165,18 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("medication");
-                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage, 0), new DatabaseReference.CompletionListener(){
+                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage, alarmId), new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
                                 System.out.println("Data could not be saved " + databaseError.getMessage());
                             } else {
+                                alarmId++;
+                                if(firstTime){
+                                    medications.add(new MedModel(allTime, allDate, dosage, alarmId));
+                                    displayMedications(medications);
+                                }
+
                                 System.out.println("Data saved successfully.");
                             }
                         }
@@ -193,9 +203,10 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 String medTime = (String) dataSnapshot.child("time").getValue().toString();
                 String medDay = (String) dataSnapshot.child("date").getValue().toString();
                 String medDosage = (String) dataSnapshot.child("dosage").getValue().toString();
-                //int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
+                int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
+                alarmId = medId;
 
-                MedModel m = new MedModel(medName,medTime,medDay,medDosage, 0);
+                MedModel m = new MedModel(medName,medTime,medDay,medDosage, medId);
                 medications.add(m);
                 displayMedications(medications);
             }
