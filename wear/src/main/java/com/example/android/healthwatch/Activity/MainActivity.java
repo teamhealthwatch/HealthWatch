@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.Adapter.NavigationAdapter;
-import com.example.android.healthwatch.HeartRateService;
 import com.example.android.healthwatch.Model.NavigationItem;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -132,7 +131,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         currentHeartRate = 0;
 
 
-        startService(new Intent(this, HeartRateService.class));
+//        startService(new Intent(this, HeartRateService.class));
 
 
 
