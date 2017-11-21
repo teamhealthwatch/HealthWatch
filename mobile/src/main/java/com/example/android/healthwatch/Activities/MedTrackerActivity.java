@@ -262,16 +262,21 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    public void getAlarmPosition(int position){
-        MedModel m = medications.get(position);
-        String mDate = m.getDate();
-        String mTime = m.getTime();
-        buildAlarm(mTime, mDate);
+    public void getAlarmPosition(int position, boolean isOn){
+        if(isOn){
+            cancelAlarm(position);
+        }
+        else{
+            MedModel m = medications.get(position);
+            String mDate = m.getDate();
+            String mTime = m.getTime();
+            buildAlarm(mTime, mDate);
+        }
     }
 
     public void cancelAlarm(int position){
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        AlarmUtil.cancelAlarm(this, alarmIntent, 1);
+        AlarmUtil.cancelAlarm(this, alarmIntent, position);
     }
 
 
