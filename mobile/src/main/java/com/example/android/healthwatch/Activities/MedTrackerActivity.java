@@ -19,6 +19,7 @@ import android.widget.ToggleButton;
 import com.example.android.healthwatch.AlarmReceiver;
 import com.example.android.healthwatch.Adapters.MedTrackerAdapter;
 import com.example.android.healthwatch.AlarmUtil;
+import com.example.android.healthwatch.DatabaseHelper;
 import com.example.android.healthwatch.Model.MedModel;
 import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -93,10 +94,12 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         else{
             firstTime = true;
         }
-        int medId = intent.getIntExtra("NOTIFICATION_ID", 0);
-        if(medId == 0){
+        //DatabaseHelper h = new DatabaseHelper();
+        //int medId = h.getLastAlarmID(login);
+        //if(medId == -1){
 
-        }
+        //}
+
 
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
