@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="50dp"
+    android:paddingRight="48dp"
+    android:paddingTop="50dp"
+    android:paddingLeft="48dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/MedCond"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Medical conditions"
+            android:textSize="20dp"
+            android:layout_margin="5dp"
+            />
+
+        <EditText
+            android:id="@+id/MedCondTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter any medical conditions"
+            android:inputType="textPersonName"
+            />
+
+        <TextView
+            android:id="@+id/Allergies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Allergies"
+            android:textSize="20dp"
+            android:layout_margin="5dp"
+            />
+
+        <EditText
+            android:id="@+id/Allergiestxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter any allergies"
+            android:inputType="textPersonName"
+            />
+
+        <TextView
+            android:id="@+id/curt_med"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current medications"
+            android:textSize="20dp"
+            android:layout_margin="5dp"
+            />
+
+        <EditText
+            android:id="@+id/curt_medtxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter any current medications"
+            android:inputType="textPersonName"
+            />
+        <TextView
+            android:id="@+id/bloodtype"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Blood type"
+            android:textSize="20dp"
+            android:layout_margin="5dp"
+            />
+
+        <EditText
+            android:id="@+id/bloodtypetxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter blood type"
+            android:inputType="textPersonName"
+            />
+
+        <TextView
+            android:id="@+id/other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Other"
+            android:textSize="20dp"
+            android:layout_margin="5dp"
+            />
+
+        <EditText
+            android:id="@+id/othertxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter any other emmergency info"
+            android:inputType="textPersonName"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
+

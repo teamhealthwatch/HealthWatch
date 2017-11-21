@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_heart_rate"
+        android:icon="@drawable/heart"
+        android:title="Heart Rate" />
+    <item android:id="@+id/menu_contact"
+        android:icon="@mipmap/contact_icon"
+        android:title="Emergency Contact"/>
+    <item android:id="@+id/menu_med"
+        android:icon="@mipmap/med"
+        android:title="Medication Tracker" />
+    <item android:id="@+id/menu_personal_info"
+        android:icon="@mipmap/personal_info_icon"
+        android:title="Personal Info" />
+</menu>

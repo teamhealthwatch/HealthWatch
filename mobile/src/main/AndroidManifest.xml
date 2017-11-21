@@ -24,7 +24,6 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppThemeNoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,17 +35,46 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".RegisterActivity"
-            android:label="Sign Up"/>
+            android:label="Sign Up" />
         <activity android:name=".HomePageActivity" />
-        <activity android:name=".EmContactActivity" />
-        <activity android:name=".MedTrackerActivity" />
-        <activity android:name=".MedConditionActivity"/>
-        <!--<activity android:name=".CreateMedicationTimer" />-->
-        <activity android:name=".MedicationForm"></activity>
+        <activity android:name=".EmergencyContactActivity" />
+        <activity
+            android:name=".MedTrackerActivity"
+            android:label="Medication Tracker" />
+        <activity
+            android:name=".MedConditionActivity"
+            android:label="Emmergency Info" />
+        <!-- <activity android:name=".CreateMedicationTimer" /> -->
+        <activity
+            android:name=".MedTrackerForm"
+            android:label="Enter Medication" />
+
         <service
             android:name=".AlarmService"
             android:enabled="true" />
+
         <receiver android:name=".AlarmReceiver" />
+
+        <activity
+            android:name=".EmergencyInfo"
+            android:label="Emmergency Info" />
+        <activity android:name=".Account" />
+
+        <service
+            android:name=".ListenerService"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <!--action android:name="com.google.android.gms.wearable.DATA_CHANGED" /-->
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:pathPrefix="/emergency_contact" />
+            </intent-filter>
+
+        </service>
     </application>
 
 </manifest>

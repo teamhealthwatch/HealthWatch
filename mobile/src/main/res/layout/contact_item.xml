@@ -23,29 +23,27 @@
         android:layout_toLeftOf="@+id/phone_number"
         android:layout_toStartOf="@+id/phone_number" />
 
+    <TextView
+        android:id="@+id/phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="(235) 265-8877"
+        android:textAppearance="?android:attr/textAppearanceButton"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="20dp"/>
 
-
-    <ImageView
-        android:id="@+id/item_info"
+    <Switch
+        android:id="@+id/simpleSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@android:drawable/ic_dialog_info" />
+
+        android:layout_centerVertical="true"/>
 
 
-
-        <TextView
-            android:id="@+id/phone_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="23"
-            android:textAppearance="?android:attr/textAppearanceButton"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:textSize="20dp"/>
 
 
 </RelativeLayout>

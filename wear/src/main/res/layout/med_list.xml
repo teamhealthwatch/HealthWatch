@@ -20,11 +20,6 @@
         android:layout_height="wrap_content"
         android:text="Dosage" />
 
-    <TextView
-        android:id="@+id/next_alarm_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Time" />
 
 
 </LinearLayout>

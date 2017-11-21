@@ -6,42 +6,60 @@ package com.example.android.healthwatch;
 
 public class MedModel {
 
-    String Time;
-    String Date;
-    String Name;
-    String Dosage;
+    String time;
+    String date;
+    String name;
+    String dosage;
+
+    public MedModel()
+    {
+
+    }
+
+    public MedModel(String time, String date, String name, String dosage){
+        this.time = time;
+        this.date = date;
+        this.name = name;
+        this.dosage = dosage;
+    }
+
+    public MedModel(String time, String date, String dosage){
+        this.time = time;
+        this.date = date;
+        this.dosage = dosage;
+    }
 
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getTime() {
-        return Time;
+        return time;
     }
 
     public void setTime(String time) {
-        Time = time;
+        this.time = time;
     }
 
     public String getDosage() {
 
-        return Dosage;
+        return dosage;
     }
 
     public void setDosage(String dosage) {
-        Dosage = dosage;
+        this.dosage = dosage;
     }
 
     public String getDate() {
-        return Date;
+        return date;
     }
 
     public void setDate(String date) {
-        Date = date;
+        this.date = date;
     }
 }
