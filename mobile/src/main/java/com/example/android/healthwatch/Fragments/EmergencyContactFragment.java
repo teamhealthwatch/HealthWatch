@@ -118,8 +118,6 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
         return valid;
     }
 
-
-
     @Override
     public void onClick(View v) {
         if(v == add){

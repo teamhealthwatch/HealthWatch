@@ -116,7 +116,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                     allTime = extras.getString("TIME");
                     allDate = extras.getString("DATE");
                     dosage = extras.getString("DOSAGE");
-                    buildAlarm(allTime, allDate);
+                    buildAlarm(allTime, allDate, 3536);
                     storeMedication();
                 }
                 else{
@@ -229,7 +229,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         startActivity(intent);
     }
 
-    public void buildAlarm(String allTime, String allDate){
+    public void buildAlarm(String allTime, String allDate, int pos){
         //Split allTime form of hh:mm AM/PM
         String[] parsedTime = allTime.split(" ");
         int hour = Integer.parseInt(parsedTime[0]);
@@ -247,7 +247,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         calendar = calendar.getInstance();
         calendar.set(year, month-1, day, hour, minute, 0);
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        AlarmUtil.setAlarm(this, alarmIntent, 1, calendar, "alarm on");
+        AlarmUtil.setAlarm(this, alarmIntent, pos, calendar, "alarm on");
 
     }
 
@@ -255,40 +255,14 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         MedModel m = medications.get(position);
         String mDate = m.getDate();
         String mTime = m.getTime();
-        buildAlarm(mTime, mDate);
+        buildAlarm(mTime, mDate, position);
     }
 
     public void cancelAlarm(int position){
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        AlarmUtil.cancelAlarm(this, alarmIntent, 1);
-    }
-
-
-    public void turnAlarmOnOrOff(int id, boolean ck) {
-
-
-        String n = Integer.toString(id);
-            if (ck )
-            {
-                int hod = Integer.parseInt(hour);
-                int mint = Integer.parseInt(minute);
-                calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, hod);
-                calendar.set(Calendar.MINUTE, mint);
-                Log.d("MyActivity", "Alarm ON " + n);
-                myIntent.putExtra("extra", "alarm on");
-                pendingIntent = PendingIntent.getBroadcast(MedTrackerActivity.this, id, myIntent, 0);
-                alarm_manager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-
-            }
-            else
-            {
-//                pendingIntent.cancel();
-                alarm_manager.cancel(pendingIntent);
-                Log.d("MyActivity", "Alarm OFF " + n);
-                myIntent.putExtra("extra", "alarm off");
-                sendBroadcast(myIntent);
-            }
+        AlarmUtil.cancelAlarm(this, alarmIntent, position);
+        alarmIntent.putExtra("extra", "alarm off");
+        sendBroadcast(alarmIntent);
     }
 
     public void onItemClick(int mPosition)

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -27,13 +28,13 @@ public class MedTrackerForm extends AppCompatActivity{
 
     ImageView setTime;
     ImageView setDate;
-    NumberPicker numberPicker = null;
+//    NumberPicker numberPicker = null;
     Calendar calendar;
     TextView actualTime;
     TextView actualDate;
     TextView alarmTextView;
     TextView medicationName;
-    TextView dosageText;
+    EditText notification;
     String allTime;
     String allDate;
     String medName;
@@ -50,9 +51,9 @@ public class MedTrackerForm extends AppCompatActivity{
         actualTime = (TextView)findViewById(R.id.actualTime);
         setDate = (ImageView)findViewById(R.id.date);
         setTime = (ImageView)findViewById(R.id.Alarm);
-        dosageText = (TextView)findViewById(R.id.Dosagetxt);
+        notification = (EditText) findViewById(R.id.notification_content);
         actualDate = (TextView)findViewById(R.id.actualDate);
-        numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
+//        numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
 
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +70,7 @@ public class MedTrackerForm extends AppCompatActivity{
                 selectDate();
             }
         });
-        selectDosage();
+        medInfo();
         calendar = Calendar.getInstance();
     }
 
@@ -84,7 +85,6 @@ public class MedTrackerForm extends AppCompatActivity{
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 calendar.set(Calendar.MINUTE, minute);
                 allTime = buildTime(hourOfDay, minute);
-//                Log.i("time", allTime);
                 actualTime.setText(allTime);
             }
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(this));
@@ -109,21 +109,9 @@ public class MedTrackerForm extends AppCompatActivity{
         datePicker.show();
     }
 
-    public void selectDosage()
+    public void medInfo()
     {
-        numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(10);
-        numberPicker.setWrapSelectorWheel(true);
-        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
-                String val = Integer.toString(newVal);
-                Log.i("dosage: ", val);
-                dsg = val;
-                dosageText.setText(val);
-            }
-        });
     }
 
     public void getInfoForIntent()

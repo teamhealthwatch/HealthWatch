@@ -29,9 +29,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         context.startService(serviceIntent);
 
         //this will send a notification message
-        ComponentName comp = new ComponentName(context.getPackageName(),
-                AlarmService.class.getName());
-        startWakefulService(context, (intent.setComponent(comp)));
-        setResultCode(Activity.RESULT_OK);
+//        ComponentName comp = new ComponentName(context.getPackageName(),
+//                AlarmService.class.getName());
+//        startWakefulService(context, (intent.setComponent(comp)));
+//        setResultCode(Activity.RESULT_OK);
     }
 }

@@ -45,6 +45,7 @@
                     android:inputType="textPersonName" />
 
             </LinearLayout>
+
         </LinearLayout>
 
         <ScrollView
@@ -58,6 +59,40 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:animateLayoutChanges="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingBottom="20dp"
+                    android:paddingEnd="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="20dp"
+                    android:weightSum="1">
+
+                    <ImageView
+                        android:id="@+id/notificationImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:tint="#8e8e8e"
+                        app:srcCompat="@drawable/ic_subject_white_24dp" />
+
+                    <EditText
+                        android:id="@+id/notification_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="22dp"
+                        android:layout_marginStart="22dp"
+                        android:background="@android:color/transparent"
+                        android:hint="Add notification"
+                        android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
+                        android:textColorHighlight=" "
+                        android:textColorHint="#8e8e8e"
+                        android:textSize="16sp" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -147,23 +182,7 @@
                     android:paddingTop="20dp"
                     android:weightSum="1">
 
-                    <TextView
-                        android:id="@+id/Dosagetxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="22dp"
-                        android:layout_marginStart="22dp"
-                        android:gravity="center_vertical"
-                        android:text="Dosage"
-                        android:textSize="16sp" />
 
-                    <NumberPicker
-                        android:id="@+id/numberPicker"
-                        android:paddingLeft="16dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.2"
-                        />
                 </LinearLayout>
             </LinearLayout>
 

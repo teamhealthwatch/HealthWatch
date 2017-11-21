@@ -83,10 +83,11 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
                 public void onClick(View v) {
                     Switch tb = (Switch)v;
                     MedTrackerActivity mt = (MedTrackerActivity) activity;
-                    if(!tb.isChecked())
+                    if(tb.isChecked())
                     {
                         mt.getAlarmPosition(position);
-                        Log.i(" TAG: ", "on");
+                        Log.i(" TAG ", "on");
+
                     }
                     else
                     {
