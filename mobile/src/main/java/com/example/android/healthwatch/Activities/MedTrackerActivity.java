@@ -95,7 +95,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         else{
             firstTime = true;
             medications = new ArrayList<>();
-            displayMedications(medications);
+            //displayMedications(medications);
         }
         alarmId = 0;
         //DatabaseHelper h = new DatabaseHelper();
@@ -173,7 +173,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                             } else {
                                 alarmId++;
                                 if(firstTime){
-                                    medications.add(new MedModel(allTime, allDate, dosage, alarmId));
+                                    medications.add(new MedModel(medName, allTime, allDate, dosage, alarmId));
                                     displayMedications(medications);
                                 }
 

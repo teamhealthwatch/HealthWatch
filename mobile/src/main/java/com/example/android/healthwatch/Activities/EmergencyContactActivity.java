@@ -70,7 +70,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         else{
             firstTime = true;
             contacts = new ArrayList<>();
-            displayContacts(contacts);
+            //displayContacts(contacts);
         }
         //Initialize Firebase Authenticator
         mAuth = FirebaseAuth.getInstance();

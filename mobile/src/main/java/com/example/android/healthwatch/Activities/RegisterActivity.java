@@ -154,7 +154,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void onAuthSuccess(FirebaseUser user) {
         String username = usernameFromEmail(user.getEmail());
-        Intent intent = new Intent(this, MedTrackerActivity.class);
+        Intent intent = new Intent(this, EmergencyContactActivity.class);
         intent.putExtra(KEY_LOGIN, username);
         intent.putExtra("Not_Registered", "TRUE");
         startActivity(intent);
