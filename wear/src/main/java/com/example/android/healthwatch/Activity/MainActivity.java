@@ -70,6 +70,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         setContentView(R.layout.activity_main);
 
+
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
@@ -90,6 +91,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
 
         isMeasuring = true;
+
 
         nodeListener = new NodeApi.NodeListener() {
             @Override
@@ -129,6 +131,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         currentHeartRate = 0;
 
 
+//        startService(new Intent(this, HeartRateService.class));
+
 
 
         measureHeartRate();
@@ -146,7 +150,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 Log.w("tag", "No heart rate found");
             }
         }
-        Log.i("heartRate", "measuring");
+//        Log.i("heartRate", "measuring");
 
     }
 
@@ -306,4 +310,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 break;
         }
     }
+
+
 }

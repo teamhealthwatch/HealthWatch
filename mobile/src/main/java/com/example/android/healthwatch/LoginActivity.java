@@ -88,6 +88,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void openProfile(FirebaseUser user){
         Intent intent = new Intent(this, HomePageActivity.class);
         intent.putExtra(KEY_LOGIN, usernameFromEmail(user.getEmail()));
+        Intent medIntent = new Intent(this, MedConditionActivity.class);
+        medIntent.putExtra(KEY_LOGIN, usernameFromEmail(user.getEmail()));
         startActivity(intent);
         finish();
     }

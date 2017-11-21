@@ -1,7 +1,10 @@
 package com.example.android.healthwatch.Activity;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.wearable.activity.WearableActivity;
@@ -10,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.healthwatch.Adapter.AlarmAdapter;
 import com.example.android.healthwatch.DatePickerFragment;
@@ -43,10 +47,14 @@ public class MedInfoActivity extends WearableActivity {
 
     private int currentAlarmIndex;
 
+    public static final int notificationId = 001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_med_info);
+        showAlarm();
 
         alarmList = new ArrayList<>();
 
@@ -114,11 +122,6 @@ public class MedInfoActivity extends WearableActivity {
                 // Add listener to alarm
 
 
-
-
-
-
-
             }
         });
     }
@@ -156,5 +159,34 @@ public class MedInfoActivity extends WearableActivity {
     public void setTempTime(String tempTime) {
         this.tempTime = tempTime;
         showDatePicker();
+    }
+
+    private void showAlarm() {
+        Toast.makeText(getApplicationContext(), "show alarm!", Toast.LENGTH_SHORT).show();
+        // The channel ID of the notification.
+        String id = "my_channel_01";
+
+
+        // Build intent for notification content
+        Intent viewIntent = new Intent(this, AlarmNotificationActivity.class);
+//        viewIntent.putExtra(EXTRA_EVENT_ID, eventId);
+        PendingIntent viewPendingIntent =
+                PendingIntent.getActivity(this, 0, viewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Notification channel ID is ignored for Android 7.1.1
+        // (API level 25) and lower.
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, id)
+                        .setSmallIcon(R.drawable.ic_stat_name)
+                        .setContentTitle("title")
+                        .setContentText("content")
+                        .setContentIntent(viewPendingIntent);
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Issue the notification with notification manager.
+        notificationManager.notify(notificationId, notificationBuilder.build());
     }
 }

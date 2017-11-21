@@ -1,13 +1,10 @@
 package com.example.android.healthwatch;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -15,17 +12,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.util.Calendar;
 
-public class MedicationForm extends AppCompatActivity {
+public class MedTrackerForm extends AppCompatActivity {
 
     int hod;
     int mint;
@@ -83,7 +77,7 @@ public class MedicationForm extends AppCompatActivity {
     public void selectTime()
     {
 
-        TimePickerDialog TimePicker = new TimePickerDialog(MedicationForm.this, new TimePickerDialog.OnTimeSetListener(){
+        TimePickerDialog TimePicker = new TimePickerDialog(MedTrackerForm.this, new TimePickerDialog.OnTimeSetListener(){
             @Override
             public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute)
             {
@@ -119,7 +113,7 @@ public class MedicationForm extends AppCompatActivity {
                 }
 
                 allTime = hour + " : " + m + " " +formart;
-//                Log.i("Time", allTime);
+//                Log.i("time", allTime);
                 actualTime.setText(allTime);
                 hod = hourOfDay;
                 mint = minute;
@@ -130,7 +124,7 @@ public class MedicationForm extends AppCompatActivity {
 
     public void selectDate()
     {
-        DatePickerDialog DatePicker = new DatePickerDialog(MedicationForm.this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog DatePicker = new DatePickerDialog(MedTrackerForm.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(android.widget.DatePicker DatePicker, int year, int month, int dayOfMonth) {
                 calendar.set(Calendar.YEAR, year);
@@ -156,7 +150,7 @@ public class MedicationForm extends AppCompatActivity {
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
                 String val = Integer.toString(newVal);
-                Log.i("Dosage: ", val);
+                Log.i("dosage: ", val);
                 Dsg = val;
                 DosageText.setText(val);
             }
@@ -165,17 +159,22 @@ public class MedicationForm extends AppCompatActivity {
 
     public  void getInfoForIntent()
     {
+
+
         MedName = MedicationName.getText().toString();
         Intent intent = new Intent(this, MedTrackerActivity.class);
-        intent.putExtra("NAME", MedName);
-        intent.putExtra("TIME", allTime);
-        intent.putExtra("DATE", allDate);
-        intent.putExtra("DOSAGE", Dsg);
-        intent.putExtra("HOUR", Integer.toString(hod));
-        intent.putExtra("MIN", Integer.toString(mint));
+        Bundle bundle = new Bundle();
+        bundle.putString("NAME", MedName);
+        bundle.putString("TIME", allTime);
+        bundle.putString("DATE", allDate);
+        bundle.putString("DOSAGE", Dsg);
+        bundle.putString("HOUR", Integer.toString(hod));
+        bundle.putString("MIN", Integer.toString(mint));
+        intent.putExtras(bundle);
 
-        Log.i("Name", MedName + allTime + allDate + Dsg);
-        startActivity(intent);
+        Log.i("name", MedName + allTime + allDate + Dsg);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
 

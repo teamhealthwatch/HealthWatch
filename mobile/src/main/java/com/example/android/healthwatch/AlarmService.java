@@ -31,7 +31,7 @@ public class AlarmService extends Service {
 
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        sendNotification("Medication Time!");
+        sendNotification("Medication time!");
 
         String state = intent.getExtras().getString("extra");
         Log.e("service", state);
