@@ -178,7 +178,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (TextUtils.isEmpty(email)) {
             editTextEmail.setError("Required.");
             valid = false;
-        } else {
+        } else if(!email.contains("@") || !email.contains(".com")){
+            editTextEmail.setError("Must be email format.");
+            valid = false;
+        }
+        else{
             editTextEmail.setError(null);
         }
 

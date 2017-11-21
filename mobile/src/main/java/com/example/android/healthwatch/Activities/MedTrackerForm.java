@@ -62,8 +62,6 @@ public class MedTrackerForm extends AppCompatActivity{
             }
         });
 
-
-
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

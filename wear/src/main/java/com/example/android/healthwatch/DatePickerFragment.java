@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.DatePicker;
 
+import com.example.android.healthwatch.Activity.MedInfoActivity;
+
 import java.util.Calendar;
 
 /**

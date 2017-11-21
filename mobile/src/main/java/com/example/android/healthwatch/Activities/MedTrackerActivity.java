@@ -58,7 +58,8 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     PendingIntent pendingIntent;
     AlarmManager alarm_manager;
 
-    ToggleButton toggleButton;
+    private int alarmId;
+
     private static MedTrackerActivity inst;
 
     public static MedTrackerActivity instance()
@@ -93,7 +94,10 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         }
         else{
             firstTime = true;
+            medications = new ArrayList<>();
+            //displayMedications(medications);
         }
+        alarmId = 0;
         //DatabaseHelper h = new DatabaseHelper();
         //int medId = h.getLastAlarmID(login);
         //if(medId == -1){
@@ -161,12 +165,18 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("medication");
-                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage, 0), new DatabaseReference.CompletionListener(){
+                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage, alarmId), new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
                                 System.out.println("Data could not be saved " + databaseError.getMessage());
                             } else {
+                                alarmId++;
+                                if(firstTime){
+                                    medications.add(new MedModel(medName, allTime, allDate, dosage, alarmId));
+                                    displayMedications(medications);
+                                }
+
                                 System.out.println("Data saved successfully.");
                             }
                         }
@@ -193,9 +203,10 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 String medTime = (String) dataSnapshot.child("time").getValue().toString();
                 String medDay = (String) dataSnapshot.child("date").getValue().toString();
                 String medDosage = (String) dataSnapshot.child("dosage").getValue().toString();
-                //int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
+                int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
+                alarmId = medId;
 
-                MedModel m = new MedModel(medName,medTime,medDay,medDosage, 0);
+                MedModel m = new MedModel(medName,medTime,medDay,medDosage, medId);
                 medications.add(m);
                 displayMedications(medications);
             }
@@ -251,15 +262,51 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    public void getAlarmPosition(int position){
-        MedModel m = medications.get(position);
-        String mDate = m.getDate();
-        String mTime = m.getTime();
-        buildAlarm(mTime, mDate, position);
-    }
+    public void getAlarmPosition(int position, boolean isOn){
+        if(isOn){
+            cancelAlarm(position);
+        }
+        else{
+            MedModel m = medications.get(position);
+            String mDate = m.getDate();
+            String mTime = m.getTime();
+            buildAlarm(mTime, mDate);
+        }
+
 
     public void cancelAlarm(int position){
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        AlarmUtil.cancelAlarm(this, alarmIntent, position);
+        alarmIntent.putExtra("extra", "alarm off");
+        sendBroadcast(alarmIntent);
+    }
+
+
+    public void turnAlarmOnOrOff(int id, boolean ck) {
+
+
+        String n = Integer.toString(id);
+            if (ck )
+            {
+                int hod = Integer.parseInt(hour);
+                int mint = Integer.parseInt(minute);
+                calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, hod);
+                calendar.set(Calendar.MINUTE, mint);
+                Log.d("MyActivity", "Alarm ON " + n);
+                myIntent.putExtra("extra", "alarm on");
+                pendingIntent = PendingIntent.getBroadcast(MedTrackerActivity.this, id, myIntent, 0);
+                alarm_manager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+
+            }
+            else
+            {
+//                pendingIntent.cancel();
+                alarm_manager.cancel(pendingIntent);
+                Log.d("MyActivity", "Alarm OFF " + n);
+                myIntent.putExtra("extra", "alarm off");
+                sendBroadcast(myIntent);
+            }
         AlarmUtil.cancelAlarm(this, alarmIntent, position);
         alarmIntent.putExtra("extra", "alarm off");
         sendBroadcast(alarmIntent);

@@ -5,11 +5,7 @@
     android:id="@+id/watch_view_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:rectLayout="@layout/rect_activity_main"
-    app:roundLayout="@layout/round_activity_main"
-    tools:context="com.example.android.healthwatch.Activity.MainActivity"
-    tools:deviceIds="wear"
-    android:background="@color/ambient_mode_text"
-    android:layout_alignParentLeft="true">
-
-</android.support.wearable.view.WatchViewStub>
+    app:rectLayout="@layout/rect_activity_emergency_contact"
+    app:roundLayout="@layout/round_activity_emergency_contact"
+    tools:context="com.example.android.healthwatch.Activity.EmergencyContactActivity"
+    tools:deviceIds="wear"></android.support.wearable.view.WatchViewStub>

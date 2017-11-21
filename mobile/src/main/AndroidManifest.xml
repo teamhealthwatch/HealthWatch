@@ -25,7 +25,6 @@
         <activity
             android:name=".Activities.MainActivity"
             android:theme="@style/AppThemeNoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -61,6 +60,23 @@
             android:name=".Activities.EmergencyInfo"
             android:label="Emergency Info" />
         <activity android:name=".Activities.AccountActivity"></activity>
+
+
+        <service
+            android:name=".ListenerService"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <!--action android:name="com.google.android.gms.wearable.DATA_CHANGED" /-->
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:pathPrefix="/emergency_contact" />
+            </intent-filter>
+
+        </service>
     </application>
 
 </manifest>

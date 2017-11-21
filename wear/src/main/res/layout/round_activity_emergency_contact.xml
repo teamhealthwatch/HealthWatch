@@ -3,24 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.healthwatch.Activity.MedConditionActivity"
+    xmlns:apps="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.android.healthwatch.Activity.EmergencyContactActivity"
     tools:deviceIds="wear_round"
     android:scrollbars="vertical">
 
-    <android.support.wear.widget.WearableRecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.wear.widget.WearableRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:id="@+id/med_recycler_view"
-        android:clickable="true"/>
+        android:id="@+id/contact_recycler_view"
+        android:clickable="true"
+        android:focusable="true"
+        apps:boxedEdges="right">
 
 
-
-
-
+    </android.support.wear.widget.WearableRecyclerView>
 
 
 </android.support.wear.widget.BoxInsetLayout>
