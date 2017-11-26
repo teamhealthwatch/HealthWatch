@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -34,6 +35,7 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public class HomePageActivity extends AppCompatActivity{
     private TextView textView;
@@ -55,6 +57,7 @@ public class HomePageActivity extends AppCompatActivity{
     NotificationManager mNotificationManager;
     int numMessages = 0;
     private String s;
+
 
 
     @Override
@@ -100,7 +103,7 @@ public class HomePageActivity extends AppCompatActivity{
                     if(payload != null) {
                         //setProgressBar(Integer.parseInt(payload));
                         int hR = (Integer.parseInt(payload));
-                        makePhoneCall(hR);
+                        //makePhoneCall(hR);
                     }
                 }
                 else{
@@ -337,4 +340,5 @@ public class HomePageActivity extends AppCompatActivity{
     }
 
 }
+
 

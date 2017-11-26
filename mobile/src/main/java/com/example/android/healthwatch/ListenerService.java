@@ -1,11 +1,13 @@
 package com.example.android.healthwatch;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.android.healthwatch.Model.Contact;
+import com.example.android.healthwatch.DatabaseHelper.Callback;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageEvent;
@@ -19,7 +21,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class ListenerService extends WearableListenerService
-        implements GoogleApiClient.ConnectionCallbacks,
+        implements GoogleApiClient.ConnectionCallbacks, Callback,
         GoogleApiClient.OnConnectionFailedListener {
     String TAG = "mobile Listener";
 
@@ -56,28 +58,16 @@ public class ListenerService extends WearableListenerService
 //            LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
 
 
-            // TODO: get list of contacts from databases
-
-            /* for now just create a local list */
-            ArrayList<Contact> newList = implementTestList();
-
-            // send contact list
-            sendList(newList);
-
+            // Uses callback method contactList declared at bottom to send emergency contacts to watch
+            DatabaseHelper dh = new DatabaseHelper();
+            dh.registerCallback(this);
+            dh.getEmergencyContactList("testUser");
 
         } else {
             super.onMessageReceived(messageEvent);
         }
     }
 
-
-    private ArrayList<Contact> implementTestList() {
-        ArrayList<Contact> resultList = new ArrayList<Contact>();
-        resultList.add(new Contact("aaa", "(656) 565-6565", false));
-        resultList.add(new Contact("bbb", "(656) 535-6585", true));
-        resultList.add(new Contact("ccc", "(655) 533-6285", false));
-        return resultList;
-    }
 
     private void sendList(ArrayList<Contact> list) {
 
@@ -126,4 +116,22 @@ public class ListenerService extends WearableListenerService
 
     }
 
+    /**
+     * Callback method that runs after the database finishes pulling the list
+     * @param myList - A returned list of all primary contacts
+     */
+    @Override
+    public void contactList(ArrayList<Contact> myList) {
+        sendList(myList);
+    }
+
+    /**
+     * Callback method that runs after the database returns the current primary contact
+     * of a user.
+     * @param c - a Contact that is the current user's listed primary contact
+     */
+    @Override
+    public void primaryContact(Contact c) {
+
+    }
 }
