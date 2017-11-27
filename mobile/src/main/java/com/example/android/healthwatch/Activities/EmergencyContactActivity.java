@@ -31,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -51,6 +53,8 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     boolean pc;
 
     boolean firstTime;
+    //Used to identify user's primary contact name
+    String pcName;
 
 
 
@@ -105,6 +109,9 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                     fullName = extras.getString("fullName");
                     phoneNumber = extras.getString("phoneNumber");
                     pc = extras.getBoolean("pc");
+                    if(pc){
+                        storePrimaryContact();
+                    }
                     storeContact();
 
                 }
@@ -113,6 +120,45 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                 }
             }
         }
+    }
+
+    private void storePrimaryContact() {
+        final String name = fullName;
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+
+        myRef.child("primaryContact").child(login).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Map<String, Object> postValues = new HashMap<String, Object>();
+                    postValues.put("name", dataSnapshot.child("name").getValue());
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference usersRef = database.getReference("primaryContact");
+                    usersRef.child(login).updateChildren(postValues);
+                }
+                else {
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference usersRef = database.getReference("primaryContact");
+                    usersRef.child(login).setValue(name, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                System.out.println("Primary Contact could not be saved " + databaseError.getMessage());
+                            } else {
+                                System.out.println("Primary Contact saved successfully.");
+                            }
+                        }
+
+                    });
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void storeContact(){

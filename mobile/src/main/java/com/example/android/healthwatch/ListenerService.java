@@ -1,13 +1,13 @@
 package com.example.android.healthwatch;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.android.healthwatch.Model.Contact;
-import com.example.android.healthwatch.DatabaseHelper.Callback;
+import com.example.android.healthwatch.DatabaseHelper.EmergencyContactCallback;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageEvent;
@@ -21,13 +21,15 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class ListenerService extends WearableListenerService
-        implements GoogleApiClient.ConnectionCallbacks, Callback,
+        implements GoogleApiClient.ConnectionCallbacks, EmergencyContactCallback,
         GoogleApiClient.OnConnectionFailedListener {
     String TAG = "mobile Listener";
 
     GoogleApiClient googleApiClient;
 
     final static String EMERGENCY_CONTACT_PATH = "/emergency_contact";
+
+    private String login;
 
     @Override
     public void onCreate() {
@@ -41,6 +43,17 @@ public class ListenerService extends WearableListenerService
                 .build();
 
         googleApiClient.connect();
+
+    }
+
+    /*
+    Method used to pass login to the ListenerService so it can call the appropriate database methods
+     */
+    public int onStartCommand(Intent intent, int flags, int startId){
+        if (intent != null && intent.getExtras() != null){
+            login = intent.getStringExtra("login");
+        }
+        return flags;
     }
 
     @Override
@@ -61,7 +74,10 @@ public class ListenerService extends WearableListenerService
             // Uses callback method contactList declared at bottom to send emergency contacts to watch
             DatabaseHelper dh = new DatabaseHelper();
             dh.registerCallback(this);
-            dh.getEmergencyContactList("testUser");
+            //Grab username
+            if(login != null){
+                dh.getEmergencyContactList(login);
+            }
 
         } else {
             super.onMessageReceived(messageEvent);
@@ -117,7 +133,7 @@ public class ListenerService extends WearableListenerService
     }
 
     /**
-     * Callback method that runs after the database finishes pulling the list
+     * EmergencyContactCallback method that runs after the database finishes pulling the list
      * @param myList - A returned list of all primary contacts
      */
     @Override
@@ -125,13 +141,4 @@ public class ListenerService extends WearableListenerService
         sendList(myList);
     }
 
-    /**
-     * Callback method that runs after the database returns the current primary contact
-     * of a user.
-     * @param c - a Contact that is the current user's listed primary contact
-     */
-    @Override
-    public void primaryContact(Contact c) {
-
-    }
 }

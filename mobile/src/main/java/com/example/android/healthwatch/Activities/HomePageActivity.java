@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//import com.example.android.healthwatch.ListenerService;
+import com.example.android.healthwatch.ListenerService;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -146,7 +148,15 @@ public class HomePageActivity extends AppCompatActivity{
         login = extras.getString("login");
         String display = "Welcome User " + login;
         textView.setText(display);
+        startListenerService(login);
 
+
+    }
+
+    private void startListenerService(String username){
+        Intent mIntent = new Intent(this, ListenerService.class);
+        mIntent.putExtra("login", username);
+        this.startService(mIntent);
 
     }
 

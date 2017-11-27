@@ -24,6 +24,8 @@ public class Contact implements Serializable {
         this.primaryContact = primaryContact;
     }
 
+
+
     public String getName() {
         return name;
     }

@@ -1,7 +1,6 @@
 package com.example.android.healthwatch;
 
 import com.example.android.healthwatch.Model.Contact;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,7 +16,8 @@ import java.util.ArrayList;
 public class DatabaseHelper {
     public int lastID = -1;
     ArrayList<Contact> contacts;
-    Callback myCallback;
+    EmergencyContactCallback contactListCallback;
+    PContactCallback pContactCallback;
 
 
     public void getEmergencyContactList(final String username){
@@ -33,7 +33,7 @@ public class DatabaseHelper {
                     Contact c = new Contact(name, phoneNumber, primaryContact);
                     contacts.add(c);
                 }
-                myCallback.contactList(contacts);
+                contactListCallback.contactList(contacts);
             }
 
             @Override
@@ -52,7 +52,7 @@ public class DatabaseHelper {
                 String name = dataSnapshot.getKey();
                 String phoneNumber = (String) dataSnapshot.child("phoneNumber").getValue().toString();
                 Contact c = new Contact(name, phoneNumber, true);
-                myCallback.primaryContact(c);
+                pContactCallback.primaryContact(c);
             }
 
             @Override
@@ -63,15 +63,18 @@ public class DatabaseHelper {
     }
 
     //Instantiates the callback for the current session
-    void registerCallback(Callback callBackClass){
-        myCallback = callBackClass;
+    void registerCallback(EmergencyContactCallback callBackClass){
+        contactListCallback = callBackClass;
     }
 
 
-    interface Callback{
+    interface EmergencyContactCallback {
         //Used to get a one-time list of the current emergency contacts associated with a user
         void contactList(ArrayList<Contact> myList);
         //Returns the current primary contact of a user
+    }
+
+    interface PContactCallback{
         void primaryContact(Contact c);
     }
 
