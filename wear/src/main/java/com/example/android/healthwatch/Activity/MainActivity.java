@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.Adapter.NavigationAdapter;
+import com.example.android.healthwatch.HeartRateService;
 import com.example.android.healthwatch.Model.NavigationItem;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -90,7 +91,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 //        circleMenu = (CircleMenu)findViewById(R.id.circle_menu);
 
 
-        isMeasuring = true;
+//        isMeasuring = true;
 
 
         nodeListener = new NodeApi.NodeListener() {
@@ -131,11 +132,10 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         currentHeartRate = 0;
 
 
-//        startService(new Intent(this, HeartRateService.class));
+        startService(new Intent(this, HeartRateService.class));
 
 
-
-        measureHeartRate();
+//        measureHeartRate();
     }
 
     private void measureHeartRate() {
@@ -194,7 +194,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+//        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         googleApiClient.reconnect();
         // Check is Google Play Services available
         /*int connectionResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());

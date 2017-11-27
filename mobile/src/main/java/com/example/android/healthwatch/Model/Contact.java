@@ -1,7 +1,5 @@
 package com.example.android.healthwatch.Model;
 
-import java.util.ArrayList;
-
 import java.io.Serializable;
 
 /**
@@ -13,7 +11,6 @@ public class Contact implements Serializable {
     public String name;
     public String phoneNumber;
     public boolean primaryContact;
-    public ArrayList<Contact> contactList;
 
     public Contact(String name, String phoneNumber, boolean primaryContact) {
         this.name = name;

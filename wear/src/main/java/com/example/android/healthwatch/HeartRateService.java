@@ -24,8 +24,8 @@ public class HeartRateService extends Service implements SensorEventListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private GoogleApiClient googleApiClient;
-    private NodeApi.NodeListener nodeListener;
+    //    private GoogleApiClient googleApiClient;
+//    private NodeApi.NodeListener nodeListener;
     private String remoteNodeId;
 
     private int currentHeartRate;
@@ -45,43 +45,43 @@ public class HeartRateService extends Service implements SensorEventListener,
     public void onCreate() {
         super.onCreate();
 
-        nodeListener = new NodeApi.NodeListener() {
-            @Override
-            public void onPeerConnected(Node node) {
-                remoteNodeId = node.getId();
-                Log.i("Node", "Node id connected to is " + remoteNodeId);
+//        nodeListener = new NodeApi.NodeListener() {
+//            @Override
+//            public void onPeerConnected(Node node) {
+//                remoteNodeId = node.getId();
+//                Log.i("Node", "Node id connected to is " + remoteNodeId);
+//
+//            }
+//
+//            @Override
+//            public void onPeerDisconnected(Node node) {
+//                Log.i("Node", "Node disconnected" + currentHeartRate);
+//
+//            }
+//
+//        };
 
-            }
-
-            @Override
-            public void onPeerDisconnected(Node node) {
-                Log.i("Node", "Node disconnected" + currentHeartRate);
-
-            }
-
-        };
-
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle bundle) {
-                        // Register Node and Message listeners
-                        Wearable.NodeApi.addListener(googleApiClient, nodeListener);
-                        // If there is a connected node, get it's id that is used when sending messages
-                        Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                            @Override
-                            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                                if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
-                                    remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-                    }
-                }).addApi(Wearable.API).build();
+//        googleApiClient = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+//                    @Override
+//                    public void onConnected(Bundle bundle) {
+//                        // Register Node and Message listeners
+//                        Wearable.NodeApi.addListener(googleApiClient, nodeListener);
+//                        // If there is a connected node, get it's id that is used when sending messages
+//                        Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+//                            @Override
+//                            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+//                                if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
+//                                    remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
+//                                }
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onConnectionSuspended(int i) {
+//                    }
+//                }).addApi(Wearable.API).build();
 
         currentHeartRate = 0;
     }
@@ -176,7 +176,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         if (sensorManager != null) {
             if (sensor != null) {
                 sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-                googleApiClient.reconnect();
+//                googleApiClient.reconnect();
             } else {
                 Log.w("tag", "No heart rate found");
             }
