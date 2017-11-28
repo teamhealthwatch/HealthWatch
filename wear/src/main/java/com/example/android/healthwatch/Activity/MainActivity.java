@@ -82,6 +82,10 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         setContentView(R.layout.activity_main);
 
+        // TODO: Fix start button crash
+
+        // TODO: Add unregister broadcast in stopService()
+
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -93,9 +97,11 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 // Top navigation drawer
                 intialDrawer();
 
-                heartRateIntent = new Intent(MainActivity.this, HeartRateService.class);
+//                heartRateIntent = new Intent(getBaseContext() , HeartRateService.class);
+//
+//                startService(heartRateIntent);
 
-                startService(heartRateIntent);
+                startService(new Intent(MainActivity.this, HeartRateService.class));
             }
         });
 
@@ -195,7 +201,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     @Override
     protected void onResume() {
         super.onResume();
-//        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+
 //        googleApiClient.reconnect();
         // Check is Google Play Services available
         /*int connectionResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
@@ -211,17 +217,16 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         } else {
             googleApiClient.connect();
         }*/
-//        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
-//        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        sensorManager.unregisterListener(this);
+
         // Unregister Node and Message listeners, disconnect GoogleApiClient and disable buttons
 //        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
 //        googleApiClient.disconnect();
+        Log.v(TAG, "onPause!!!!!");
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
@@ -230,26 +235,11 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         if (isMeasuring) {
 
-//            heartRateButton = (Button) findViewById(R.id.heartRateButton);
-//            heartRateButton.setText("Start");
-//
-//            onPause();
-//
-//            isMeasuring = false;
-//
-//            heartRateView.setText("---");
-
             stopMeasuring();
 
             Log.i("stop button", "Paused measuring");
 
         } else {
-
-//            heartRateButton = (Button) findViewById(R.id.heartRateButton);
-//            heartRateButton.setText("Stop");
-//            onResume();
-//
-//            isMeasuring = true;
 
             startMeasuring();
 
@@ -329,7 +319,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             Log.v(TAG, "Emergency Contact received message: " + message);
 
             if (heartRateView == null) {
-                heartRateView = (TextView) findViewById(R.id.heartRateView);
+                heartRateView = findViewById(R.id.heartRateView);
             }
 
             heartRateView.setText(message.toString());
@@ -339,9 +329,11 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private void stopMeasuring() {
 
         // stop service
-        stopService(heartRateIntent);
+        stopService(new Intent(MainActivity.this, HeartRateService.class));
+
 
         // change heartRateView text
+        heartRateView = findViewById(R.id.heartRateView);
         heartRateView.setText("---");
 
         // change button text
@@ -354,13 +346,14 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     private void startMeasuring() {
         // start service
-        heartRateIntent = new Intent(MainActivity.this, HeartRateService.class);
-        startService(heartRateIntent);
+//        heartRateIntent = new Intent(MainActivity.this , HeartRateService.class);
+//        startService(heartRateIntent);
+        startService(new Intent(MainActivity.this, HeartRateService.class));
 
         // register receiver
-        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
+//        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+//        messageReceiver = new MessageReceiver();
+//        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
 
         // change button text
         heartRateButton = (Button) findViewById(R.id.heartRateButton);
