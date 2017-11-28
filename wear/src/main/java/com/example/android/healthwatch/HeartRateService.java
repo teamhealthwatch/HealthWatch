@@ -7,12 +7,17 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.android.healthwatch.Activity.MainActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -24,9 +29,6 @@ public class HeartRateService extends Service implements SensorEventListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    //    private GoogleApiClient googleApiClient;
-//    private NodeApi.NodeListener nodeListener;
-    private String remoteNodeId;
 
     private int currentHeartRate;
 
@@ -34,7 +36,9 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     private Sensor sensor;
 
-    public final String HEART_RATE = "/heart_rate";
+
+    private String TAG = "HeartRateService";
+
 
     public HeartRateService() {
 
@@ -45,53 +49,14 @@ public class HeartRateService extends Service implements SensorEventListener,
     public void onCreate() {
         super.onCreate();
 
-//        nodeListener = new NodeApi.NodeListener() {
-//            @Override
-//            public void onPeerConnected(Node node) {
-//                remoteNodeId = node.getId();
-//                Log.i("Node", "Node id connected to is " + remoteNodeId);
-//
-//            }
-//
-//            @Override
-//            public void onPeerDisconnected(Node node) {
-//                Log.i("Node", "Node disconnected" + currentHeartRate);
-//
-//            }
-//
-//        };
-
-//        googleApiClient = new GoogleApiClient.Builder(this)
-//                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-//                    @Override
-//                    public void onConnected(Bundle bundle) {
-//                        // Register Node and Message listeners
-//                        Wearable.NodeApi.addListener(googleApiClient, nodeListener);
-//                        // If there is a connected node, get it's id that is used when sending messages
-//                        Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-//                            @Override
-//                            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-//                                if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
-//                                    remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-//                                }
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onConnectionSuspended(int i) {
-//                    }
-//                }).addApi(Wearable.API).build();
-
         currentHeartRate = 0;
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         onTaskRemoved(intent);
 //        Toast.makeText(getApplicationContext(), "this is a service", Toast.LENGTH_SHORT).show();
-
-
         measureHeartRate();
 
 
@@ -120,32 +85,22 @@ public class HeartRateService extends Service implements SensorEventListener,
     public void onSensorChanged(SensorEvent sensorEvent) {
         currentHeartRate = (int) (sensorEvent.values.length > 0 ? sensorEvent.values[0] : 0.0f);
 
-        String strPayload = Integer.toString(currentHeartRate);
-        byte[] payload = strPayload.getBytes();
 
-        String heartRateString = Integer.toString(currentHeartRate);
-
-        // This initialization is the one working.
-//        heartRateView = (TextView) findViewById(R.id.heartRateView);
-//
-//        heartRateView.setText(heartRateString);
 
         Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
 
-//        Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, payload).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-//            @Override
-//            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-//
-//                if (sendMessageResult.getStatus().isSuccess()) {
-//                    Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
-//                } else {
-//                    Log.i("heart rate", "problem sending heart rate");
-//                }
-//
-//            }
-//        });
-
         Toast.makeText(getApplicationContext(), "heart rate is " + currentHeartRate, Toast.LENGTH_SHORT).show();
+
+        // Pass heart rate to MainActivity
+
+        // Broadcast message to wearable activity for display
+        Intent messageIntent = new Intent();
+        messageIntent.setAction(Intent.ACTION_SEND);
+        messageIntent.putExtra("heartrate", currentHeartRate);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
+        Log.v(TAG, "heart rate sent to MainActivity");
+
+        // Pass heart rate to Listener Service
     }
 
     @Override
@@ -176,12 +131,10 @@ public class HeartRateService extends Service implements SensorEventListener,
         if (sensorManager != null) {
             if (sensor != null) {
                 sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-//                googleApiClient.reconnect();
             } else {
                 Log.w("tag", "No heart rate found");
             }
         }
-//        Log.i("heartRate", "measuring");
 
     }
 

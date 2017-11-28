@@ -1,15 +1,21 @@
 package com.example.android.healthwatch.Activity;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.wear.widget.drawer.WearableNavigationDrawerView;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
@@ -41,27 +47,30 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     private final String HEART_RATE = "/heart_rate";
 
-    private SensorManager sensorManager;
+
     private Sensor sensor;
     private TextView heartRateView;
     private Button heartRateButton;
     private boolean isMeasuring;
 
-    private GoogleApiClient googleApiClient;
-    private NodeApi.NodeListener nodeListener;
     private String remoteNodeId;
     private String t;
 
     private int currentHeartRate;
 
 
-
-//    private CircleMenu circleMenu;
-
     // Menu
     private WearableNavigationDrawerView mWearableNavigationDrawer;
 
     private ArrayList<NavigationItem> drawerList;
+
+    private Handler handler;
+
+    private String TAG = "MainActivity";
+
+    private ComponentName componentName;
+
+    MainActivity.MessageReceiver messageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +86,12 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
 
+                heartRateButton = (Button) findViewById(R.id.heartRateButton);
+
                 // Top navigation drawer
                 intialDrawer();
 
+                componentName = startService(new Intent(MainActivity.this, HeartRateService.class));
             }
         });
 
@@ -87,69 +99,99 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
 
         heartRateView = (TextView) findViewById(R.id.heartRateView);
-        heartRateButton = (Button) findViewById(R.id.heartRateButton);
-//        circleMenu = (CircleMenu)findViewById(R.id.circle_menu);
+
 
 
 //        isMeasuring = true;
 
 
-        nodeListener = new NodeApi.NodeListener() {
-            @Override
-            public void onPeerConnected(Node node) {
-                remoteNodeId = node.getId();
-                Log.i("Node", "Node id connected to is " + remoteNodeId);
+//        nodeListener = new NodeApi.NodeListener() {
+//            @Override
+//            public void onPeerConnected(Node node) {
+//                remoteNodeId = node.getId();
+//                Log.i("Node", "Node id connected to is " + remoteNodeId);
+//
+//            }
+//
+//            @Override
+//            public void onPeerDisconnected(Node node) {
+//                Log.i("Node", "Node disconnected" + currentHeartRate);
+//
+//            }
+//
+//            };
 
-            }
-
-            @Override
-            public void onPeerDisconnected(Node node) {
-                Log.i("Node", "Node disconnected" + currentHeartRate);
-
-            }
-
-            };
-
-        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-            @Override
-            public void onConnected(Bundle bundle) {
-                // Register Node and Message listeners
-                Wearable.NodeApi.addListener(googleApiClient, nodeListener);
-                // If there is a connected node, get it's id that is used when sending messages
-                Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                    @Override
-                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                        if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
-                            remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-                        }
-                    }
-                });
-            }
-            @Override
-            public void onConnectionSuspended(int i) {
-            }
-        }).addApi(Wearable.API).build();
+//        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+//            @Override
+//            public void onConnected(Bundle bundle) {
+//                // Register Node and Message listeners
+//                Wearable.NodeApi.addListener(googleApiClient, nodeListener);
+//                // If there is a connected node, get it's id that is used when sending messages
+//                Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+//                    @Override
+//                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+//                        if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
+//                            remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
+//                        }
+//                    }
+//                });
+//            }
+//            @Override
+//            public void onConnectionSuspended(int i) {
+//            }
+//        }).addApi(Wearable.API).build();
         currentHeartRate = 0;
 
 
-        startService(new Intent(this, HeartRateService.class));
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                Bundle stuff = msg.getData();
+
+                // set heart rate to text view
+                return true;
+            }
+        });
+
+        Log.v("MainActivity", "handler is declared");
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Message msg = new Message();
+                final Bundle b = new Bundle();
+                b.putString("heartrate", "get heart rate");
+                msg.setData(b);
+                handler.sendMessage(msg);
+
+                Log.v("TAG", "sent heart rate request");
+            }
+        }).start();
 
 
 //        measureHeartRate();
+
+        // Register the local broadcast receiver to receive messages from the listener.
+        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+        messageReceiver = new MainActivity.MessageReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
+
     }
+
 
     private void measureHeartRate() {
 
-        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
-
-        if (sensorManager != null) {
-            if (sensor != null) {
-                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            } else {
-                Log.w("tag", "No heart rate found");
-            }
-        }
+//        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+//        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+//
+//        if (sensorManager != null) {
+//            if (sensor != null) {
+//                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+//            } else {
+//                Log.w("tag", "No heart rate found");
+//            }
+//        }
 //        Log.i("heartRate", "measuring");
 
     }
@@ -173,18 +215,18 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
 
-        Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, payload).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-            @Override
-            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-
-                if (sendMessageResult.getStatus().isSuccess()) {
-                    Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
-                } else {
-                    Log.i("heart rate", "problem sending heart rate");
-                }
-
-            }
-        });
+//        Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, payload).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+//            @Override
+//            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+//
+//                if (sendMessageResult.getStatus().isSuccess()) {
+//                    Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
+//                } else {
+//                    Log.i("heart rate", "problem sending heart rate");
+//                }
+//
+//            }
+//        });
     }
 
     @Override
@@ -192,10 +234,11 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     }
 
+    @Override
     protected void onResume() {
         super.onResume();
 //        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        googleApiClient.reconnect();
+//        googleApiClient.reconnect();
         // Check is Google Play Services available
         /*int connectionResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 
@@ -210,15 +253,19 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         } else {
             googleApiClient.connect();
         }*/
+//        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+//        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
     }
 
+    @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(this);
+//        sensorManager.unregisterListener(this);
         // Unregister Node and Message listeners, disconnect GoogleApiClient and disable buttons
-        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
-        googleApiClient.disconnect();
-        super.onPause();
+//        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
+//        googleApiClient.disconnect();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
     public void onHeartRateButton(View v) {
@@ -227,6 +274,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
             heartRateButton = (Button) findViewById(R.id.heartRateButton);
             heartRateButton.setText("Start");
+
+            // TODO: CHANGE THIS
             onPause();
 
             isMeasuring = false;
@@ -310,6 +359,19 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 break;
         }
     }
+    
 
+    public class MessageReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Integer message = intent.getIntExtra("heartrate", -1);
+            Log.v(TAG, "Emergency Contact received message: " + message);
 
+            if (heartRateView == null) {
+                heartRateView = (TextView) findViewById(R.id.heartRateView);
+            }
+
+            heartRateView.setText(message.toString());
+        }
+    }
 }
