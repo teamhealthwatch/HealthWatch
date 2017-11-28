@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.android.healthwatch.ListenerService;
+import com.example.android.healthwatch.DatabaseHelper;
 import com.example.android.healthwatch.ListenerService;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.R;
@@ -39,7 +40,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class HomePageActivity extends AppCompatActivity{
+public class HomePageActivity extends AppCompatActivity implements DatabaseHelper.EmergencyContactCallback {
     private TextView textView;
     //private TextView heart_rate;
     Button btnSignOut;
@@ -55,10 +56,12 @@ public class HomePageActivity extends AppCompatActivity{
     private MessageApi.MessageListener messageListener;
     private TextView heartRate;
     private String login;
+    private Contact primaryContact;
+    private ArrayList<Contact> contactList;
 
     NotificationManager mNotificationManager;
     int numMessages = 0;
-    private String s;
+    DatabaseHelper dh;
 
 
 
@@ -149,6 +152,12 @@ public class HomePageActivity extends AppCompatActivity{
         String display = "Welcome User " + login;
         textView.setText(display);
         startListenerService(login);
+
+        //Grab primary contact and a list of emergency contacts for user
+        dh = new DatabaseHelper();
+        dh.registerCallback(this);
+        dh.getPrimaryContact(login);
+        dh.getEmergencyContactList(login);
 
 
     }
@@ -349,6 +358,15 @@ public class HomePageActivity extends AppCompatActivity{
         mNotificationManager.notify(notificationID, mBuilder.build());
     }
 
+    @Override
+    public void contactList(ArrayList<Contact> myList) {
+        contactList = myList;
+    }
+
+    @Override
+    public void primaryContact(Contact c) {
+        primaryContact = c;
+    }
 }
 
 

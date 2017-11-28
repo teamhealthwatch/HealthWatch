@@ -73,7 +73,7 @@
                 <data
                     android:scheme="wear"
                     android:host="*"
-                    android:pathPrefix="/emergency_contact" />
+                     />
             </intent-filter>
 
         </service>

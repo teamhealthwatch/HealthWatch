@@ -1,5 +1,6 @@
 package com.example.android.healthwatch.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.android.healthwatch.Activities.EmergencyContactActivity;
+import com.example.android.healthwatch.Activities.MedTrackerActivity;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.R;
 
@@ -21,6 +24,7 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
 
     private ArrayList<Contact> dataSet;
     Context mContext;
+    private Activity activity;
 
     // View lookup cache
     private static class ViewHolderItem {
@@ -29,10 +33,11 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
         Switch pContact;
     }
 
-    public EmergencyContactAdapter(ArrayList<Contact> data, Context context) {
+    public EmergencyContactAdapter(Activity a, ArrayList<Contact> data, Context context) {
         super(context, R.layout.contact_item, data);
         this.dataSet = data;
         this.mContext=context;
+        activity = a;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.name);
             viewHolder.txtPhoneNumber = (TextView) convertView.findViewById(R.id.phone_number);
             viewHolder.pContact = (Switch) convertView.findViewById(R.id.simpleSwitch);
-            if(contact.primaryContact){
+            if(contact.primary){
                 viewHolder.pContact.setChecked(true);
             }
 
@@ -77,28 +82,22 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
     public void onClick(View v){
         int position=(Integer) v.getTag();
         Object object= getItem(position);
-        Contact dataModel=(Contact)object;
+        Contact c=(Contact)object;
 
         switch (v.getId()){
             case R.id.simpleSwitch:
-                Switch button = (Switch) v.getTag();
-                if(dataModel.primaryContact){
-                    dataModel.primaryContact = false;
-                    updateList(dataModel, false);
+                Switch button = (Switch) v.findViewById(R.id.simpleSwitch);
+                EmergencyContactActivity mt = (EmergencyContactActivity) activity;
+                if (button.isChecked()){
+                    mt.updatePrimaryContact(c.getName());
+
                 }
-                if(!button.isChecked()){
-                    button.setChecked(true);
+                else{
+                    mt.updatePrimaryContact("");
                 }
         }
     }
 
-    private void updateList(Contact c, boolean isSwitched){
-        for (Contact listContact: dataSet) {
-            if(listContact.getName().equals(c.getName())){
-                listContact.primaryContact = isSwitched;
-            }
-        }
-    }
     public ArrayList<Contact> getList(){
         return dataSet;
     }

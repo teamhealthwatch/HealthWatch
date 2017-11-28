@@ -8,16 +8,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Ryan on 11/19/2017.
  */
 
 public class DatabaseHelper {
-    public int lastID = -1;
     ArrayList<Contact> contacts;
     EmergencyContactCallback contactListCallback;
-    PContactCallback pContactCallback;
 
 
     public void getEmergencyContactList(final String username){
@@ -29,7 +29,7 @@ public class DatabaseHelper {
                 for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
                     String name = childSnapshot.getKey();
                     String phoneNumber = (String) childSnapshot.child("phoneNumber").getValue().toString();
-                    boolean primaryContact = (boolean) childSnapshot.child("primaryContact").getValue();
+                    boolean primaryContact = (boolean) childSnapshot.child("primary").getValue();
                     Contact c = new Contact(name, phoneNumber, primaryContact);
                     contacts.add(c);
                 }
@@ -44,15 +44,92 @@ public class DatabaseHelper {
 
     }
 
-    public void getPrimaryContact(final String username){
+    /**
+     * Updates Emergency Contacts with the new state of the Primary Contact.
+     * If newPrimary is empty set all current contact's primary field to false.
+     * Else, set the primary field for the name contained in newPrimary as true and set all
+     * other contacts to false.
+     * @param username: The user that we need to send to the database to return all of their contacts
+     * @param newPrimary: Has two conditions, empty or a String containing the new primary contact
+     */
+    public void updatePrimaryContact(final String username, final String newPrimary){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("primaryContact").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+
+        myRef.child("contacts").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String name = dataSnapshot.getKey();
-                String phoneNumber = (String) dataSnapshot.child("phoneNumber").getValue().toString();
-                Contact c = new Contact(name, phoneNumber, true);
-                pContactCallback.primaryContact(c);
+                contacts = new ArrayList<>();
+                if(newPrimary.isEmpty()) {
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        String name = childSnapshot.getKey();
+                        String phoneNumber = (String) childSnapshot.child("phoneNumber").getValue().toString();
+                        boolean primaryContact = (boolean) childSnapshot.child("primary").getValue();
+                        if (primaryContact) {
+                            Map<String, Object> postValues = new HashMap<String, Object>();
+                            postValues.put("phoneNumber", phoneNumber);
+                            postValues.put("primary", false);
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference usersRef = database.getReference("contacts");
+                            usersRef.child(username).child(name).updateChildren(postValues);
+                        }
+                        contacts.add(new Contact(name, phoneNumber, false));
+
+                    }
+                }
+
+                else{
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        String phoneNumber = (String) childSnapshot.child("phoneNumber").getValue().toString();
+                        boolean primaryContact = (boolean) childSnapshot.child("primary").getValue();
+                        String name = childSnapshot.getKey();
+                        if(name.equals(newPrimary)){
+                            Map<String, Object> postValues = new HashMap<String, Object>();
+                            postValues.put("phoneNumber", phoneNumber);
+                            postValues.put("primary", true);
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference usersRef = database.getReference("contacts");
+                            usersRef.child(username).child(name).updateChildren(postValues);
+                            contacts.add(new Contact(name, phoneNumber, true));
+                        }
+                        else{
+                            if (primaryContact) {
+                                Map<String, Object> postValues = new HashMap<String, Object>();
+                                postValues.put("phoneNumber", phoneNumber);
+                                postValues.put("primary", false);
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference usersRef = database.getReference("contacts");
+                                usersRef.child(username).child(name).updateChildren(postValues);
+                            }
+                            contacts.add(new Contact(name, phoneNumber, false));
+                        }
+
+                    }
+
+                }
+
+                contactListCallback.contactList(contacts);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getPrimaryContact(String username){
+
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+
+        myRef.child("contacts").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    if((boolean) childSnapshot.child("primary").getValue()){
+                        Contact c = new Contact(childSnapshot.getKey(), (String) childSnapshot.child("phoneNumber").getValue().toString(), true);
+                        contactListCallback.primaryContact(c);
+                    }
+                }
             }
 
             @Override
@@ -63,20 +140,18 @@ public class DatabaseHelper {
     }
 
     //Instantiates the callback for the current session
-    void registerCallback(EmergencyContactCallback callBackClass){
+    public void registerCallback(EmergencyContactCallback callBackClass){
         contactListCallback = callBackClass;
     }
 
 
-    interface EmergencyContactCallback {
+    public interface EmergencyContactCallback {
         //Used to get a one-time list of the current emergency contacts associated with a user
         void contactList(ArrayList<Contact> myList);
         //Returns the current primary contact of a user
-    }
-
-    interface PContactCallback{
         void primaryContact(Contact c);
     }
+
 
 }
 

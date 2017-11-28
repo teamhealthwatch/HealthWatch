@@ -141,4 +141,9 @@ public class ListenerService extends WearableListenerService
         sendList(myList);
     }
 
+    @Override
+    public void primaryContact(Contact c) {
+
+    }
+
 }

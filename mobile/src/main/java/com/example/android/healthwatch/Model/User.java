@@ -7,24 +7,11 @@ package com.example.android.healthwatch.Model;
 public class User {
 
     int Id; //auto generated in DB
-    public String firstName;
-    public String lastName;
-    public String userName;
-    public String email;
-    public String password;
-
-    public User(){}
-
-    public User(int ID)
-    {
-        //DB Connection and request existing user
-    }
-
-    // Add new user to DB
-    public void addNewUser()
-    {
-
-    }
+    private String firstName;
+    private String lastName;
+    private String userName;
+    private String email;
+    private String password;
 
     public User(String email, String fname, String lname, String password){
         this.email = email;

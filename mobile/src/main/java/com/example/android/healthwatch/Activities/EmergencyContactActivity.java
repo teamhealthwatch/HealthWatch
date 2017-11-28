@@ -3,6 +3,7 @@ package com.example.android.healthwatch.Activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -19,7 +20,9 @@ import android.widget.Toast;
 
 
 import com.example.android.healthwatch.Adapters.EmergencyContactAdapter;
+import com.example.android.healthwatch.DatabaseHelper;
 import com.example.android.healthwatch.Fragments.EmergencyContactFragment;
+import com.example.android.healthwatch.DatabaseHelper.EmergencyContactCallback;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener {
+public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener, EmergencyContactCallback {
 
     public String login;
     public static final String KEY_LOGIN="login";
@@ -53,10 +56,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     boolean pc;
 
     boolean firstTime;
-    //Used to identify user's primary contact name
-    String pcName;
-
-
+    DatabaseHelper dh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         else{
             firstTime = true;
             contacts = new ArrayList<>();
-            //displayContacts(contacts);
+            displayContacts(contacts);
         }
         //Initialize Firebase Authenticator
         mAuth = FirebaseAuth.getInstance();
@@ -85,11 +85,13 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         index = 0;
         getSupportActionBar().setTitle("Emergency Contacts");
 
+        dh = new DatabaseHelper();
+        dh.registerCallback(this);
     }
 
 
     public void displayContacts(ArrayList<Contact> list){
-        adapter = new EmergencyContactAdapter(list, getApplicationContext());
+        adapter = new EmergencyContactAdapter(this, list, getApplicationContext());
         listView.setAdapter(adapter);
     }
 
@@ -110,9 +112,10 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                     phoneNumber = extras.getString("phoneNumber");
                     pc = extras.getBoolean("pc");
                     if(pc){
-                        storePrimaryContact();
+                        dh.updatePrimaryContact(login, "");
                     }
                     storeContact();
+                    //addContact();
 
                 }
                 else{
@@ -120,45 +123,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                 }
             }
         }
-    }
-
-    private void storePrimaryContact() {
-        final String name = fullName;
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-
-        myRef.child("primaryContact").child(login).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    Map<String, Object> postValues = new HashMap<String, Object>();
-                    postValues.put("name", dataSnapshot.child("name").getValue());
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference usersRef = database.getReference("primaryContact");
-                    usersRef.child(login).updateChildren(postValues);
-                }
-                else {
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference usersRef = database.getReference("primaryContact");
-                    usersRef.child(login).setValue(name, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            if (databaseError != null) {
-                                System.out.println("Primary Contact could not be saved " + databaseError.getMessage());
-                            } else {
-                                System.out.println("Primary Contact saved successfully.");
-                            }
-                        }
-
-                    });
-                }
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     public void storeContact(){
@@ -190,7 +154,8 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("contacts");
-                    usersRef.child(login).child(name).setValue(new Contact(phoneNumber, pContact), new DatabaseReference.CompletionListener(){
+                    Contact temp = new Contact(pNumber, pContact);
+                    usersRef.child(login).child(name).setValue(temp, new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -216,6 +181,37 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         });
     }
 
+    public void addContact(){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("contacts").child(login).child(fullName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
+                    alertDialog.setTitle("Duplicate Contact");
+                    alertDialog.setMessage("A person with that same name was found, please enter a different contact.");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+                else{
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference usersRef = database.getReference();
+                    usersRef.child("contacts").child(login).child(fullName).setValue(new Contact(phoneNumber, pc));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void getContacts(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         contacts = new ArrayList<>();
@@ -224,11 +220,12 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String name = dataSnapshot.getKey();
                 String phoneNumber = (String) dataSnapshot.child("phoneNumber").getValue().toString();
-                boolean primaryContact = (boolean) dataSnapshot.child("primaryContact").getValue();
+                boolean primaryContact = (boolean) dataSnapshot.child("primary").getValue();
                 Contact c = new Contact(name, phoneNumber, primaryContact);
                 contacts.add(c);
                 displayContacts(contacts);
             }
+
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -250,6 +247,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
             }
         });
+
     }
 
     @Override
@@ -319,4 +317,19 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     }
 
 
+    @Override
+    public void contactList(ArrayList<Contact> myList) {
+        contacts = myList;
+
+        displayContacts(contacts);
+    }
+
+    @Override
+    public void primaryContact(Contact c) {
+
+    }
+
+    public void updatePrimaryContact(String name) {
+        dh.updatePrimaryContact(login, name);
+    }
 }
