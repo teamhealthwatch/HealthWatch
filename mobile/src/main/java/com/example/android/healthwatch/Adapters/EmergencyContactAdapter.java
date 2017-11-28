@@ -3,6 +3,7 @@ package com.example.android.healthwatch.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -73,6 +74,13 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
         viewHolder.txtName.setText(contact.getName());
         //viewHolder.txtType.setText(contact.getType());
         viewHolder.txtPhoneNumber.setText(contact.getPhoneNumber());
+        viewHolder.pContact.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return event.getActionMasked() == MotionEvent.ACTION_MOVE;
+            }
+        });
         viewHolder.pContact.setOnClickListener(this);
         viewHolder.pContact.setTag(position);
         // Return the completed view to render on screen
