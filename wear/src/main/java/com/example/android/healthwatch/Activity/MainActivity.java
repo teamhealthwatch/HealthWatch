@@ -72,6 +72,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     MainActivity.MessageReceiver messageReceiver;
 
+    private Intent heartRateIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +93,9 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 // Top navigation drawer
                 intialDrawer();
 
-                componentName = startService(new Intent(MainActivity.this, HeartRateService.class));
+                heartRateIntent = new Intent(MainActivity.this, HeartRateService.class);
+
+                startService(heartRateIntent);
             }
         });
 
@@ -101,8 +105,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         heartRateView = (TextView) findViewById(R.id.heartRateView);
 
 
-
-//        isMeasuring = true;
+        isMeasuring = true;
 
 
 //        nodeListener = new NodeApi.NodeListener() {
@@ -140,37 +143,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 //            public void onConnectionSuspended(int i) {
 //            }
 //        }).addApi(Wearable.API).build();
-        currentHeartRate = 0;
 
 
-        handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                Bundle stuff = msg.getData();
-
-                // set heart rate to text view
-                return true;
-            }
-        });
-
-        Log.v("MainActivity", "handler is declared");
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final Message msg = new Message();
-                final Bundle b = new Bundle();
-                b.putString("heartrate", "get heart rate");
-                msg.setData(b);
-                handler.sendMessage(msg);
-
-                Log.v("TAG", "sent heart rate request");
-            }
-        }).start();
-
-
-//        measureHeartRate();
 
         // Register the local broadcast receiver to receive messages from the listener.
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
@@ -179,22 +153,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     }
 
-
-    private void measureHeartRate() {
-
-//        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-//        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
-//
-//        if (sensorManager != null) {
-//            if (sensor != null) {
-//                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-//            } else {
-//                Log.w("tag", "No heart rate found");
-//            }
-//        }
-//        Log.i("heartRate", "measuring");
-
-    }
 
 
 
@@ -272,25 +230,28 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         if (isMeasuring) {
 
-            heartRateButton = (Button) findViewById(R.id.heartRateButton);
-            heartRateButton.setText("Start");
+//            heartRateButton = (Button) findViewById(R.id.heartRateButton);
+//            heartRateButton.setText("Start");
+//
+//            onPause();
+//
+//            isMeasuring = false;
+//
+//            heartRateView.setText("---");
 
-            // TODO: CHANGE THIS
-            onPause();
-
-            isMeasuring = false;
-
-            heartRateView.setText("---");
+            stopMeasuring();
 
             Log.i("stop button", "Paused measuring");
 
         } else {
 
-            heartRateButton = (Button) findViewById(R.id.heartRateButton);
-            heartRateButton.setText("Stop");
-            onResume();
+//            heartRateButton = (Button) findViewById(R.id.heartRateButton);
+//            heartRateButton.setText("Stop");
+//            onResume();
+//
+//            isMeasuring = true;
 
-            isMeasuring = true;
+            startMeasuring();
 
             Log.i("start button", "Resume measuring");
         }
@@ -359,7 +320,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 break;
         }
     }
-    
+
 
     public class MessageReceiver extends BroadcastReceiver {
         @Override
@@ -373,5 +334,39 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
             heartRateView.setText(message.toString());
         }
+    }
+
+    private void stopMeasuring() {
+
+        // stop service
+        stopService(heartRateIntent);
+
+        // change heartRateView text
+        heartRateView.setText("---");
+
+        // change button text
+        heartRateButton = (Button) findViewById(R.id.heartRateButton);
+        heartRateButton.setText("Start");
+
+        // change boolean
+        isMeasuring = false;
+    }
+
+    private void startMeasuring() {
+        // start service
+        heartRateIntent = new Intent(MainActivity.this, HeartRateService.class);
+        startService(heartRateIntent);
+
+        // register receiver
+        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
+
+        // change button text
+        heartRateButton = (Button) findViewById(R.id.heartRateButton);
+        heartRateButton.setText("Stop");
+
+        // change boolean;
+        isMeasuring = true;
     }
 }

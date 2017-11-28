@@ -74,11 +74,11 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
-        restartServiceIntent.setPackage(getPackageName());
-        startService(restartServiceIntent);
-
-        super.onTaskRemoved(rootIntent);
+//        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+//        restartServiceIntent.setPackage(getPackageName());
+//        startService(restartServiceIntent);
+//
+//        super.onTaskRemoved(rootIntent);
     }
 
     @Override
@@ -123,6 +123,14 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        sensorManager.unregisterListener(this);
+        stopSelf();
+    }
+
     private void measureHeartRate() {
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -131,6 +139,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         if (sensorManager != null) {
             if (sensor != null) {
                 sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                Log.v(TAG, "sensor manager is registered");
             } else {
                 Log.w("tag", "No heart rate found");
             }
