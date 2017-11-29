@@ -31,13 +31,14 @@ import com.example.android.healthwatch.Activity.MainActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 public class HeartRateService extends Service implements SensorEventListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener{
 
 
     private int currentHeartRate;
@@ -53,6 +54,13 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     int notificationID = 1;
 
+    private final String HEART_RATE = "/heart_rate";
+
+    private String remoteNodeId;
+    private String t;
+
+    private GoogleApiClient googleApiClient;
+    private NodeApi.NodeListener nodeListener;
 
     public HeartRateService() {
 
@@ -62,6 +70,8 @@ public class HeartRateService extends Service implements SensorEventListener,
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Log.v(TAG, "onCreate");
 
         currentHeartRate = 0;
 
@@ -73,6 +83,55 @@ public class HeartRateService extends Service implements SensorEventListener,
 
 
         Log.v(TAG, "onStartCommand");
+
+        nodeListener = new NodeApi.NodeListener() {
+            @Override
+            public void onPeerConnected(Node node) {
+                remoteNodeId = node.getId();
+                Log.i("Node", "Node id connected to is " + remoteNodeId);
+
+            }
+
+            @Override
+            public void onPeerDisconnected(Node node) {
+                Log.i("Node", "Node disconnected" + currentHeartRate);
+
+            }
+
+        };
+
+        if(googleApiClient == null){
+
+            Log.v(TAG, "google api client is null");
+
+            googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(Bundle bundle) {
+                    // Register Node and Message listeners
+                    Wearable.NodeApi.addListener(googleApiClient, nodeListener);
+                    // If there is a connected node, get it's id that is used when sending messages
+                    Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                        @Override
+                        public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                            if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
+                                remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
+                            }
+                        }
+                    });
+                }
+                @Override
+                public void onConnectionSuspended(int i) {
+                }
+            }).addApi(Wearable.API).build();
+        }
+
+        googleApiClient.connect();
+
+
+
+
+
+
 
         createchannel();
 
@@ -155,7 +214,26 @@ public class HeartRateService extends Service implements SensorEventListener,
         LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
         Log.v(TAG, "heart rate sent to MainActivity");
 
-        // Pass heart rate to Listener Service
+        // Send heart rate to phone
+        String strPayload = Integer.toString(currentHeartRate);
+        byte [] payload = strPayload.getBytes();
+
+
+
+                Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, payload).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+            @Override
+            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+
+                if (sendMessageResult.getStatus().isSuccess()) {
+                    Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
+                } else {
+                    Log.i("heart rate", "problem sending heart rate");
+                }
+
+            }
+        });
+
+
     }
 
     @Override
@@ -163,20 +241,20 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
+//    @Override
+//    public void onConnected(@Nullable Bundle bundle) {
+//        Log.v(TAG, "google client api connected");
+//    }
+//
+//    @Override
+//    public void onConnectionSuspended(int i) {
+//
+//    }
+//
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//
+//    }
 
     @Override
     public void onDestroy() {
@@ -224,4 +302,18 @@ public class HeartRateService extends Service implements SensorEventListener,
     }
 
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.v(TAG, "google api is connneted");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }

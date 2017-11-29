@@ -40,23 +40,13 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.ArrayList;
 
 @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
-public class MainActivity extends WearableActivity implements SensorEventListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        WearableNavigationDrawerView.OnItemSelectedListener{
+public class MainActivity extends WearableActivity implements WearableNavigationDrawerView.OnItemSelectedListener{
 
-    private final String HEART_RATE = "/heart_rate";
-
-
-    private Sensor sensor;
     private TextView heartRateView;
     private Button heartRateButton;
     private boolean isMeasuring;
 
-    private String remoteNodeId;
-    private String t;
 
-    private int currentHeartRate;
 
 
     // Menu
@@ -64,15 +54,12 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     private ArrayList<NavigationItem> drawerList;
 
-    private Handler handler;
+
 
     private String TAG = "MainActivity";
 
-    private ComponentName componentName;
 
     MainActivity.MessageReceiver messageReceiver;
-
-    private Intent heartRateIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +69,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         setContentView(R.layout.activity_main);
 
-        // TODO: Fix start button crash
-
-        // TODO: Add unregister broadcast in stopService()
 
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
@@ -96,10 +80,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
                 // Top navigation drawer
                 intialDrawer();
-
-//                heartRateIntent = new Intent(getBaseContext() , HeartRateService.class);
-//
-//                startService(heartRateIntent);
 
                 startService(new Intent(MainActivity.this, HeartRateService.class));
             }
@@ -114,42 +94,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         isMeasuring = true;
 
 
-//        nodeListener = new NodeApi.NodeListener() {
-//            @Override
-//            public void onPeerConnected(Node node) {
-//                remoteNodeId = node.getId();
-//                Log.i("Node", "Node id connected to is " + remoteNodeId);
-//
-//            }
-//
-//            @Override
-//            public void onPeerDisconnected(Node node) {
-//                Log.i("Node", "Node disconnected" + currentHeartRate);
-//
-//            }
-//
-//            };
-
-//        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-//            @Override
-//            public void onConnected(Bundle bundle) {
-//                // Register Node and Message listeners
-//                Wearable.NodeApi.addListener(googleApiClient, nodeListener);
-//                // If there is a connected node, get it's id that is used when sending messages
-//                Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-//                    @Override
-//                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-//                        if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
-//                            remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-//                        }
-//                    }
-//                });
-//            }
-//            @Override
-//            public void onConnectionSuspended(int i) {
-//            }
-//        }).addApi(Wearable.API).build();
-
 
 
         // Register the local broadcast receiver to receive messages from the listener.
@@ -162,70 +106,11 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
 
 
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-
-        currentHeartRate = (int)(sensorEvent.values.length > 0 ? sensorEvent.values[0] : 0.0f);
-
-        String strPayload = Integer.toString(currentHeartRate);
-        byte [] payload = strPayload.getBytes();
-
-        String heartRateString = Integer.toString(currentHeartRate);
-
-        // This initialization is the one working.
-        heartRateView = (TextView) findViewById(R.id.heartRateView);
-
-        heartRateView.setText(heartRateString);
-
-        Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
-
-//        Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, payload).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-//            @Override
-//            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-//
-//                if (sendMessageResult.getStatus().isSuccess()) {
-//                    Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
-//                } else {
-//                    Log.i("heart rate", "problem sending heart rate");
-//                }
-//
-//            }
-//        });
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-//        googleApiClient.reconnect();
-        // Check is Google Play Services available
-        /*int connectionResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-
-        if (connectionResult != ConnectionResult.SUCCESS) {
-            // Google Play Services is NOT available. Show appropriate error dialog
-            GooglePlayServicesUtil.showErrorDialogFragment(connectionResult, this, 0, new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    finish();
-                }
-            });
-        } else {
-            googleApiClient.connect();
-        }*/
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        // Unregister Node and Message listeners, disconnect GoogleApiClient and disable buttons
-//        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
-//        googleApiClient.disconnect();
         Log.v(TAG, "onPause!!!!!");
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
@@ -262,21 +147,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     }
 
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
@@ -316,7 +186,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         @Override
         public void onReceive(Context context, Intent intent) {
             Integer message = intent.getIntExtra("heartrate", -1);
-            Log.v(TAG, "Emergency Contact received message: " + message);
+            Log.v(TAG, "Main Activity received message: " + message);
 
             if (heartRateView == null) {
                 heartRateView = findViewById(R.id.heartRateView);
@@ -346,14 +216,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     private void startMeasuring() {
         // start service
-//        heartRateIntent = new Intent(MainActivity.this , HeartRateService.class);
-//        startService(heartRateIntent);
         startService(new Intent(MainActivity.this, HeartRateService.class));
 
-        // register receiver
-//        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
-//        messageReceiver = new MessageReceiver();
-//        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
 
         // change button text
         heartRateButton = (Button) findViewById(R.id.heartRateButton);
