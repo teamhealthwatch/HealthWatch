@@ -109,10 +109,23 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                     fullName = extras.getString("fullName");
                     phoneNumber = extras.getString("phoneNumber");
                     pc = extras.getBoolean("pc");
-                    if(pc){
-                        dh.updatePrimaryContact(login, "");
+                    if(extras.containsKey("Delete")){
+                        dh.removeEmergencyContact(login, fullName);
+                        removeFromList(fullName);
                     }
-                    storeContact();
+                    else{
+                        if(pc){
+                            dh.updatePrimaryContact(login, "");
+                        }
+                        if(extras.getBoolean("edit")){
+                            dh.updateEmergencyContact(login, fullName, phoneNumber, pc);
+                        }
+                        else{
+                            storeContact();
+                        }
+                    }
+
+
                 }
                 else{
                     Toast.makeText(EmergencyContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
@@ -190,8 +203,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                 contacts.add(c);
                 displayContacts(contacts);
             }
-
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
@@ -213,6 +224,16 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
             }
         });
 
+    }
+
+    public void removeFromList(String username){
+        for(Contact c : contacts){
+            if(c.getName().equals(username)) {
+                contacts.remove(c);
+                break;
+            }
+        }
+        displayContacts(contacts);
     }
 
     @Override
@@ -284,6 +305,26 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         if(v == fab){
             showEditDialog();
         }
+
+    }
+
+    public void onItemClick(int mPosition)
+    {
+        Contact tempContact = (Contact) contacts.get(mPosition);
+        String name = tempContact.getName();
+        String phoneNumber = tempContact.getPhoneNumber();
+        Boolean pContact = tempContact.getPrimary();
+
+        Bundle b = new Bundle();
+        b.putString("name", name);
+        b.putString("phoneNumber", phoneNumber);
+        b.putBoolean("pContact", pContact);
+
+        FragmentManager fm = getSupportFragmentManager();
+        EmergencyContactFragment editNameDialogFragment = EmergencyContactFragment.newInstance("Some Title");
+        editNameDialogFragment.setArguments(b);
+        editNameDialogFragment.show(fm, "fragment_edit_name");
+
 
     }
 

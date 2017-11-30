@@ -117,6 +117,46 @@ public class DatabaseHelper {
         });
     }
 
+    public void updateEmergencyContact(final String login, final String username, final String phoneNumber, final boolean pc){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+
+        myRef.child("contacts").child(login).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                contacts = new ArrayList<>();
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    String name = childSnapshot.getKey();
+                    String pNumber = (String) childSnapshot.child("phoneNumber").getValue().toString();
+                    boolean primaryContact = (boolean) childSnapshot.child("primary").getValue();
+                    if (name.equals(username)) {
+                        Map<String, Object> postValues = new HashMap<String, Object>();
+                        postValues.put("phoneNumber", phoneNumber);
+                        postValues.put("primary", pc);
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference usersRef = database.getReference("contacts");
+                        usersRef.child(login).child(name).updateChildren(postValues);
+                        contacts.add(new Contact(name, phoneNumber, pc));
+                    }
+                    else{
+                        contacts.add(new Contact(name, pNumber, primaryContact));
+                    }
+                }
+                contactListCallback.contactList(contacts);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void removeEmergencyContact(String login, String username){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("contacts").child(login).child(username).removeValue();
+    }
+
     public void getPrimaryContact(String username){
 
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();

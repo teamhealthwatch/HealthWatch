@@ -41,8 +41,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     String allDate;
     String medName;
     String dosage;
-    String hour;
-    String minute;
     Calendar calendar;
     Intent myIntent;
 
@@ -92,14 +90,8 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         else{
             firstTime = true;
             medications = new ArrayList<>();
-            //displayMedications(medications);
         }
         alarmId = 0;
-        //DatabaseHelper h = new DatabaseHelper();
-        //int medId = h.getLastAlarmID(login);
-        //if(medId == -1){
-
-        //}
 
 
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
@@ -147,18 +139,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 if(dataSnapshot.exists()){
                     for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
                         Log.v("Children",""+ childDataSnapshot.getKey()); //displays the key for the node
-                        //Log.v("Children",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
                     }
-                    /*AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
-                    alertDialog.setTitle("Duplicate Contact");
-                    alertDialog.setMessage("A person with that same name was found, please enter a different contact.");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();*/
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("medication");
@@ -281,6 +262,9 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     public void onItemClick(int mPosition)
     {
         MedModel tempValues = ( MedModel ) medications.get(mPosition);
+        //String name = tempValues.getName();
+        //String date = tempValues.getDate();
+        //String time = tempValues.getTime();
 
         Toast.makeText(this, " "+tempValues.getName()
                         +"Time:"+tempValues.getTime()

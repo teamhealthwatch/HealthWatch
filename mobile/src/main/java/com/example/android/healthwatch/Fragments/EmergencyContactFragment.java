@@ -34,6 +34,7 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
     private TextView editTextPhoneNumber;
     private CheckBox pc;
     private String login;
+    private boolean editMode = false;
 
     public EmergencyContactFragment(){
 
@@ -65,6 +66,17 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
 
     }
 
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        Bundle b = this.getArguments();
+        if(b != null){
+            editMode = true;
+            buildForm(b);
+            add.setText("Edit");
+            cancel.setText("Delete");
+        }
+    }
+
     public void getFormData(){
         try {
             EmergencyContactActivity callingActivity = (EmergencyContactActivity) getActivity();
@@ -80,7 +92,8 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
             contact.putString("fullName", editTextFullName.getText().toString());
             contact.putString("phoneNumber", editTextPhoneNumber.getText().toString());
             contact.putBoolean("pc", checked);
-            //Toast.makeText(EmergencyContactFragment.this,contact.getString("fullName"),Toast.LENGTH_LONG).show();
+            contact.putBoolean("edit", editMode);
+
             myIntent.putExtras(contact);
             callingActivity.onActivityResult(1, RESULT_OK, myIntent);
             dismiss();
@@ -88,6 +101,34 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
         catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void buildForm(Bundle bundle){
+        String name = bundle.getString("name");
+        String pNumber = bundle.getString("phoneNumber");
+        boolean pContact = bundle.getBoolean("pContact");
+        editTextFullName.setText(name);
+        editTextFullName.setFocusable(false);
+        editTextFullName.setEnabled(false);
+        editTextPhoneNumber.setText(pNumber);
+        if(pContact){
+            pc.setChecked(true);
+        }
+    }
+
+    private void removeContact(){
+        EmergencyContactActivity callingActivity = (EmergencyContactActivity) getActivity();
+        Intent myIntent = new Intent();
+        Bundle contact = new Bundle();
+        contact.putString("fullName", editTextFullName.getText().toString());
+        contact.putString("phoneNumber", editTextPhoneNumber.getText().toString());
+        contact.putBoolean("pc", false);
+        contact.putBoolean("edit", editMode);
+        contact.putBoolean("Delete", true);
+        myIntent.putExtras(contact);
+        callingActivity.onActivityResult(1, RESULT_OK, myIntent);
+        dismiss();
+
     }
 
     //Used to ensure the input given by the user is correct and can be stored in the database
@@ -124,6 +165,9 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
             getFormData();
         }
         if(v == cancel){
+            if(editMode){
+                removeContact();
+            }
             dismiss();
         }
     }
