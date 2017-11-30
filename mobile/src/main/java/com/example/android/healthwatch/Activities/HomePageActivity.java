@@ -1,14 +1,17 @@
 package com.example.android.healthwatch.Activities;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -63,6 +66,8 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     NotificationManager mNotificationManager;
     int numMessages = 0;
     DatabaseHelper dh;
+
+    HomePageActivity.MessageReceiver messageReceiver;
 
 
 
@@ -163,7 +168,10 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         dh.getPrimaryContact(login);
         dh.getEmergencyContactList(login);
 
-
+        // Register the local broadcast receiver to receive messages from the listener.
+        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+        messageReceiver = new HomePageActivity.MessageReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
 
 
     }
@@ -387,6 +395,20 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     public void primaryContact(Contact c) {
 
         primaryContact = c;
+    }
+
+    public class MessageReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("heartrate");
+            Log.v("HomePageActivity", "received message: " + message);
+
+            if (heartRate == null) {
+                heartRate = findViewById(R.id.heartRate);
+            }
+
+            heartRate.setText(message);
+        }
     }
 }
 
