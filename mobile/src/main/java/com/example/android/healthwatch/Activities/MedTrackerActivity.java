@@ -3,7 +3,6 @@ package com.example.android.healthwatch.Activities;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,12 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.example.android.healthwatch.AlarmReceiver;
 import com.example.android.healthwatch.Adapters.MedTrackerAdapter;
 import com.example.android.healthwatch.AlarmUtil;
-import com.example.android.healthwatch.DatabaseHelper;
 import com.example.android.healthwatch.Model.MedModel;
 import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -119,7 +116,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                     medName = extras.getString("NAME");
                     allTime = extras.getString("TIME");
                     allDate = extras.getString("DATE");
-                    dosage = extras.getString("DOSAGE");
+                    dosage = extras.getString("MESSAGE");
                     buildAlarm(allTime, allDate, 3536);
                     storeMedication();
                 }
@@ -202,7 +199,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 String medName = dataSnapshot.getKey();
                 String medTime = (String) dataSnapshot.child("time").getValue().toString();
                 String medDay = (String) dataSnapshot.child("date").getValue().toString();
-                String medDosage = (String) dataSnapshot.child("dosage").getValue().toString();
+                String medDosage = (String) dataSnapshot.child("medMessage").getValue().toString();
                 int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
                 alarmId = medId;
 
@@ -234,9 +231,9 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void finishMedication(){
-        Intent intent = new Intent(this, EmergencyInfo.class);
+        Intent intent = new Intent(this, MedConditionActivity.class);
         intent.putExtra("login", login);
-        intent.putExtra("Is_Registered", "TRUE");
+        intent.putExtra("Not_Registered", "TRUE");
         startActivity(intent);
     }
 
@@ -312,6 +309,12 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.hmpg:
+                Toast.makeText(this, "Homepage", Toast.LENGTH_SHORT).show();
+                Intent intt = new Intent(this, HomePageActivity.class);
+                intt.putExtra("login", login);
+                startActivity(intt);
+                return true;
             case R.id.med_tracker:
                 Toast.makeText(this, "Medication Tracker", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MedTrackerActivity.class);

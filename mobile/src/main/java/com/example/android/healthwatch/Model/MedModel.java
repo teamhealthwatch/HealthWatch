@@ -10,7 +10,7 @@ public class MedModel {
     String time;
     String date;
     String name;
-    String dosage;
+    String medMessage;
 
     public MedModel()
     {
@@ -21,14 +21,14 @@ public class MedModel {
         this.time = time;
         this.date = date;
         this.name = name;
-        this.dosage = dosage;
+        this.medMessage = dosage;
         this.id = id;
     }
 
     public MedModel(String time, String date, String dosage, int id){
         this.time = time;
         this.date = date;
-        this.dosage = dosage;
+        this.medMessage = dosage;
         this.id = id;
     }
 
@@ -59,11 +59,11 @@ public class MedModel {
 
     public String getDosage() {
 
-        return dosage;
+        return medMessage;
     }
 
     public void setDosage(String dosage) {
-        this.dosage = dosage;
+        this.medMessage = dosage;
     }
 
     public String getDate() {

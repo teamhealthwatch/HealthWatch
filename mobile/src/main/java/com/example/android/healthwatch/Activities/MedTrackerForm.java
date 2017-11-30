@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,30 +16,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.DateAndTimeUtil;
+import com.example.android.healthwatch.Fragments.AlarmFragment;
 import com.example.android.healthwatch.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
-public class MedTrackerForm extends AppCompatActivity{
+public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.RepeatSelectionListener{
 
     ImageView setTime;
     ImageView setDate;
+    ImageView repeat;
 //    NumberPicker numberPicker = null;
     Calendar calendar;
     TextView actualTime;
     TextView actualDate;
     TextView alarmTextView;
+    TextView repeatText;
     TextView medicationName;
     EditText notification;
+    String medMessage;
     String allTime;
     String allDate;
     String medName;
-    String dsg;
+    String dayOfWeek;
+//    String dsg;
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -46,11 +55,12 @@ public class MedTrackerForm extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medication_form);
 
-
         medicationName = (TextView)findViewById(R.id.med_name);
         actualTime = (TextView)findViewById(R.id.actualTime);
         setDate = (ImageView)findViewById(R.id.date);
         setTime = (ImageView)findViewById(R.id.Alarm);
+        repeat = (ImageView)findViewById(R.id.repeat_icon);
+        repeatText = (TextView)findViewById(R.id.repeat_day);
         notification = (EditText) findViewById(R.id.notification_content);
         actualDate = (TextView)findViewById(R.id.actualDate);
 //        numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
@@ -68,9 +78,23 @@ public class MedTrackerForm extends AppCompatActivity{
                 selectDate();
             }
         });
+
+        repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDays();
+            }
+        });
         medInfo();
         calendar = Calendar.getInstance();
     }
+
+    private void selectDays() {
+        DialogFragment dialog =  new AlarmFragment();
+        dialog.show(getSupportFragmentManager(), "AlarmFragment");
+    }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public void selectTime()
@@ -102,6 +126,12 @@ public class MedTrackerForm extends AppCompatActivity{
                 String day = Integer.toString(dayOfMonth);
                 allDate = day + "/" + m +  "/" + y;
                 actualDate.setText(allDate);
+
+                SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
+                Date date = new Date(year, month, dayOfMonth-1);
+                dayOfWeek = simpledateformat.format(date);
+
+                Log.i("dayofweek", dayOfWeek);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePicker.show();
@@ -109,7 +139,9 @@ public class MedTrackerForm extends AppCompatActivity{
 
     public void medInfo()
     {
+        medMessage = notification.getText().toString();
 
+        Log.i("notification", notification.getText().toString());
     }
 
     public void getInfoForIntent()
@@ -120,13 +152,13 @@ public class MedTrackerForm extends AppCompatActivity{
         bundle.putString("NAME", medName);
         bundle.putString("TIME", allTime);
         bundle.putString("DATE", allDate);
-        if(dsg == null){
-            dsg = "";
+        if(medMessage == null){
+            medMessage = "";
         }
-        bundle.putString("DOSAGE", dsg);
+        bundle.putString("MESSAGE", medMessage);
         intent.putExtras(bundle);
 
-        Log.i("name", medName + allTime + allDate + dsg);
+        Log.i("name", medName + allTime + allDate + medMessage);
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -235,5 +267,10 @@ public class MedTrackerForm extends AppCompatActivity{
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onRepeatSelection(DialogFragment dialog, int interval, String repeatText) {
+
     }
 }

@@ -58,7 +58,7 @@
         <receiver android:name=".AlarmReceiver" />
 
         <activity
-            android:name=".Activities.EmergencyInfo"
+            android:name=".Activities.MedConditionForm"
             android:label="Emergency Info" />
         <activity android:name=".Activities.AccountActivity"></activity>
 

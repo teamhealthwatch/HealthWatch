@@ -4,13 +4,23 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.healthwatch.Model.MedInfoModel;
 import com.example.android.healthwatch.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MedConditionActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,6 +38,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
 
     FloatingActionButton floatingButton;
     boolean fabButtonVisibility;
+    private FirebaseAuth mAuth;
 
     String medcond_;
     String allergies_;
@@ -35,10 +46,23 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     String blood_type_;
     String other_;
 
+    String login;
+    boolean firstTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_condition);
+        mAuth = FirebaseAuth.getInstance();
+        firstTime = false;
+        Intent intent = getIntent();
+        login = intent.getExtras().getString("login");
+        if(!intent.hasExtra("Not_Registered")){
+            getMedConditions();
+        }
+        else{
+            firstTime = true;
+        }
 
         Med_Cond = (TextView) findViewById(R.id.MedCondShow1);
         Allergies = (TextView) findViewById(R.id.Allergies1);
@@ -52,9 +76,75 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         Blood_type1 = (TextView) findViewById(R.id.bloodtype);
         Other1 = (TextView) findViewById(R.id.other);
 
-        conditions();
-        floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
-        floatingButton.setOnClickListener(this);
+//        conditions();
+//        floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
+//        floatingButton.setOnClickListener(this);
+    }
+
+    private void getMedConditions() {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medInfo").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.getKey().equals(login))
+                {
+                    medcond_ = (String) dataSnapshot.child("medcond").getValue().toString();
+                    allergies_ = (String) dataSnapshot.child("allergies").getValue().toString();
+                    curr_med_ = (String) dataSnapshot.child("curr_med").getValue().toString();
+                    blood_type_ = (String) dataSnapshot.child("blood_type").getValue().toString();
+                    other_ = (String) dataSnapshot.child("other").getValue().toString();
+                    setMedConditions();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void storeMedConditions() {
+
+        final String medcond  = medcond_;
+        final String allergies = allergies_;
+        final String currmed = curr_med_;
+        final String bloodtype = blood_type_;
+        final String other = other_;
+
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+
+        myRef.child("medInfo").child(login).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference usersRef = database.getReference();
+                MedInfoModel medInfo = new MedInfoModel(medcond, allergies, currmed, bloodtype, other);
+                usersRef.child("medInfo").child(login).setValue(medInfo);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public void homeClick(View v)
@@ -65,35 +155,59 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
 
-        if(v == floatingButton)
+        if(v == floatingButton && fabButtonVisibility == true)
         {
-            Intent intent = new Intent(this, EmergencyInfo.class);
+            Intent intent = new Intent(this, MedConditionForm.class);
             startActivityForResult(intent, 999);
-            finish();
+        }
+        else if(v == floatingButton && fabButtonVisibility == false)
+        {
+            Log.i("fab", "reaching");
+            Intent intent = new Intent(this, MedConditionForm.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("MEDCOND", medcond_);
+            bundle.putString("ALLERGY", allergies_);
+            bundle.putString("CURRENTMED", curr_med_);
+            bundle.putString("BLOODTYPE", blood_type_);
+            bundle.putString("OTHER", other_);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, 999);
         }
 
     }
 
-    public void conditions()
+    public void setMedConditions()
     {
-        Intent intent = getIntent();
-        if(intent.hasExtra("MEDCOND"))
-        {
+        Med_Cond.setText(medcond_);
+        Allergies.setText(allergies_);
+        Current_Med.setText(curr_med_);
+        Blood_type.setText(blood_type_);
+        Other.setText(other_);
+    }
+
+    public void conditions(Intent data)
+    {
+
+        Bundle extras = data.getExtras();
+        if(extras != null){
             visiblity(false);
-            medcond_ = getIntent().getExtras().getString("MEDCOND");
-            Med_Cond.setText(medcond_); ;
-            allergies_ = getIntent().getExtras().getString("ALLERGY");
-            Allergies.setText(allergies_); ;
-            curr_med_ = getIntent().getExtras().getString("CURRENTMED");
-            Current_Med.setText(curr_med_); ;
-            blood_type_ = getIntent().getExtras().getString("BLOODTYPE");
+            medcond_ = extras.getString("MEDCOND");
+            Med_Cond.setText(medcond_);
+            allergies_ = extras.getString("ALLERGY");
+            Allergies.setText(allergies_);
+            curr_med_ = extras.getString("CURRENTMED");
+            Current_Med.setText(curr_med_);
+            blood_type_ = extras.getString("BLOODTYPE");
             Blood_type.setText(blood_type_);
-            other_ = getIntent().getExtras().getString("OTHER");
+            other_ = extras.getString("OTHER");
             Other.setText(other_);
+            storeMedConditions();
         }
-        else {
+        else{
+//            Toast.makeText(MedConditionActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
             visiblity(true);
         }
+
     }
 
     public void visiblity(boolean cond)
@@ -112,6 +226,10 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             Blood_type.setVisibility(View.INVISIBLE);
             Other.setVisibility(View.INVISIBLE);
             fabButtonVisibility = true;
+            floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
+            floatingButton.show();
+            floatingButton.setOnClickListener(this);
+
 
         }
         else
@@ -127,8 +245,12 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             Current_Med.setVisibility(View.VISIBLE);
             Blood_type.setVisibility(View.VISIBLE);
             Other.setVisibility(View.VISIBLE);
-//            floatingButton.setVisibility(View.GONE);
             fabButtonVisibility = false;
+            floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
+            floatingButton.show();
+            floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
+            floatingButton.setOnClickListener(this);
+
         }
     }
 
@@ -136,20 +258,91 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        if(fabButtonVisibility == false)
+        if(firstTime){
+            floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
+            floatingButton.show();
+            floatingButton.setOnClickListener(this);
+//            visiblity(true);
+            MenuInflater mi = getMenuInflater();
+            mi.inflate(R.menu.menu_delete, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+        else
         {
-            getMenuInflater().inflate(R.menu.menu_edit, menu);
-            return true;
+            if(fabButtonVisibility == false)
+            {
+                fabButtonVisibility = false;
+                floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
+                floatingButton.show();
+                floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
+                floatingButton.setOnClickListener(this);
+                getMenuInflater().inflate(R.menu.menu, menu);
+                return true;
+            }
+
         }
        return false;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 999){
+            if(resultCode == RESULT_OK){
+                conditions(data);
+            }
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_edit:
-                Toast.makeText(this, "Edit =)", Toast.LENGTH_SHORT).show();
-//                finish();
+            case R.id.action_finish:
+                Toast.makeText(this, "All Done!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, HomePageActivity.class);
+                startActivity(intent);
+            case R.id.hmpg:
+                Toast.makeText(this, "Homepage", Toast.LENGTH_SHORT).show();
+                Intent intt = new Intent(this, HomePageActivity.class);
+                intt.putExtra("login", login);
+                startActivity(intt);
+                return true;
+            case R.id.med_tracker:
+                Toast.makeText(this, "Medication Tracker", Toast.LENGTH_SHORT).show();
+                Intent inten = new Intent(this, MedTrackerActivity.class);
+                inten.putExtra("login", login);
+                startActivity(inten);
+                return true;
+            case R.id.contact:
+                Toast.makeText(this, "Emergency Contact", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(this, EmergencyContactActivity.class);
+                intent2.putExtra("login", login);
+                startActivity(intent2);
+                return true;
+            case R.id.info:
+                Toast.makeText(this, "Personal Info", Toast.LENGTH_SHORT).show();
+                Intent intent3 = new Intent(this, MedConditionActivity.class);
+                intent3.putExtra("login", login);
+                startActivity(intent3);
+                return true;
+            case R.id.acct:
+                Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
+                Intent intent5 = new Intent(this, AccountActivity.class);
+                startActivity(intent5);
+                return true;
+            case R.id.history:
+                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
+                Intent intent4 = new Intent(this, MainActivity.class);
+                intent4.putExtra("login", login);
+                startActivity(intent4);
+                return true;
+            case R.id.signout:
+                Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+                Intent intent1 = new Intent(this, MainActivity.class);
+                startActivity(intent1);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

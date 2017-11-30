@@ -105,7 +105,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("users");
-                    usersRef.child(usernameFromEmail(email)).setValue(new User(email, first_name, last_name, password), new DatabaseReference.CompletionListener(){
+                    User u = new User(email, first_name, last_name,password );
+                    usersRef.child(usernameFromEmail(email)).setValue(u, new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {

@@ -106,7 +106,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
             if(resultCode == RESULT_OK){
                 Bundle extras = data.getExtras();
                 if(extras != null){
-
                     fullName = extras.getString("fullName");
                     phoneNumber = extras.getString("phoneNumber");
                     pc = extras.getBoolean("pc");
@@ -234,6 +233,12 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.hmpg:
+                Toast.makeText(this, "Homepage", Toast.LENGTH_SHORT).show();
+                Intent intt = new Intent(this, HomePageActivity.class);
+                intt.putExtra("login", login);
+                startActivity(intt);
+                return true;
             case R.id.med_tracker:
                 Toast.makeText(this, "Medication Tracker", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MedTrackerActivity.class);

@@ -195,6 +195,12 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.hmpg:
+                Toast.makeText(this, "Homepage", Toast.LENGTH_SHORT).show();
+                Intent intt = new Intent(this, HomePageActivity.class);
+                intt.putExtra("login", login);
+                startActivity(intt);
+                return true;
             case R.id.med_tracker:
                 Toast.makeText(this, "Medication Tracker", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MedTrackerActivity.class);

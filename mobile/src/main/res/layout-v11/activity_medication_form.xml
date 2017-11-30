@@ -89,7 +89,6 @@
                         android:background="@android:color/transparent"
                         android:hint="Add notification"
                         android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
-                        android:textColorHint="#8e8e8e"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -172,6 +171,7 @@
                     android:background="@android:color/darker_gray"/>
 
                 <LinearLayout
+                    android:id="@+id/repeat_row"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
@@ -181,6 +181,25 @@
                     android:paddingTop="20dp"
                     android:weightSum="1">
 
+                    <ImageView
+                        android:id="@+id/repeat_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/ic_refresh_white_24dp"
+                        android:tint="#8e8e8e" />
+
+                    <TextView
+                        android:id="@+id/repeat_day"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="22dp"
+                        android:layout_marginStart="22dp"
+                        android:lineSpacingExtra="3dp"
+                        android:text="repeat"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
 
