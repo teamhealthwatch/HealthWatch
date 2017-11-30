@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.healthwatch.DatabaseHelper;
 import com.example.android.healthwatch.Model.MedInfoModel;
 import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +50,8 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     String login;
     boolean firstTime;
 
+    DatabaseHelper dh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,9 +79,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         Blood_type1 = (TextView) findViewById(R.id.bloodtype);
         Other1 = (TextView) findViewById(R.id.other);
 
-//        conditions();
-//        floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
-//        floatingButton.setOnClickListener(this);
+        dh = new DatabaseHelper();
     }
 
     private void getMedConditions() {
@@ -322,6 +323,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
                 other_ = extras.getString("OTHER");
                 Other.setText(other_);
                 Log.i("deleting..", "DELETE");
+                dh.deleteMedConditions(login);
             }
             else
             {
@@ -338,6 +340,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
                 Blood_type.setText(blood_type_);
                 other_ = extras.getString("OTHER");
                 Other.setText(other_);
+                dh.updateMedConditions(login, medcond_, allergies_, curr_med_, blood_type_, other_);
             }
 
 

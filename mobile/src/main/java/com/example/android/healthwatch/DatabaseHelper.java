@@ -1,6 +1,7 @@
 package com.example.android.healthwatch;
 
 import com.example.android.healthwatch.Model.Contact;
+import com.example.android.healthwatch.Model.MedInfoModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -177,6 +178,36 @@ public class DatabaseHelper {
 
             }
         });
+    }
+
+
+    public void updateMedConditions(final String login, final String medCond, final String allergies,
+                                    final String medications, final String bloodType, final String other){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference medInfoRef = database.getReference();
+                for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
+                    String name = childSnapshot.getKey();
+                    if(name.equals(login)){
+                        MedInfoModel m = new MedInfoModel(medCond, allergies, medications, bloodType, other);
+                        medInfoRef.child("medInfo").child(login).setValue(m);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void deleteMedConditions(String login){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medInfo").child(login).removeValue();
     }
 
     //Instantiates the callback for the current session

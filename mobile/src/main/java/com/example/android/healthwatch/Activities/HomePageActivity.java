@@ -155,8 +155,6 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         String display = "Welcome User " + login;
         textView.setText(display);
         startListenerService(login);
-
-
         startHeartRateService(login);
 
         //Grab primary contact and a list of emergency contacts for user
