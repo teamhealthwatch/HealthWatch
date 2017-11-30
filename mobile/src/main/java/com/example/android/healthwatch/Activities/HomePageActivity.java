@@ -297,7 +297,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
             // texting
             textContacts();
 
-            //notification
+            //medicationMessage
             addNotification();
         }
     }
@@ -336,9 +336,9 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     }
 
     private void addNotification() {
-        Log.i("Start", "notification");
+        Log.i("Start", "medicationMessage");
 
-   /* Invoking the default notification service */
+   /* Invoking the default medicationMessage service */
         NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this);
 
         mBuilder.setContentTitle("New Message");
@@ -346,7 +346,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         mBuilder.setTicker("New Message Alert!");
         mBuilder.setSmallIcon(R.drawable.newhrt);
 
-   /* Increase notification number every time a new notification arrives */
+   /* Increase medicationMessage number every time a new medicationMessage arrives */
         mBuilder.setNumber(++numMessages);
 
    /* Add Big View Specific Configuration */
@@ -384,7 +384,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         mBuilder.setContentIntent(resultPendingIntent);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-   /* notificationID allows you to update the notification later on. */
+   /* notificationID allows you to update the medicationMessage later on. */
         mNotificationManager.notify(notificationID, mBuilder.build());
     }
 

@@ -40,9 +40,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     String allTime;
     String allDate;
     String medName;
-    String dosage;
-    String hour;
-    String minute;
+    String msg;
     Calendar calendar;
     Intent myIntent;
 
@@ -92,16 +90,8 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         else{
             firstTime = true;
             medications = new ArrayList<>();
-            //displayMedications(medications);
         }
         alarmId = 0;
-        //DatabaseHelper h = new DatabaseHelper();
-        //int medId = h.getLastAlarmID(login);
-        //if(medId == -1){
-
-        //}
-
-
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
@@ -116,7 +106,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                     medName = extras.getString("NAME");
                     allTime = extras.getString("TIME");
                     allDate = extras.getString("DATE");
-                    dosage = extras.getString("MESSAGE");
+                    msg = extras.getString("MESSAGE");
                     buildAlarm(allTime, allDate, 3536);
                     storeMedication();
                 }
@@ -147,22 +137,11 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 if(dataSnapshot.exists()){
                     for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
                         Log.v("Children",""+ childDataSnapshot.getKey()); //displays the key for the node
-                        //Log.v("Children",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
                     }
-                    /*AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
-                    alertDialog.setTitle("Duplicate Contact");
-                    alertDialog.setMessage("A person with that same name was found, please enter a different contact.");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();*/
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("medication");
-                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage, alarmId), new DatabaseReference.CompletionListener(){
+                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, msg, alarmId), new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -170,7 +149,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                             } else {
                                 alarmId++;
                                 if(firstTime){
-                                    medications.add(new MedModel(medName, allTime, allDate, dosage, alarmId));
+                                    medications.add(new MedModel(medName, allTime, allDate, msg, alarmId));
                                     displayMedications(medications);
                                 }
 
@@ -281,14 +260,19 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     public void onItemClick(int mPosition)
     {
         MedModel tempValues = ( MedModel ) medications.get(mPosition);
+        String name = tempValues.getName();
+        String date = tempValues.getDate();
+        String time = tempValues.getTime();
+        String msg = tempValues.getMedMessage();
+        Bundle b = new Bundle();
+        b.putString("name", name);
+        b.putString("date", date);
+        b.putString("time", time);
+        b.putString("msg", msg);
 
-        Toast.makeText(this, " "+tempValues.getName()
-                        +"Time:"+tempValues.getTime()
-                        +"Date:"+tempValues.getDate()
-                        +"Dosage:"+tempValues.getDosage(),
-                Toast.LENGTH_SHORT).show();
-        Log.i("TAG NAME: " , tempValues.getName());
-
+        Intent intent = new Intent(this, MedTrackerForm.class);
+        intent.putExtras(b);
+        startActivityForResult(intent, 1);
     }
 
     @Override

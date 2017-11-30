@@ -83,6 +83,8 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
         });
         viewHolder.pContact.setOnClickListener(this);
         viewHolder.pContact.setTag(position);
+
+        convertView.setOnClickListener(new OnItemClickListener(position));
         // Return the completed view to render on screen
         return convertView;
     }
@@ -103,6 +105,20 @@ public class EmergencyContactAdapter extends ArrayAdapter<Contact> implements Vi
                 else{
                     mt.updatePrimaryContact("");
                 }
+        }
+    }
+
+    private class OnItemClickListener  implements View.OnClickListener {
+        private int mPosition;
+
+        OnItemClickListener(int position) {
+            mPosition = position;
+        }
+
+        @Override
+        public void onClick(View view) {
+            EmergencyContactActivity sct = (EmergencyContactActivity) activity;
+            sct.onItemClick(mPosition);
         }
     }
 

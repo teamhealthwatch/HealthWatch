@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        //Remove notification bar
+        //Remove medicationMessage bar
        // this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 

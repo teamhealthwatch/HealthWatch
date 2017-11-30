@@ -99,7 +99,7 @@
             android:text="ADD"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp"
-            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
 
@@ -113,6 +113,7 @@
             android:textSize="18dp"
             android:layout_marginRight="11dp"
             android:layout_marginEnd="11dp"
+            android:layout_centerHorizontal="true"
             android:layout_alignBottom="@+id/addbttn"
             android:layout_toLeftOf="@+id/addbttn"
             android:layout_toStartOf="@+id/addbttn" />
