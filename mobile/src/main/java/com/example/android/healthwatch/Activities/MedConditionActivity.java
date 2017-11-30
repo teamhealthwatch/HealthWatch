@@ -302,26 +302,45 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void deleteMedInfo(Intent data) {
+        floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
         Bundle extras = data.getExtras();
         if(extras != null) {
 
-            fabButtonVisibility = true;
-            floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
-            floatingButton.show();
-            floatingButton.setImageResource(R.drawable.fab_button);
-            floatingButton.setOnClickListener(this);
-            medcond_ = extras.getString("MEDCOND");
-            Med_Cond.setText(medcond_);
-            allergies_ = extras.getString("ALLERGY");
-            Allergies.setText(allergies_);
-            curr_med_ = extras.getString("CURRENTMED");
-            Current_Med.setText(curr_med_);
-            blood_type_ = extras.getString("BLOODTYPE");
-            Blood_type.setText(blood_type_);
-            other_ = extras.getString("OTHER");
-            Other.setText(other_);
-            String del = extras.getString("DELETE");
-            Log.i("deleting..", del);
+            if(extras.containsKey("DELETE"))
+            {
+                fabButtonVisibility = true;
+                floatingButton.setImageResource(R.drawable.fab_button);
+                floatingButton.show();
+                medcond_ = extras.getString("MEDCOND");
+                Med_Cond.setText(medcond_);
+                allergies_ = extras.getString("ALLERGY");
+                Allergies.setText(allergies_);
+                curr_med_ = extras.getString("CURRENTMED");
+                Current_Med.setText(curr_med_);
+                blood_type_ = extras.getString("BLOODTYPE");
+                Blood_type.setText(blood_type_);
+                other_ = extras.getString("OTHER");
+                Other.setText(other_);
+                Log.i("deleting..", "DELETE");
+            }
+            else
+            {
+                fabButtonVisibility = false;
+                floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
+                floatingButton.show();
+                medcond_ = extras.getString("MEDCOND");
+                Med_Cond.setText(medcond_);
+                allergies_ = extras.getString("ALLERGY");
+                Allergies.setText(allergies_);
+                curr_med_ = extras.getString("CURRENTMED");
+                Current_Med.setText(curr_med_);
+                blood_type_ = extras.getString("BLOODTYPE");
+                Blood_type.setText(blood_type_);
+                other_ = extras.getString("OTHER");
+                Other.setText(other_);
+            }
+
+
         }
     }
 
