@@ -1,11 +1,13 @@
 package com.example.android.healthwatch;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 
 import com.example.android.healthwatch.Activities.MedConditionActivity;
+import com.example.android.healthwatch.Model.Contact;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -30,6 +33,7 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 /**
  * Created by Yan Tan on 11/29/2017.
@@ -37,7 +41,8 @@ import java.io.UnsupportedEncodingException;
 
 public class HeartRateService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener,
+        DatabaseHelper.EmergencyContactCallback{
 
     private final String HEART_RATE = "/heart_rate";
     private GoogleApiClient googleApiClient;
@@ -49,6 +54,15 @@ public class HeartRateService extends Service implements
     NotificationManager mNotificationManager;
 
     int numMessages = 0;
+
+    DatabaseHelper dh;
+
+    private String login;
+
+    private Contact primaryContact;
+    private ArrayList<Contact> contactList;
+
+    public static String id = "test_channel_01";
 
 
     @Nullable
@@ -76,6 +90,10 @@ public class HeartRateService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         Log.v(TAG, "onStartCommand");
+
+        if (intent != null && intent.getExtras() != null){
+            login = intent.getStringExtra("login");
+        }
 
 
         // Create NodeListener that enables buttons when a node is connected and disables buttons when a node is disconnected
@@ -106,11 +124,14 @@ public class HeartRateService extends Service implements
                     }
 
                     // TODO: send heart rate to HomePageActivity
+
 //                    heartRate.setText(payload);
                     if(payload != null) {
                         //setProgressBar(Integer.parseInt(payload));
                         int hR = (Integer.parseInt(payload));
-                        makePhoneCall(hR);
+                        if(primaryContact != null){
+                            makePhoneCall(hR);
+                        }
                     }
                 }
                 else{
@@ -149,6 +170,20 @@ public class HeartRateService extends Service implements
             }
         }).addApi(Wearable.API).build();
 
+        googleApiClient.connect();
+
+        //Grab primary contact and a list of emergency contacts for user
+        dh = new DatabaseHelper();
+        dh.registerCallback(this);
+
+        // avoid crashing when user kills the app and the service still try to start
+        if(login != null){
+            dh.getPrimaryContact(login);
+            dh.getEmergencyContactList(login);
+        }
+
+
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -156,9 +191,11 @@ public class HeartRateService extends Service implements
     {
         if (heartRate >= 50 ||  heartRate <= 30)
         {
+            String primaryPhoneNumber = primaryContact.getPhoneNumber();
             Log.i("Phone call", "heart rate is correct");
             Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:8016960277"));
+            callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+            //801-696-0277
 
             if (ActivityCompat.checkSelfPermission(this,
                     android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -175,7 +212,7 @@ public class HeartRateService extends Service implements
 
     public void textContacts()
     {
-        String phoneNumber = "8016960277";
+        String phoneNumber = primaryContact.getPhoneNumber();
         String text = "Be Safe!";
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -194,7 +231,7 @@ public class HeartRateService extends Service implements
         Log.i("Start", "notification");
 
    /* Invoking the default notification service */
-        NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this, id);
 
         mBuilder.setContentTitle("New Message");
         mBuilder.setContentText("You've received new message.");
@@ -203,6 +240,11 @@ public class HeartRateService extends Service implements
 
    /* Increase notification number every time a new notification arrives */
         mBuilder.setNumber(++numMessages);
+
+        // show notification on watch
+        // add support to Android 8.0 and above
+        mBuilder.setChannelId(id)
+                .extend(new NotificationCompat.WearableExtender());
 
    /* Add Big View Specific Configuration */
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -226,6 +268,8 @@ public class HeartRateService extends Service implements
 
         int notificationID = 990;
 
+        createchannel();
+
    /* Creates an explicit intent for an Activity in your app */
         Intent resultIntent = new Intent(this,MedConditionActivity.class);
 
@@ -241,5 +285,34 @@ public class HeartRateService extends Service implements
 
    /* notificationID allows you to update the notification later on. */
         mNotificationManager.notify(notificationID, mBuilder.build());
+    }
+
+    @Override
+    public void contactList(ArrayList<Contact> myList) {
+        contactList = myList;
+    }
+
+    @Override
+    public void primaryContact(Contact c) {
+        primaryContact = c;
+    }
+
+    private void createchannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel mChannel = new NotificationChannel(id,
+                    "heart rate channel",  //name of the channel
+                    NotificationManager.IMPORTANCE_DEFAULT);   //importance level
+            //important level: default is is high on the phone.  high is urgent on the phone.  low is medium, so none is low?
+            // Configure the notification channel.
+            mChannel.enableLights(true);
+            //Sets the notification light color for notifications posted to this channel, if the device supports this feature.
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setShowBadge(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            nm.createNotificationChannel(mChannel);
+
+        }
     }
 }

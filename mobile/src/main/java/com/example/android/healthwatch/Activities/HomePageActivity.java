@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 //import com.example.android.healthwatch.ListenerService;
 import com.example.android.healthwatch.DatabaseHelper;
+import com.example.android.healthwatch.HeartRateService;
 import com.example.android.healthwatch.ListenerService;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.R;
@@ -77,77 +78,77 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         mAuth = FirebaseAuth.getInstance();
         String payload = null;
 
-        // Create NodeListener that enables buttons when a node is connected and disables buttons when a node is disconnected
-        nodeListener = new NodeApi.NodeListener() {
-            @Override
-            public void onPeerConnected(Node node) {
-                remoteNodeId = node.getId();
-            }
+//         // Create NodeListener that enables buttons when a node is connected and disables buttons when a node is disconnected
+//        nodeListener = new NodeApi.NodeListener() {
+//            @Override
+//            public void onPeerConnected(Node node) {
+//                remoteNodeId = node.getId();
+//            }
+//
+//            @Override
+//            public void onPeerDisconnected(Node node) {
+//
+//            }
+//        };
 
-            @Override
-            public void onPeerDisconnected(Node node) {
-
-            }
-        };
-
-        // Create MessageListener that receives messages sent from a wearable
-        messageListener = new MessageApi.MessageListener() {
-            @Override
-            public void onMessageReceived(MessageEvent messageEvent) {
-
-                String payload = null;
-                if (messageEvent.getPath().equals(HEART_RATE)) {
-                    try {
-                        payload = new String(messageEvent.getData(), "utf-8");
-                    }
-                    catch(UnsupportedEncodingException e){
-                        Log.i("Exception", "thrown encoding");
-                    }
-
-                    heartRate.setText(payload);
-                    if(payload != null) {
-                        //setProgressBar(Integer.parseInt(payload));
-                        int hR = (Integer.parseInt(payload));
-                        if(primaryContact != null){
-                            makePhoneCall(hR);
-                        }
-                    }
-                }
-                else{
-                    Log.i("heart rate info", "couldn't get in");
-                }
-            }
-        };
+//        // Create MessageListener that receives messages sent from a wearable
+//        messageListener = new MessageApi.MessageListener() {
+//            @Override
+//            public void onMessageReceived(MessageEvent messageEvent) {
+//
+//                String payload = null;
+//                if (messageEvent.getPath().equals(HEART_RATE)) {
+//                    try {
+//                        payload = new String(messageEvent.getData(), "utf-8");
+//                    }
+//                    catch(UnsupportedEncodingException e){
+//                        Log.i("Exception", "thrown encoding");
+//                    }
+//
+//                    heartRate.setText(payload);
+//                    if(payload != null) {
+//                        //setProgressBar(Integer.parseInt(payload));
+//                        int hR = (Integer.parseInt(payload));
+//                        if(primaryContact != null){
+//                            makePhoneCall(hR);
+//                        }
+//                    }
+//                }
+//                else{
+//                    Log.i("heart rate info", "couldn't get in");
+//                }
+//            }
+//        };
 
 
-        // Create GoogleApiClient
-        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-            @Override
-            public void onConnected(Bundle bundle) {
-                // Register Node and Message listeners
-                Wearable.NodeApi.addListener(googleApiClient, nodeListener);
-                Wearable.MessageApi.addListener(googleApiClient, messageListener);
-                // If there is a connected node, get it's id that is used when sending messages
-                Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                    @Override
-                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                        if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
-                            remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onConnectionSuspended(int i) {
-            }
-        }).addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-            @Override
-            public void onConnectionFailed(ConnectionResult connectionResult) {
-                if (connectionResult.getErrorCode() == ConnectionResult.API_UNAVAILABLE){}
-                    //Toast.makeText(getApplicationContext(), getString(R.string.wearable_api_unavailable), Toast.LENGTH_LONG).show();
-            }
-        }).addApi(Wearable.API).build();
+//        // Create GoogleApiClient
+//        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+//            @Override
+//            public void onConnected(Bundle bundle) {
+//                // Register Node and Message listeners
+//                Wearable.NodeApi.addListener(googleApiClient, nodeListener);
+//                Wearable.MessageApi.addListener(googleApiClient, messageListener);
+//                // If there is a connected node, get it's id that is used when sending messages
+//                Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+//                    @Override
+//                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+//                        if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
+//                            remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
+//                        }
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onConnectionSuspended(int i) {
+//            }
+//        }).addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+//            @Override
+//            public void onConnectionFailed(ConnectionResult connectionResult) {
+//                if (connectionResult.getErrorCode() == ConnectionResult.API_UNAVAILABLE){}
+//                    //Toast.makeText(getApplicationContext(), getString(R.string.wearable_api_unavailable), Toast.LENGTH_LONG).show();
+//            }
+//        }).addApi(Wearable.API).build();
 
         Bundle extras = intent.getExtras();
         login = extras.getString("login");
@@ -155,11 +156,16 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         textView.setText(display);
         startListenerService(login);
 
+
+        startHeartRateService(login);
+
         //Grab primary contact and a list of emergency contacts for user
         dh = new DatabaseHelper();
         dh.registerCallback(this);
         dh.getPrimaryContact(login);
         dh.getEmergencyContactList(login);
+
+
 
 
     }
@@ -171,6 +177,12 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 
     }
 
+    private void startHeartRateService(String username){
+        Intent mIntent = new Intent(this, HeartRateService.class);
+        mIntent.putExtra("login", username);
+        this.startService(mIntent);
+
+    }
 
 
     @Override
@@ -229,27 +241,27 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         super.onResume();
 
         // Check is Google Play Services available
-        int connectionResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-
-        if (connectionResult != ConnectionResult.SUCCESS) {
-            // Google Play Services is NOT available. Show appropriate error dialog
-            GooglePlayServicesUtil.showErrorDialogFragment(connectionResult, this, 0, new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    finish();
-                }
-            });
-        } else {
-            googleApiClient.connect();
-        }
+//        int connectionResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+//
+//        if (connectionResult != ConnectionResult.SUCCESS) {
+//            // Google Play Services is NOT available. Show appropriate error dialog
+//            GooglePlayServicesUtil.showErrorDialogFragment(connectionResult, this, 0, new DialogInterface.OnCancelListener() {
+//                @Override
+//                public void onCancel(DialogInterface dialog) {
+//                    finish();
+//                }
+//            });
+//        } else {
+//            googleApiClient.connect();
+//        }
     }
 
     @Override
     protected void onPause() {
         // Unregister Node and Message listeners, disconnect GoogleApiClient and disable buttons
-        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
-        Wearable.MessageApi.removeListener(googleApiClient, messageListener);
-        googleApiClient.disconnect();
+//        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
+//        Wearable.MessageApi.removeListener(googleApiClient, messageListener);
+//        googleApiClient.disconnect();
         super.onPause();
     }
 

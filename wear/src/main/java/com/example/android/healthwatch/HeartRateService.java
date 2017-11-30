@@ -115,6 +115,7 @@ public class HeartRateService extends Service implements SensorEventListener,
                         public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
                             if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
                                 remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
+                                Log.v(TAG, "google api client is connected");
                             }
                         }
                     });
@@ -128,7 +129,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         googleApiClient.connect();
 
 
-
+        measureHeartRate();
 
 
 
@@ -158,7 +159,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         //Now create the notification.  We must use the NotificationCompat or it will not work on the wearable.
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, id)
-                        .setSmallIcon(R.drawable.heart)
+                        .setSmallIcon(R.drawable.newhrt)
                         .setContentTitle("HealthWatch reads heart rate in background")
                         .setContentText("Tab to change this")
                         .setContentIntent(pendingIntent)
@@ -178,7 +179,7 @@ public class HeartRateService extends Service implements SensorEventListener,
 
         notificationID++;
 
-        measureHeartRate();
+
 
         return Service.START_STICKY;
     }
