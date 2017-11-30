@@ -5,8 +5,6 @@ package com.example.android.healthwatch.Model;
  */
 
 public class User {
-
-    int Id; //auto generated in DB
     private String firstName;
     private String lastName;
     private String userName;
@@ -18,20 +16,6 @@ public class User {
         this.firstName = fname;
         this.lastName = lname;
         this.password = password;
-    }
-
-    //check if user is in DB
-    /*public boolean existingUserLogin()
-    {
-        return false;
-    }
-
-    public int getId() {
-        return Id;
-    }
-
-    public void setId(int id) {
-        Id = id;
     }
 
     public String getLastName() {
@@ -72,5 +56,5 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }*/
+    }
 }

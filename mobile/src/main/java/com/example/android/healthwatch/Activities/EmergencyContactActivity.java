@@ -40,7 +40,6 @@ import java.util.Map;
 public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener, EmergencyContactCallback {
 
     public String login;
-    public static final String KEY_LOGIN="login";
     FloatingActionButton fab;
 
     //Declare authentication
@@ -115,8 +114,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                         dh.updatePrimaryContact(login, "");
                     }
                     storeContact();
-                    //addContact();
-
                 }
                 else{
                     Toast.makeText(EmergencyContactActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
@@ -171,37 +168,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
                     });
 
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void addContact(){
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("contacts").child(login).child(fullName).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    AlertDialog alertDialog = new AlertDialog.Builder(EmergencyContactActivity.this).create();
-                    alertDialog.setTitle("Duplicate Contact");
-                    alertDialog.setMessage("A person with that same name was found, please enter a different contact.");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                }
-                else{
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference usersRef = database.getReference();
-                    usersRef.child("contacts").child(login).child(fullName).setValue(new Contact(phoneNumber, pc));
                 }
             }
 
@@ -315,7 +281,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         }
 
     }
-
 
     @Override
     public void contactList(ArrayList<Contact> myList) {

@@ -108,7 +108,9 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
                     if(payload != null) {
                         //setProgressBar(Integer.parseInt(payload));
                         int hR = (Integer.parseInt(payload));
-                        //makePhoneCall(hR);
+                        if(primaryContact != null){
+                            makePhoneCall(hR);
+                        }
                     }
                 }
                 else{
@@ -255,9 +257,11 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     {
         if (heartRate >= 50 ||  heartRate <= 30)
         {
+            String primaryPhoneNumber = primaryContact.getPhoneNumber();
             Log.i("Phone call", "heart rate is correct");
             Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:8016960277"));
+            callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+            //801-696-0277
 
             if (ActivityCompat.checkSelfPermission(this,
                     android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -274,7 +278,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 
     public void textContacts()
     {
-        String phoneNumber = "8016960277";
+        String phoneNumber = primaryContact.getPhoneNumber();
         String text = "Be Safe!";
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -365,6 +369,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 
     @Override
     public void primaryContact(Contact c) {
+
         primaryContact = c;
     }
 }
