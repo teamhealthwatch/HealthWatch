@@ -40,7 +40,6 @@ public class MedModel {
         return this.id;
     }
 
-
     public String getName() {
         return name;
     }
@@ -57,20 +56,19 @@ public class MedModel {
         this.time = time;
     }
 
-    public String getDosage() {
-
-        return medMessage;
-    }
-
-    public void setDosage(String dosage) {
-        this.medMessage = dosage;
-    }
-
     public String getDate() {
         return date;
     }
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getMedMessage() {
+        return medMessage;
+    }
+
+    public void setMedMessage(String medMessage) {
+        this.medMessage = medMessage;
     }
 }

@@ -40,7 +40,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     String allTime;
     String allDate;
     String medName;
-    String dosage;
+    String msg;
     Calendar calendar;
     Intent myIntent;
 
@@ -92,8 +92,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
             medications = new ArrayList<>();
         }
         alarmId = 0;
-
-
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
@@ -108,7 +106,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                     medName = extras.getString("NAME");
                     allTime = extras.getString("TIME");
                     allDate = extras.getString("DATE");
-                    dosage = extras.getString("MESSAGE");
+                    msg = extras.getString("MESSAGE");
                     buildAlarm(allTime, allDate, 3536);
                     storeMedication();
                 }
@@ -143,7 +141,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("medication");
-                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, dosage, alarmId), new DatabaseReference.CompletionListener(){
+                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, msg, alarmId), new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -151,7 +149,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                             } else {
                                 alarmId++;
                                 if(firstTime){
-                                    medications.add(new MedModel(medName, allTime, allDate, dosage, alarmId));
+                                    medications.add(new MedModel(medName, allTime, allDate, msg, alarmId));
                                     displayMedications(medications);
                                 }
 
@@ -262,17 +260,19 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     public void onItemClick(int mPosition)
     {
         MedModel tempValues = ( MedModel ) medications.get(mPosition);
-        //String name = tempValues.getName();
-        //String date = tempValues.getDate();
-        //String time = tempValues.getTime();
+        String name = tempValues.getName();
+        String date = tempValues.getDate();
+        String time = tempValues.getTime();
+        String msg = tempValues.getMedMessage();
+        Bundle b = new Bundle();
+        b.putString("name", name);
+        b.putString("date", date);
+        b.putString("time", time);
+        b.putString("msg", msg);
 
-        Toast.makeText(this, " "+tempValues.getName()
-                        +"Time:"+tempValues.getTime()
-                        +"Date:"+tempValues.getDate()
-                        +"Dosage:"+tempValues.getDosage(),
-                Toast.LENGTH_SHORT).show();
-        Log.i("TAG NAME: " , tempValues.getName());
-
+        Intent intent = new Intent(this, MedTrackerForm.class);
+        intent.putExtras(b);
+        startActivityForResult(intent, 1);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     TextView alarmTextView;
     TextView repeatText;
     TextView medicationName;
-    EditText notification;
+    EditText medicationMessage;
     String medMessage;
     String allTime;
     String allDate;
@@ -61,7 +61,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         setTime = (ImageView)findViewById(R.id.Alarm);
         repeat = (ImageView)findViewById(R.id.repeat_icon);
         repeatText = (TextView)findViewById(R.id.repeat_day);
-        notification = (EditText) findViewById(R.id.notification_content);
+        medicationMessage = (EditText) findViewById(R.id.notification_content);
         actualDate = (TextView)findViewById(R.id.actualDate);
 //        numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
 
@@ -87,6 +87,23 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         });
         medInfo();
         calendar = Calendar.getInstance();
+
+        Intent intent = getIntent();
+        Bundle b = intent.getExtras();
+        if(b != null){
+            medMessage = b.getString("msg");
+            allTime = b.getString("time");
+            allDate = b.getString("date");
+            medName = b.getString("name");
+            displayForm();
+        }
+    }
+
+    private void displayForm(){
+        actualDate.setText(allDate);
+        actualTime.setText(allTime);
+        medicationName.setText(medName);
+        medicationMessage.setText(medMessage);
     }
 
     private void selectDays() {
@@ -139,9 +156,9 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
 
     public void medInfo()
     {
-        medMessage = notification.getText().toString();
+        medMessage = medicationMessage.getText().toString();
 
-        Log.i("notification", notification.getText().toString());
+        Log.i("medicationMessage", medicationMessage.getText().toString());
     }
 
     public void getInfoForIntent()

@@ -42,7 +42,7 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
 
         public TextView _time;
         public TextView _date;
-        public TextView _dosage;
+        public TextView _msg;
         public TextView _name;
         public Switch _alarmbttn;
 
@@ -75,7 +75,7 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
             holder._name = (TextView) convertView.findViewById(R.id.Name);
             holder._date = (TextView) convertView.findViewById(R.id.Date);
             holder._time = (TextView) convertView.findViewById(R.id.Time);
-            holder._dosage = (TextView) convertView.findViewById(R.id.Dosage);
+            holder._msg = (TextView) convertView.findViewById(R.id.msg);
             holder._alarmbttn = (Switch) convertView.findViewById(R.id.alarm_switch);
             holder._alarmbttn.setChecked(true);
             holder._alarmbttn.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +115,7 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
             holder._name.setText( dataModel.getName() );
             holder._date.setText( dataModel.getDate() );
             holder._time.setText( dataModel.getTime() );
-            holder._dosage.setText( dataModel.getDosage() );
+            holder._msg.setText( dataModel.getMedMessage() );
             holder._alarmbttn.setVisibility(View.VISIBLE);
 
             convertView.setOnClickListener(new OnItemClickListener( position ));
