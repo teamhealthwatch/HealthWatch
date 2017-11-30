@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.Fragments.AlarmFragment;
 import com.example.android.healthwatch.R;
+
+import static android.view.View.VISIBLE;
 
 public class MedConditionForm extends AppCompatActivity {
 
@@ -120,6 +124,32 @@ public class MedConditionForm extends AppCompatActivity {
             Blood_type.setText(blood_type_);
             other_ = extras.getString("OTHER");
             Other.setText(other_);
+            Button bttn = (Button) findViewById(R.id.deleteInfo);
+            bttn.setVisibility(VISIBLE);
+            bttn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    medcond_ = " ";
+                    allergies_ = " ";
+                    curr_med_ = " ";
+                    blood_type_ = " ";
+                    other_ = " ";
+
+                    String delete = "true";
+                    Intent intent = new Intent(getApplicationContext(), MedConditionActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("MEDCOND", medcond_);
+                    bundle.putString("ALLERGY", allergies_);
+                    bundle.putString("CURRENTMED", curr_med_);
+                    bundle.putString("BLOODTYPE", blood_type_);
+                    bundle.putString("OTHER", other_);
+                    bundle.putString("DELETE", delete);
+                    intent.putExtras(bundle);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            });
         }
     }
 }

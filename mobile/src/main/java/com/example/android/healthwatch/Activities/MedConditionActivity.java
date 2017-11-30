@@ -171,7 +171,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             bundle.putString("BLOODTYPE", blood_type_);
             bundle.putString("OTHER", other_);
             intent.putExtras(bundle);
-            startActivityForResult(intent, 999);
+            startActivityForResult(intent, 998);
         }
 
     }
@@ -292,6 +292,36 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             if(resultCode == RESULT_OK){
                 conditions(data);
             }
+        }
+        else if(requestCode == 998)
+        {
+            if(resultCode == RESULT_OK) {
+                deleteMedInfo(data);
+            }
+        }
+    }
+
+    private void deleteMedInfo(Intent data) {
+        Bundle extras = data.getExtras();
+        if(extras != null) {
+
+            fabButtonVisibility = true;
+            floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
+            floatingButton.show();
+            floatingButton.setImageResource(R.drawable.fab_button);
+            floatingButton.setOnClickListener(this);
+            medcond_ = extras.getString("MEDCOND");
+            Med_Cond.setText(medcond_);
+            allergies_ = extras.getString("ALLERGY");
+            Allergies.setText(allergies_);
+            curr_med_ = extras.getString("CURRENTMED");
+            Current_Med.setText(curr_med_);
+            blood_type_ = extras.getString("BLOODTYPE");
+            Blood_type.setText(blood_type_);
+            other_ = extras.getString("OTHER");
+            Other.setText(other_);
+            String del = extras.getString("DELETE");
+            Log.i("deleting..", del);
         }
     }
 

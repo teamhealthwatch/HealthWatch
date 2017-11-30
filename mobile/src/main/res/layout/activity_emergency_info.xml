@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="50dp"
+    android:paddingBottom="30dp"
     android:paddingRight="48dp"
     android:paddingTop="50dp"
     android:paddingLeft="48dp"
@@ -106,6 +106,17 @@
             android:inputType="textPersonName"
             />
 
+        <Button
+            android:id="@+id/deleteInfo"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:text="Delete"
+            android:textSize="18dp"
+            android:visibility="invisible"
+            android:textColor="@color/colorPrimaryDark"
+            />
     </LinearLayout>
 
 </RelativeLayout>
