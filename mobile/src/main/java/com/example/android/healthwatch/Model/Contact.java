@@ -10,20 +10,19 @@ public class Contact implements Serializable {
 
     public String name;
     public String phoneNumber;
-    public boolean primary;
+    public boolean primaryContact;
 
     public Contact(String name, String phoneNumber, boolean primaryContact) {
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.primary = primaryContact;
+        this.primaryContact = primaryContact;
     }
 
     public Contact(String phoneNumber, boolean primaryContact) {
         this.name = null;
         this.phoneNumber = phoneNumber;
-        this.primary = primaryContact;
+        this.primaryContact = primaryContact;
     }
-
 
     public String getName() {
         return name;
@@ -34,6 +33,6 @@ public class Contact implements Serializable {
     }
 
     public boolean getPrimary() {
-        return primary;
+        return primaryContact;
     }
 }
