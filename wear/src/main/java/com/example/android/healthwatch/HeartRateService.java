@@ -128,10 +128,7 @@ public class HeartRateService extends Service implements SensorEventListener,
 
         googleApiClient.connect();
 
-
         measureHeartRate();
-
-
 
 
         createchannel();
@@ -178,6 +175,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         startForeground(notificationID, newNoti);
 
         notificationID++;
+
 
 
 
@@ -239,23 +237,10 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
-
+        Log.v(TAG, "onAccuracyChanged");
     }
 
-//    @Override
-//    public void onConnected(@Nullable Bundle bundle) {
-//        Log.v(TAG, "google client api connected");
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//
-//    }
-//
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//    }
+
 
     @Override
     public void onDestroy() {
@@ -264,7 +249,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         Log.v(TAG, "onDestroy!!!!!!!");
 
         sensorManager.unregisterListener(this);
-        stopSelf();
+//        stopSelf();
     }
 
     private void measureHeartRate() {
