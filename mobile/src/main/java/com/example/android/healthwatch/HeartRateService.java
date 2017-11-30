@@ -123,7 +123,8 @@ public class HeartRateService extends Service implements
                         Log.i("Exception", "thrown encoding");
                     }
 
-                    // TODO: send heart rate to HomePageActivity
+                    // send heart rate to HomePageActivity
+
 
 //                    heartRate.setText(payload);
                     if(payload != null) {
