@@ -226,7 +226,7 @@ public class HeartRateService extends Service implements
     public void textContacts()
     {
         String phoneNumber = primaryContact.getPhoneNumber();
-        String text = "Be Safe!";
+        String text = "Please contact me, I may be need in help.";
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumber, null, text, null, null);
