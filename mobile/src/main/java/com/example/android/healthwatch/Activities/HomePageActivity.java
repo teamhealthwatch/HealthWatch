@@ -197,7 +197,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 
     public void makePhoneCall(int heartRate)
     {
-        if (heartRate >= 50 ||  heartRate <= 30)
+        if (heartRate >= 200 ||  heartRate <= -100)
         {
             String primaryPhoneNumber = primaryContact.getPhoneNumber();
             Log.i("Phone call", "heart rate is correct");
@@ -211,7 +211,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
             }
             startActivity(callIntent);
             // texting
-            textContacts();
+            //textContacts();
 
             //medicationMessage
             addNotification();
