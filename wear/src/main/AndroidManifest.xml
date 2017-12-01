@@ -57,7 +57,7 @@
         <service
             android:name=".HeartRateService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name=".ListenerService"
             android:enabled="true"
@@ -76,7 +76,7 @@
 
         <activity
             android:name=".Activity.AskNotiActivity"
-            android:label="@string/title_activity_ask_noti"></activity>
+            android:label="@string/title_activity_ask_noti" />
     </application>
 
 </manifest>
