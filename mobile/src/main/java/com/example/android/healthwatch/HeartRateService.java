@@ -65,6 +65,8 @@ public class HeartRateService extends Service implements
 
     public static String id = "test_channel_01";
 
+    private boolean makeCall = false;
+
 
     @Nullable
     @Override
@@ -197,22 +199,27 @@ public class HeartRateService extends Service implements
     {
         if (heartRate >= 50 ||  heartRate <= 30)
         {
-            String primaryPhoneNumber = primaryContact.getPhoneNumber();
-            Log.i("Phone call", "heart rate is correct");
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
-            //801-696-0277
+            if(!makeCall) {
+                makeCall = true;
 
-            if (ActivityCompat.checkSelfPermission(this,
-                    android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                return;
+                String primaryPhoneNumber = primaryContact.getPhoneNumber();
+                Log.i("Phone call", "heart rate is correct");
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+                //801-696-0277
+
+                if (ActivityCompat.checkSelfPermission(this,
+                        android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(callIntent);
+                // texting
+                textContacts();
+
+                //notification
+                addNotification();
             }
-            startActivity(callIntent);
-            // texting
-            textContacts();
 
-            //notification
-            addNotification();
         }
     }
 
