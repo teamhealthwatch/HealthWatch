@@ -344,7 +344,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         if(v == floatingButton)
         {
             Intent intent = new Intent(this, MedTrackerForm.class);
-            intent.putExtra("New Alarm", "TRUE");
+            //intent.putExtra("New Alarm", "TRUE");
             startActivityForResult(intent, 1);
         }
 

@@ -85,7 +85,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                 selectDays();
             }
         });
-        medInfo();
         calendar = Calendar.getInstance();
 
         Intent intent = getIntent();
@@ -154,13 +153,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         datePicker.show();
     }
 
-    public void medInfo()
-    {
-        medMessage = medicationMessage.getText().toString();
-
-        Log.i("medicationMessage", medicationMessage.getText().toString());
-    }
-
     public void getInfoForIntent()
     {
         medName = medicationName.getText().toString();
@@ -169,9 +161,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         bundle.putString("NAME", medName);
         bundle.putString("TIME", allTime);
         bundle.putString("DATE", allDate);
-        if(medMessage == null){
-            medMessage = "";
-        }
         bundle.putString("MESSAGE", medMessage);
         intent.putExtras(bundle);
 
@@ -233,6 +222,10 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         }
         else {
             actualTime.setError(null);
+        }
+        medMessage = medicationMessage.getText().toString();
+        if(medMessage == null){
+            medMessage = "";
         }
 
         return valid;

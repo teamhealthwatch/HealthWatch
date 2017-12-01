@@ -75,7 +75,7 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
             holder._name = (TextView) convertView.findViewById(R.id.Name);
             holder._date = (TextView) convertView.findViewById(R.id.Date);
             holder._time = (TextView) convertView.findViewById(R.id.Time);
-            holder._msg = (TextView) convertView.findViewById(R.id.msg);
+            holder._msg = (TextView) convertView.findViewById(R.id.med_view);
             holder._alarmbttn = (Switch) convertView.findViewById(R.id.alarm_switch);
             holder._alarmbttn.setChecked(true);
             holder._alarmbttn.setOnClickListener(new View.OnClickListener() {
