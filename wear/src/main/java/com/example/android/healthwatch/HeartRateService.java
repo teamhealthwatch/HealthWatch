@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -27,6 +28,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.android.healthwatch.Activity.AskNotiActivity;
 import com.example.android.healthwatch.Activity.MainActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,7 +40,7 @@ import com.google.android.gms.wearable.Wearable;
 
 public class HeartRateService extends Service implements SensorEventListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener {
 
 
     private int currentHeartRate;
@@ -51,6 +53,7 @@ public class HeartRateService extends Service implements SensorEventListener,
     private String TAG = "HeartRateService";
 
     public static String id = "test_channel_01";
+    public static String id2 = "test_channel_02";
 
     int notificationID = 1;
 
@@ -100,7 +103,7 @@ public class HeartRateService extends Service implements SensorEventListener,
 
         };
 
-        if(googleApiClient == null){
+        if (googleApiClient == null) {
 
             Log.v(TAG, "google api client is null");
 
@@ -120,6 +123,7 @@ public class HeartRateService extends Service implements SensorEventListener,
                         }
                     });
                 }
+
                 @Override
                 public void onConnectionSuspended(int i) {
                 }
@@ -131,52 +135,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         measureHeartRate();
 
 
-        createchannel();
-
-        // start foreground with notification
-
-        Intent newIntent = new Intent(this, MainActivity.class);
-
-        newIntent.putExtra("NotiID", "Notification ID is " + notificationID);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, newIntent, 0);
-
-        // we are going to add an intent to open the camera here.
-        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent mainPendingIntent =
-                PendingIntent.getActivity(this, 0, mainIntent, 0);
-
-
-        // Create the action
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(R.drawable.common_google_signin_btn_icon_dark_normal_background,
-                        "Open HeathWatch", mainPendingIntent)
-                        .build();
-
-        //Now create the notification.  We must use the NotificationCompat or it will not work on the wearable.
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, id)
-                        .setSmallIcon(R.drawable.newhrt)
-                        .setContentTitle("HealthWatch reads heart rate in background")
-                        .setContentText("Tab to change this")
-                        .setContentIntent(pendingIntent)
-                        .setChannelId(id)
-                        .extend(new NotificationCompat.WearableExtender());
-
-        // Get an instance of the NotificationManager service
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this);
-
-        Notification newNoti = notificationBuilder.build();
-
-        // Build the notification and issues it with notification manager.
-        notificationManager.notify(notificationID, newNoti);
-
-        startForeground(notificationID, newNoti);
-
-        notificationID++;
-
-
+        showForegroundNoti();
 
 
         return Service.START_STICKY;
@@ -199,12 +158,13 @@ public class HeartRateService extends Service implements SensorEventListener,
         currentHeartRate = (int) (sensorEvent.values.length > 0 ? sensorEvent.values[0] : 0.0f);
 
 
-
         Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
 
         Toast.makeText(getApplicationContext(), "heart rate is " + currentHeartRate, Toast.LENGTH_SHORT).show();
 
-        // Pass heart rate to MainActivity
+//        if (currentHeartRate > 70){
+//            showAskingNoti();
+//        }
 
         // Broadcast message to wearable activity for display
         Intent messageIntent = new Intent();
@@ -213,24 +173,12 @@ public class HeartRateService extends Service implements SensorEventListener,
         LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
         Log.v(TAG, "heart rate sent to MainActivity");
 
-        // Send heart rate to phone
-        String strPayload = Integer.toString(currentHeartRate);
-        byte [] payload = strPayload.getBytes();
+        // TODO: UNCOMMENT THIS BACK!!!
+        sentToMobile();
 
 
 
-                Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, payload).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-            @Override
-            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
 
-                if (sendMessageResult.getStatus().isSuccess()) {
-                    Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
-                } else {
-                    Log.i("heart rate", "problem sending heart rate");
-                }
-
-            }
-        });
 
 
     }
@@ -241,7 +189,6 @@ public class HeartRateService extends Service implements SensorEventListener,
     }
 
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -249,7 +196,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         Log.v(TAG, "onDestroy!!!!!!!");
 
         sensorManager.unregisterListener(this);
-//        stopSelf();
+        stopSelf();
     }
 
     private void measureHeartRate() {
@@ -268,12 +215,12 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     }
 
-    private void createchannel() {
+    private void createchannel(String channel) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel mChannel = new NotificationChannel(id,
-                    "heart rate channel",  //name of the channel
-                    NotificationManager.IMPORTANCE_DEFAULT);   //importance level
+            NotificationChannel mChannel = new NotificationChannel(channel,
+                    "HealthWatch",  //name of the channel
+                    NotificationManager.IMPORTANCE_HIGH);   //importance level
             //important level: default is is high on the phone.  high is urgent on the phone.  low is medium, so none is low?
             // Configure the notification channel.
             mChannel.enableLights(true);
@@ -301,5 +248,115 @@ public class HeartRateService extends Service implements SensorEventListener,
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    private void showForegroundNoti(){
+//        createchannel();
+
+        // start foreground with notification
+
+        Intent newIntent = new Intent(this, MainActivity.class);
+
+        newIntent.putExtra("NotiID", "Notification ID is " + notificationID);
+        newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, newIntent, 0);
+
+        // we are going to add an intent to open MainActivity
+        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent mainPendingIntent =
+                PendingIntent.getActivity(this, 0, mainIntent, 0);
+
+
+        // Create the action
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(R.drawable.common_google_signin_btn_icon_dark_normal_background,
+                        "Open HeathWatch", mainPendingIntent)
+                        .build();
+
+        //Now create the notification.  We must use the NotificationCompat or it will not work on the wearable.
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, id)
+                        .setSmallIcon(R.drawable.newhrt)
+                        .setContentTitle("HealthWatch reads heart rate in background")
+                        .setContentText("Tab to change this")
+                        .setContentIntent(pendingIntent)
+                        .setChannelId(id)
+                        .extend(new NotificationCompat.WearableExtender().addAction(action));
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        Notification newNoti = notificationBuilder.build();
+
+        // Build the notification and issues it with notification manager.
+        notificationManager.notify(notificationID, newNoti);
+
+        startForeground(notificationID, newNoti);
+
+        notificationID++;
+    }
+
+    private void showAskingNoti(){
+        createchannel("id2");
+
+        // Create yes action
+        Intent notiIntent = new Intent(getApplicationContext(), AskNotiActivity.class);
+
+        notiIntent.putExtra("NotiID", "Are you OK?");
+
+        PendingIntent viewPendingIntent =
+                PendingIntent.getActivity(this, 0, notiIntent, 0);
+
+        NotificationCompat.Action.WearableExtender yesAction =
+                new NotificationCompat.Action.WearableExtender()
+                        .setHintDisplayActionInline(true)
+                        .setHintLaunchesActivity(true);
+
+        NotificationCompat.Action pictureAction =
+                new NotificationCompat.Action.Builder(
+                        R.drawable.newhrt,
+                        "HealthWatch",
+                        viewPendingIntent)
+                        .extend(yesAction)
+                        .build();
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, id2)
+                        .setSmallIcon(R.drawable.newhrt)
+                        .setContentTitle("HealthWatch")
+                        .setContentText("Are you OK?")
+                        .setContentIntent(viewPendingIntent)
+                        .setChannelId(id)
+                        .addAction(pictureAction)
+                        .setPriority(Notification.PRIORITY_MAX);
+
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Build the notification and issues it with notification manager.
+        notificationManager.notify(notificationID, notificationBuilder.build());
+        notificationID++;
+
+    }
+
+    private void sentToMobile(){
+        // Send heart rate to phone
+        String strPayload = Integer.toString(currentHeartRate);
+        byte[] payload = strPayload.getBytes();
+
+
+        Wearable.MessageApi.sendMessage(googleApiClient, remoteNodeId, HEART_RATE, payload).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+            @Override
+            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+
+                if (sendMessageResult.getStatus().isSuccess()) {
+                    Log.i("heart rate", "heart rate sent to phone " + currentHeartRate);
+                } else {
+                    Log.i("heart rate", "problem sending heart rate");
+                }
+
+            }
+        });
     }
 }

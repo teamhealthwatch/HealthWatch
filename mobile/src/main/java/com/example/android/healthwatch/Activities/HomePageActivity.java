@@ -252,6 +252,11 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 
     @Override
     protected void onResume() {
+
+        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+        messageReceiver = new HomePageActivity.MessageReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
+
         super.onResume();
 
         // Check is Google Play Services available
@@ -276,6 +281,9 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 //        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
 //        Wearable.MessageApi.removeListener(googleApiClient, messageListener);
 //        googleApiClient.disconnect();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+
         super.onPause();
     }
 

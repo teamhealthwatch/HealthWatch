@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:apps="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.android.healthwatch.Activity.MedConditionActivity"
     tools:deviceIds="wear_round"
     android:scrollbars="vertical">
@@ -15,7 +16,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:id="@+id/med_recycler_view"
-        android:clickable="true"/>
+        android:clickable="true" />
 
 
 

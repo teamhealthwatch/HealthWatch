@@ -87,6 +87,8 @@ public class ListenerService extends WearableListenerService
 
     private void sendList(ArrayList<Contact> list) {
 
+        Log.v(TAG, "send list!!!!!");
+
 
         ObjectOutput out = null;
         try {

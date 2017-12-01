@@ -8,7 +8,8 @@
     tools:deviceIds="wear_round"
     android:scrollbars="vertical">
 
-    <android.support.wear.widget.WearableRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.wear.widget.WearableRecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
 
         android:layout_width="match_parent"
@@ -16,11 +17,7 @@
         android:scrollbars="vertical"
         android:id="@+id/contact_recycler_view"
         android:clickable="true"
-        android:focusable="true"
-        apps:boxedEdges="right">
-
-
-    </android.support.wear.widget.WearableRecyclerView>
+        android:padding="5dp" />
 
 
 </android.support.wear.widget.BoxInsetLayout>

@@ -80,7 +80,7 @@ public class EmergencyContactActivity extends WearableActivity implements
         contacts = new ArrayList<Contact>();
 
         requestContacts();
-//        displayContacts(contacts);
+
 
     }
 
