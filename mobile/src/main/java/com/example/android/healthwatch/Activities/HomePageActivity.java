@@ -40,6 +40,11 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -69,7 +74,11 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 
     HomePageActivity.MessageReceiver messageReceiver;
 
-
+    String medcond_;
+    String allergies_;
+    String curr_med_;
+    String blood_type_;
+    String other_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,78 +91,6 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         Intent intent = getIntent();
         mAuth = FirebaseAuth.getInstance();
         String payload = null;
-
-//         // Create NodeListener that enables buttons when a node is connected and disables buttons when a node is disconnected
-//        nodeListener = new NodeApi.NodeListener() {
-//            @Override
-//            public void onPeerConnected(Node node) {
-//                remoteNodeId = node.getId();
-//            }
-//
-//            @Override
-//            public void onPeerDisconnected(Node node) {
-//
-//            }
-//        };
-
-//        // Create MessageListener that receives messages sent from a wearable
-//        messageListener = new MessageApi.MessageListener() {
-//            @Override
-//            public void onMessageReceived(MessageEvent messageEvent) {
-//
-//                String payload = null;
-//                if (messageEvent.getPath().equals(HEART_RATE)) {
-//                    try {
-//                        payload = new String(messageEvent.getData(), "utf-8");
-//                    }
-//                    catch(UnsupportedEncodingException e){
-//                        Log.i("Exception", "thrown encoding");
-//                    }
-//
-//                    heartRate.setText(payload);
-//                    if(payload != null) {
-//                        //setProgressBar(Integer.parseInt(payload));
-//                        int hR = (Integer.parseInt(payload));
-//                        if(primaryContact != null){
-//                            makePhoneCall(hR);
-//                        }
-//                    }
-//                }
-//                else{
-//                    Log.i("heart rate info", "couldn't get in");
-//                }
-//            }
-//        };
-
-
-//        // Create GoogleApiClient
-//        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-//            @Override
-//            public void onConnected(Bundle bundle) {
-//                // Register Node and Message listeners
-//                Wearable.NodeApi.addListener(googleApiClient, nodeListener);
-//                Wearable.MessageApi.addListener(googleApiClient, messageListener);
-//                // If there is a connected node, get it's id that is used when sending messages
-//                Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-//                    @Override
-//                    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-//                        if (getConnectedNodesResult.getStatus().isSuccess() && getConnectedNodesResult.getNodes().size() > 0) {
-//                            remoteNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-//                        }
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onConnectionSuspended(int i) {
-//            }
-//        }).addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-//            @Override
-//            public void onConnectionFailed(ConnectionResult connectionResult) {
-//                if (connectionResult.getErrorCode() == ConnectionResult.API_UNAVAILABLE){}
-//                    //Toast.makeText(getApplicationContext(), getString(R.string.wearable_api_unavailable), Toast.LENGTH_LONG).show();
-//            }
-//        }).addApi(Wearable.API).build();
 
         Bundle extras = intent.getExtras();
         login = extras.getString("login");
@@ -172,7 +109,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
         messageReceiver = new HomePageActivity.MessageReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
-
+//        makePhoneCall(80);
 
     }
 
@@ -251,29 +188,10 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Check is Google Play Services available
-//        int connectionResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-//
-//        if (connectionResult != ConnectionResult.SUCCESS) {
-//            // Google Play Services is NOT available. Show appropriate error dialog
-//            GooglePlayServicesUtil.showErrorDialogFragment(connectionResult, this, 0, new DialogInterface.OnCancelListener() {
-//                @Override
-//                public void onCancel(DialogInterface dialog) {
-//                    finish();
-//                }
-//            });
-//        } else {
-//            googleApiClient.connect();
-//        }
     }
 
     @Override
     protected void onPause() {
-        // Unregister Node and Message listeners, disconnect GoogleApiClient and disable buttons
-//        Wearable.NodeApi.removeListener(googleApiClient, nodeListener);
-//        Wearable.MessageApi.removeListener(googleApiClient, messageListener);
-//        googleApiClient.disconnect();
         super.onPause();
     }
 
@@ -303,7 +221,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     public void textContacts()
     {
         String phoneNumber = primaryContact.getPhoneNumber();
-        String text = "Be Safe!";
+        String text = "Am not ok, please help!";
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumber, null, text, null, null);
@@ -317,6 +235,42 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         }
     }
 
+    private void getMedConditions() {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medInfo").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.getKey().equals(login))
+                {
+                    medcond_ = (String) dataSnapshot.child("medcond").getValue().toString();
+                    allergies_ = (String) dataSnapshot.child("allergies").getValue().toString();
+                    curr_med_ = (String) dataSnapshot.child("curr_med").getValue().toString();
+                    blood_type_ = (String) dataSnapshot.child("blood_type").getValue().toString();
+                    other_ = (String) dataSnapshot.child("other").getValue().toString();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     private void setProgressBar(int heartRate){
         ProgressBar pb = (ProgressBar)findViewById(R.id.circulaprogbar);
         if(heartRate < 60){
@@ -334,6 +288,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     }
 
     private void addNotification() {
+        getMedConditions();
         Log.i("Start", "medicationMessage");
 
    /* Invoking the default medicationMessage service */
@@ -351,11 +306,11 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         String[] events = new String[5];
-        events[0] = new String("Medical condition:");
-        events[1] = new String("Allergies:");
-        events[2] = new String("current Medication:");
-        events[3] = new String("Blood Type:");
-        events[4] = new String("other: ");
+        events[0] = new String("Medical condition: Diabetic");
+        events[1] = new String("Allergies: Peanut");
+        events[2] = new String("current Medication: none");
+        events[3] = new String("Blood Type: A");
+        events[4] = new String("other: none");
 
         // Sets a title for the Inbox style big view
         inboxStyle.setBigContentTitle("Medication Condition:");
@@ -406,7 +361,6 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
             if (heartRate == null) {
                 heartRate = findViewById(R.id.heartRate);
             }
-
             heartRate.setText(message);
         }
     }
