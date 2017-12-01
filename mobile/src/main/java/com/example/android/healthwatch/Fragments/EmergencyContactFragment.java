@@ -69,16 +69,16 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
         Bundle b = this.getArguments();
-        if(b != null){
+       /* if(b != null){
             editMode = true;
             buildForm(b);
-            add.setText("Edit");
-            cancel.setText("Delete");
-        }
-        else{
+            //add.setText("Edit");
+            //cancel.setText("Delete");
+        }*/
+        /*else{
             //editTextFullName.setFocusable(true);
             //editTextFullName.setEnabled(true);
-        }
+        }*/
     }
 
     public void getFormData(){

@@ -58,8 +58,9 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_med_condition);
         mAuth = FirebaseAuth.getInstance();
         firstTime = false;
+        login = "faith";
         Intent intent = getIntent();
-        login = intent.getExtras().getString("login");
+        //login = intent.getExtras().getString("login");
         if(!intent.hasExtra("Not_Registered")){
             getMedConditions();
         }
