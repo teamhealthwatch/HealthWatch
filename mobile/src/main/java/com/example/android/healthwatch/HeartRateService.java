@@ -256,10 +256,10 @@ public class HeartRateService extends Service implements
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         String[] events = new String[5];
-        events[0] = new String("Medical condition:");
-        events[1] = new String("Allergies:");
-        events[2] = new String("current Medication:");
-        events[3] = new String("Blood Type:");
+        events[0] = new String("Medical condition: Diabetic");
+        events[1] = new String("Allergies: Peanut");
+        events[2] = new String("current Medication: none");
+        events[3] = new String("Blood Type: A");
         events[4] = new String("other: ");
 
         // Sets a title for the Inbox style big view
