@@ -75,6 +75,10 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
             add.setText("Edit");
             cancel.setText("Delete");
         }
+        else{
+            //editTextFullName.setFocusable(true);
+            //editTextFullName.setEnabled(true);
+        }
     }
 
     public void getFormData(){
@@ -108,8 +112,8 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
         String pNumber = bundle.getString("phoneNumber");
         boolean pContact = bundle.getBoolean("pContact");
         editTextFullName.setText(name);
-        editTextFullName.setFocusable(false);
-        editTextFullName.setEnabled(false);
+        //editTextFullName.setFocusable(false);
+        //editTextFullName.setEnabled(false);
         editTextPhoneNumber.setText(pNumber);
         if(pContact){
             pc.setChecked(true);
