@@ -138,6 +138,7 @@ public class ListenerService extends WearableListenerService
      */
     @Override
     public void contactList(ArrayList<Contact> myList) {
+
         sendList(myList);
     }
 

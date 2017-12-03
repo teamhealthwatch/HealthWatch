@@ -138,7 +138,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         Intent newIntent = new Intent(this, MainActivity.class);
 
         newIntent.putExtra("NotiID", "Notification ID is " + notificationID);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, newIntent, 0);
 
         // we are going to add an intent to open the camera here.

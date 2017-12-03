@@ -65,6 +65,8 @@ public class HeartRateService extends Service implements
 
     public static String id = "test_channel_01";
 
+    private boolean makeCall = false;
+
 
     @Nullable
     @Override
@@ -197,29 +199,34 @@ public class HeartRateService extends Service implements
     {
         if (heartRate >= 50 ||  heartRate <= 30)
         {
-            String primaryPhoneNumber = primaryContact.getPhoneNumber();
-            Log.i("Phone call", "heart rate is correct");
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
-            //801-696-0277
+            if(!makeCall) {
+                makeCall = true;
 
-            if (ActivityCompat.checkSelfPermission(this,
-                    android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                return;
+                String primaryPhoneNumber = primaryContact.getPhoneNumber();
+                Log.i("Phone call", "heart rate is correct");
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+                //801-696-0277
+
+                if (ActivityCompat.checkSelfPermission(this,
+                        android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(callIntent);
+                // texting
+                textContacts();
+
+                //notification
+                addNotification();
             }
-            startActivity(callIntent);
-            // texting
-            textContacts();
 
-            //notification
-            addNotification();
         }
     }
 
     public void textContacts()
     {
         String phoneNumber = primaryContact.getPhoneNumber();
-        String text = "Be Safe!";
+        String text = "Please contact me, I may be need in help.";
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumber, null, text, null, null);
@@ -256,11 +263,11 @@ public class HeartRateService extends Service implements
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         String[] events = new String[5];
-        events[0] = new String("Medical condition:");
-        events[1] = new String("Allergies:");
-        events[2] = new String("current Medication:");
-        events[3] = new String("Blood Type:");
-        events[4] = new String("other: ");
+        events[0] = new String("Medical condition: Diabetic");
+        events[1] = new String("Allergies: Peanut");
+        events[2] = new String("current Medication: none");
+        events[3] = new String("Blood Type: A");
+        events[4] = new String("other: none");
 
         // Sets a title for the Inbox style big view
         inboxStyle.setBigContentTitle("Medication Condition:");
