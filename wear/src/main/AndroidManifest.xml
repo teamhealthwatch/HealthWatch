@@ -75,8 +75,11 @@
         </service>
 
         <activity
-            android:name=".Activity.AskNotiActivity"
-            android:label="@string/title_activity_ask_noti" />
+            android:name=".Activity.AskUserActivity"
+            android:label="@string/title_activity_ask_user"></activity>
+        <activity
+            android:name="android.support.wearable.activity.ConfirmationActivity">
+        </activity>
     </application>
 
 </manifest>

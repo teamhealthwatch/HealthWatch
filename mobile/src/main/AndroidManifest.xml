@@ -16,6 +16,7 @@
 
     <uses-permission android:name="android.intent.action.CALL_PRIVILEGED" />
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -60,32 +61,26 @@
         <activity
             android:name=".Activities.MedConditionForm"
             android:label="Emergency Info" />
-        <activity android:name=".Activities.AccountActivity"></activity>
-
+        <activity android:name=".Activities.AccountActivity" />
 
         <service
             android:name=".ListenerService"
             android:enabled="true"
             android:exported="true">
-
             <intent-filter>
-                <!--action android:name="com.google.android.gms.wearable.DATA_CHANGED" /-->
+
+                <!-- action android:name="com.google.android.gms.wearable.DATA_CHANGED" / -->
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+
                 <data
-                    android:scheme="wear"
                     android:host="*"
-                     />
+                    android:scheme="wear" />
             </intent-filter>
-
         </service>
-
         <service
             android:name=".HeartRateService"
             android:enabled="true"
-            android:exported="true">
-
-
-        </service>
+            android:exported="true"></service>
     </application>
 
 </manifest>

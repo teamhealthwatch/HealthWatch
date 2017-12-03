@@ -28,7 +28,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.android.healthwatch.Activity.AskNotiActivity;
+import com.example.android.healthwatch.Activity.AskUserActivity;
 import com.example.android.healthwatch.Activity.MainActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -137,7 +137,6 @@ public class HeartRateService extends Service implements SensorEventListener,
 
         showForegroundNoti();
 
-
         return Service.START_STICKY;
     }
 
@@ -162,9 +161,12 @@ public class HeartRateService extends Service implements SensorEventListener,
 
         Toast.makeText(getApplicationContext(), "heart rate is " + currentHeartRate, Toast.LENGTH_SHORT).show();
 
-//        if (currentHeartRate > 70){
-//            showAskingNoti();
-//        }
+        if (currentHeartRate > 70){
+//            Log.v(TAG, "should ask intent");
+//            Intent askIntent = new Intent(this, AskUserActivity.class);
+//            startActivity(askIntent);
+            showAskingNoti();
+        }
 
         // Broadcast message to wearable activity for display
         Intent messageIntent = new Intent();
@@ -174,7 +176,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         Log.v(TAG, "heart rate sent to MainActivity");
 
         // TODO: UNCOMMENT THIS BACK!!!
-        sentToMobile();
+//        sentToMobile();
 
 
 
@@ -250,6 +252,50 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     }
 
+    private void showAskingNoti(){
+//        createchannel("id2");
+
+        // Create yes action
+        Intent notiIntent = new Intent(getApplicationContext(), AskUserActivity.class);
+
+        notiIntent.putExtra("NotiID", "Are you OK?");
+
+        PendingIntent viewPendingIntent =
+                PendingIntent.getActivity(this, 0, notiIntent, 0);
+
+        NotificationCompat.Action.WearableExtender yesAction =
+                new NotificationCompat.Action.WearableExtender()
+                        .setHintDisplayActionInline(true)
+                        .setHintLaunchesActivity(true);
+
+        NotificationCompat.Action pictureAction =
+                new NotificationCompat.Action.Builder(
+                        R.drawable.reply_icon,
+                        "HealthWatch",
+                        viewPendingIntent)
+                        .extend(yesAction)
+                        .build();
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, id2)
+                        .setSmallIcon(R.drawable.newhrt)
+                        .setContentTitle("HealthWatch")
+                        .setContentText("Are you OK?")
+                        .setContentIntent(viewPendingIntent)
+                        .setChannelId(id)
+                        .addAction(pictureAction)
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .setDefaults(Notification.DEFAULT_ALL);
+
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Build the notification and issues it with notification manager.
+        notificationManager.notify(notificationID, notificationBuilder.build());
+        notificationID++;
+
+    }
+
     private void showForegroundNoti(){
 //        createchannel();
 
@@ -297,48 +343,6 @@ public class HeartRateService extends Service implements SensorEventListener,
         notificationID++;
     }
 
-    private void showAskingNoti(){
-        createchannel("id2");
-
-        // Create yes action
-        Intent notiIntent = new Intent(getApplicationContext(), AskNotiActivity.class);
-
-        notiIntent.putExtra("NotiID", "Are you OK?");
-
-        PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, notiIntent, 0);
-
-        NotificationCompat.Action.WearableExtender yesAction =
-                new NotificationCompat.Action.WearableExtender()
-                        .setHintDisplayActionInline(true)
-                        .setHintLaunchesActivity(true);
-
-        NotificationCompat.Action pictureAction =
-                new NotificationCompat.Action.Builder(
-                        R.drawable.newhrt,
-                        "HealthWatch",
-                        viewPendingIntent)
-                        .extend(yesAction)
-                        .build();
-
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, id2)
-                        .setSmallIcon(R.drawable.newhrt)
-                        .setContentTitle("HealthWatch")
-                        .setContentText("Are you OK?")
-                        .setContentIntent(viewPendingIntent)
-                        .setChannelId(id)
-                        .addAction(pictureAction)
-                        .setPriority(Notification.PRIORITY_MAX);
-
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this);
-
-        // Build the notification and issues it with notification manager.
-        notificationManager.notify(notificationID, notificationBuilder.build());
-        notificationID++;
-
-    }
 
     private void sentToMobile(){
         // Send heart rate to phone

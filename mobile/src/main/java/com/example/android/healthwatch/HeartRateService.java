@@ -19,6 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -286,6 +287,7 @@ public class HeartRateService extends Service implements
 //
 //        // Build the notification and issues it with notification manager.
 //        notificationManager.notify(111, notificationBuilder.build());
+
 
 
     }
