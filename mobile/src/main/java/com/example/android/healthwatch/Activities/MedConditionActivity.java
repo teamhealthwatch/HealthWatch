@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.DatabaseHelper;
+import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.Model.MedInfoModel;
 import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MedConditionActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.ArrayList;
+
+public class MedConditionActivity extends AppCompatActivity implements View.OnClickListener, DatabaseHelper.MedInfoCallback {
 
     TextView Med_Cond;
     TextView Allergies;
@@ -58,13 +61,9 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_med_condition);
         mAuth = FirebaseAuth.getInstance();
         firstTime = false;
-        login = "faith";
         Intent intent = getIntent();
-        //login = intent.getExtras().getString("login");
-        if(!intent.hasExtra("Not_Registered")){
-            getMedConditions();
-        }
-        else{
+        login = intent.getExtras().getString("login");
+        if(intent.hasExtra("Not_Registered")){
             firstTime = true;
         }
 
@@ -81,45 +80,11 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         Other1 = (TextView) findViewById(R.id.other);
 
         dh = new DatabaseHelper();
+        dh.registerCallback(this);
+        dh.getMedConditions(login);
     }
 
-    private void getMedConditions() {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("medInfo").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.getKey().equals(login))
-                {
-                    medcond_ = (String) dataSnapshot.child("medcond").getValue().toString();
-                    allergies_ = (String) dataSnapshot.child("allergies").getValue().toString();
-                    curr_med_ = (String) dataSnapshot.child("curr_med").getValue().toString();
-                    blood_type_ = (String) dataSnapshot.child("blood_type").getValue().toString();
-                    other_ = (String) dataSnapshot.child("other").getValue().toString();
-                    setMedConditions();
-                }
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private void storeMedConditions() {
 
@@ -401,4 +366,13 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+    @Override
+    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other) {
+        medcond_ = medCond;
+        allergies_ = allergies;
+        curr_med_ = medications;
+        blood_type_ = bloodType;
+        other_ = other;
+        setMedConditions();
+    }
 }
