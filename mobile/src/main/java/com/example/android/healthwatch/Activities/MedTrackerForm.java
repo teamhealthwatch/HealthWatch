@@ -24,6 +24,7 @@ import com.example.android.healthwatch.Fragments.AlarmFragment;
 import com.example.android.healthwatch.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,7 +33,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     ImageView setTime;
     ImageView setDate;
     ImageView repeat;
-//    NumberPicker numberPicker = null;
     Calendar calendar;
     TextView actualTime;
     TextView actualDate;
@@ -45,9 +45,8 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     String allDate;
     String medName;
     String dayOfWeek;
-//    String dsg;
-
-
+    Boolean isDate;
+    ArrayList<String> days = new ArrayList<String>();
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -63,7 +62,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         repeatText = (TextView)findViewById(R.id.repeat_day);
         medicationMessage = (EditText) findViewById(R.id.notification_content);
         actualDate = (TextView)findViewById(R.id.actualDate);
-//        numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
+        isDate = true;
 
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +74,11 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectDate();
+                if(isDate)
+                {
+                    selectDate();
+                }
+
             }
         });
 
@@ -115,7 +118,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public void selectTime()
     {
-
         TimePickerDialog timePicker = new TimePickerDialog(MedTrackerForm.this, new TimePickerDialog.OnTimeSetListener(){
             @Override
             public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute)
@@ -150,7 +152,8 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                 Log.i("dayofweek", dayOfWeek);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        datePicker.show();
+      datePicker.show();
+
     }
 
     public void getInfoForIntent()
@@ -188,7 +191,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         }
 
         String dateText = actualDate.getText().toString();
-        if (dateText.equals("Today")) {
+        if (dateText.equals("Today") && days.size() == 0) {
 
             String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
             String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
@@ -280,7 +283,53 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     }
 
     @Override
-    public void onRepeatSelection(DialogFragment dialog, int interval, String repeatText) {
+    public void onRepeatSelection(ArrayList items) {
 
+      for(int i = 0; i < items.size(); i++)
+      {
+          int j = (int) items.get(i);
+          String day = Integer.toString(j);
+          Log.i("Days", day);
+          if(j == 0)
+          {
+              // Sunday == 0
+              days.add("Sun");
+          }
+          else if( j == 1)
+          {
+              // Monday == 1
+              days.add("Mon");
+          }
+          else if( j == 2)
+          {
+              // Tuesday == 2
+              days.add("Tue");
+          }
+          else if( j == 3)
+          {
+              // Wednesday == 3
+              days.add("Wed");
+          }
+          else if( j == 4)
+          {
+              // Thursday == 4
+              days.add("Thur");
+          }
+          else if( j == 5)
+          {
+              // Friday == 5
+              days.add("Fri");
+          }
+      }
+
+        if(days.size() != 0)
+        {
+            String allReapetDays = " ";
+            for(int i = 0; i < days.size(); i++) {
+                allReapetDays = allReapetDays + days.get(i) + " ";
+            }
+            repeatText.setText(allReapetDays);
+            isDate = false;
+        }
     }
 }

@@ -138,7 +138,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
                 DatabaseReference usersRef = database.getReference();
                 MedInfoModel medInfo = new MedInfoModel(medcond, allergies, currmed, bloodtype, other);
                 usersRef.child("medInfo").child(login).setValue(medInfo);
-
             }
 
             @Override
