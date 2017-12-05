@@ -3,7 +3,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -30,15 +29,9 @@ import com.example.android.healthwatch.HeartRateService;
 import com.example.android.healthwatch.ListenerService;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.R;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.Wearable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +39,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class HomePageActivity extends AppCompatActivity implements DatabaseHelper.EmergencyContactCallback {
@@ -101,7 +93,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 
         //Grab primary contact and a list of emergency contacts for user
         dh = new DatabaseHelper();
-        dh.registerCallback(this);
+        dh.registerEmergencyCallback(this);
         dh.getPrimaryContact(login);
         dh.getEmergencyContactList(login);
 
@@ -306,11 +298,11 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         String[] events = new String[5];
-        events[0] = new String("Medical condition: Diabetic");
-        events[1] = new String("Allergies: Peanut");
-        events[2] = new String("current Medication: none");
-        events[3] = new String("Blood Type: A");
-        events[4] = new String("other: none");
+        events[0] = new String("Medical condition: ");
+        events[1] = new String("Allergies: ");
+        events[2] = new String("current Medication: ");
+        events[3] = new String("Blood Type: ");
+        events[4] = new String("other: ");
 
         // Sets a title for the Inbox style big view
         inboxStyle.setBigContentTitle("Medication Condition:");
@@ -357,7 +349,6 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("heartrate");
             Log.v("HomePageActivity", "received message: " + message);
-
             if (heartRate == null) {
                 heartRate = findViewById(R.id.heartRate);
             }

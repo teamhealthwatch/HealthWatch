@@ -1,9 +1,7 @@
 package com.example.android.healthwatch.Activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -32,8 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener, EmergencyContactCallback {
 
@@ -83,7 +79,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         getSupportActionBar().setTitle("Emergency Contacts");
 
         dh = new DatabaseHelper();
-        dh.registerCallback(this);
+        dh.registerEmergencyCallback(this);
     }
 
 

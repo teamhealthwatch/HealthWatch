@@ -46,7 +46,9 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     String medName;
     String dayOfWeek;
     Boolean isDate;
+    Boolean isTime;
     ArrayList<String> days = new ArrayList<String>();
+    ArrayList<String> daysInfull = new ArrayList<String>();
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -199,6 +201,17 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
             allDate = day + "/" + m +  "/" + y;
             actualDate.setText(allDate);
         }
+        else if(dateText.equals("Today") && days.size() != 0)
+        {
+            for(int i = 0; i < daysInfull.size(); i++)
+            {
+                if(dayOfWeek.equals(daysInfull.get(i)))
+                {
+                    Log.i("DaysOfWeek", dayOfWeek);
+                }
+            }
+
+        }
         // check dates
         if (DateAndTimeUtil.toLongDateAndTime(calendar) < DateAndTimeUtil.toLongDateAndTime(nowCalendar)) {
             Toast.makeText(this, "Date cannot be in the past", Toast.LENGTH_SHORT).show();
@@ -294,31 +307,37 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
           {
               // Sunday == 0
               days.add("Sun");
+              daysInfull.add("Sunday");
           }
           else if( j == 1)
           {
               // Monday == 1
               days.add("Mon");
+              daysInfull.add("Monday");
           }
           else if( j == 2)
           {
               // Tuesday == 2
               days.add("Tue");
+              daysInfull.add("Tuesday");
           }
           else if( j == 3)
           {
               // Wednesday == 3
               days.add("Wed");
+              daysInfull.add("Wednesday");
           }
           else if( j == 4)
           {
               // Thursday == 4
               days.add("Thur");
+              daysInfull.add("Thursday");
           }
           else if( j == 5)
           {
               // Friday == 5
               days.add("Fri");
+              daysInfull.add("Friday");
           }
       }
 

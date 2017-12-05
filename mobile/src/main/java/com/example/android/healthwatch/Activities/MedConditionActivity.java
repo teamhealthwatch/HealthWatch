@@ -80,7 +80,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         Other1 = (TextView) findViewById(R.id.other);
 
         dh = new DatabaseHelper();
-        dh.registerCallback(this);
+        dh.registerMedInfoCallback(this);
         dh.getMedConditions(login);
 
         fabIsAdd = true;
@@ -267,7 +267,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             floatingButton.setOnClickListener(this);
 //            visiblity(true);
             MenuInflater mi = getMenuInflater();
-            mi.inflate(R.menu.menu_delete, menu);
+            mi.inflate(R.menu.menu_finish, menu);
             return super.onCreateOptionsMenu(menu);
         }
         else
@@ -328,8 +328,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
                 Other.setText(other_);
                 dh.updateMedConditions(login, medcond_, allergies_, curr_med_, blood_type_, other_);
             }
-
-
         }
     }
 

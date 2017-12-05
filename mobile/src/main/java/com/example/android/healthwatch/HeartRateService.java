@@ -1,5 +1,6 @@
 package com.example.android.healthwatch;
 
+import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -43,7 +45,8 @@ import java.util.ArrayList;
 public class HeartRateService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        DatabaseHelper.EmergencyContactCallback{
+        DatabaseHelper.EmergencyContactCallback,
+DatabaseHelper.MedInfoCallback{
 
     private final String HEART_RATE = "/heart_rate";
     private GoogleApiClient googleApiClient;
@@ -66,6 +69,12 @@ public class HeartRateService extends Service implements
     public static String id = "test_channel_01";
 
     private boolean makeCall = false;
+
+    String medcond_;
+    String allergies_;
+    String curr_med_;
+    String blood_type_;
+    String other_;
 
 
     @Nullable
@@ -114,6 +123,7 @@ public class HeartRateService extends Service implements
 
         // Create MessageListener that receives messages sent from a wearable
         messageListener = new MessageApi.MessageListener() {
+            @RequiresApi(api = 26)
             @Override
             public void onMessageReceived(MessageEvent messageEvent) {
 
@@ -182,7 +192,7 @@ public class HeartRateService extends Service implements
 
         //Grab primary contact and a list of emergency contacts for user
         dh = new DatabaseHelper();
-        dh.registerCallback(this);
+        dh.registerEmergencyCallback(this);
 
         // avoid crashing when user kills the app and the service still try to start
         if(login != null){
@@ -195,6 +205,8 @@ public class HeartRateService extends Service implements
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @TargetApi(26)
+    @RequiresApi(api = 26)
     public void makePhoneCall(int heartRate)
     {
         if (heartRate >= 50 ||  heartRate <= 30)
@@ -217,7 +229,7 @@ public class HeartRateService extends Service implements
                 textContacts();
 
                 //notification
-                addNotification();
+                addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
             }
 
         }
@@ -240,8 +252,14 @@ public class HeartRateService extends Service implements
         }
     }
 
-    private void addNotification() {
+    @RequiresApi(api = 26)
+    
+    private void addNotification(String medcond, String allergies, String medication, String bloodType, String other) {
         Log.i("Start", "notification");
+
+        DatabaseHelper dbhelper = new DatabaseHelper();
+        dbhelper.registerMedInfoCallback(this);
+        dbhelper.getMedConditions(login);
 
    /* Invoking the default notification service */
         NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this, id);
@@ -263,11 +281,11 @@ public class HeartRateService extends Service implements
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         String[] events = new String[5];
-        events[0] = new String("Medical condition: Diabetic");
-        events[1] = new String("Allergies: Peanut");
-        events[2] = new String("current Medication: none");
-        events[3] = new String("Blood Type: A");
-        events[4] = new String("other: none");
+        events[0] = new String("Medical condition: " + medcond);
+        events[1] = new String("Allergies: " + allergies);
+        events[2] = new String("current Medication: " + medication);
+        events[3] = new String("Blood Type: " + bloodType);
+        events[4] = new String("other: " + other);
 
         // Sets a title for the Inbox style big view
         inboxStyle.setBigContentTitle("Medication Condition:");
@@ -310,12 +328,16 @@ public class HeartRateService extends Service implements
         primaryContact = c;
     }
 
+    @RequiresApi(api = 26)
     private void createchannel() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel mChannel = new NotificationChannel(id,
-                    "heart rate channel",  //name of the channel
-                    NotificationManager.IMPORTANCE_DEFAULT);   //importance level
+            NotificationChannel mChannel = null;   //importance level
+            if (android.os.Build.VERSION.SDK_INT >= 26) {
+                mChannel = new NotificationChannel(id,
+                        "heart rate channel",  //name of the channel
+                        NotificationManager.IMPORTANCE_DEFAULT);
+            }
             //important level: default is is high on the phone.  high is urgent on the phone.  low is medium, so none is low?
             // Configure the notification channel.
             mChannel.enableLights(true);
@@ -327,5 +349,14 @@ public class HeartRateService extends Service implements
             nm.createNotificationChannel(mChannel);
 
         }
+    }
+
+    @Override
+    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other) {
+        medCond = medcond_;
+        allergies = allergies_;
+        medications = curr_med_;
+        bloodType = blood_type_;
+        other = other_;
     }
 }

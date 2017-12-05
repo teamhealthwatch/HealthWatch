@@ -237,11 +237,11 @@ public class DatabaseHelper {
     }
 
     //Instantiates the callback for the current session
-    public void registerCallback(EmergencyContactCallback callBackClass){
+    public void registerEmergencyCallback(EmergencyContactCallback callBackClass){
         contactListCallback = callBackClass;
     }
 
-    public void registerCallback(MedInfoCallback callBackClass){
+    public void registerMedInfoCallback(MedInfoCallback callBackClass){
         medInfoCallback = callBackClass;
     }
 

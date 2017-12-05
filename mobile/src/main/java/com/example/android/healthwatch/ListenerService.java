@@ -73,7 +73,7 @@ public class ListenerService extends WearableListenerService
 
             // Uses callback method contactList declared at bottom to send emergency contacts to watch
             DatabaseHelper dh = new DatabaseHelper();
-            dh.registerCallback(this);
+            dh.registerEmergencyCallback(this);
             //Grab username
             if(login != null){
                 dh.getEmergencyContactList(login);
