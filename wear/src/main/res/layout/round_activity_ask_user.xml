@@ -23,24 +23,65 @@
             android:layout_height="wrap_content"
             android:text="Your heart rate seems unusual.\n Are you OK?"
             android:textAppearance="@style/TextAppearance.Wearable.Medium"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
 
-
-
-        <android.support.wear.widget.CircularProgressLayout
-            android:id="@+id/circular_progress"
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/countdown_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:layout_gravity="center|bottom">
+            android:text="time remaining"
+            android:textAppearance="@style/TextAppearance.Wearable.Small"
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
 
-            <ImageView
-                android:id="@+id/image_view"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/delete_icon" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
 
-        </android.support.wear.widget.CircularProgressLayout>
+        <RelativeLayout
+            android:id="@+id/response_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            >
+
+            <View android:id="@+id/fakeView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"/>
+
+
+            <Button
+                android:id="@+id/yes_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:contentDescription="user is ok"
+                android:src="@drawable/yes_icon"
+                android:layout_alignRight="@id/fakeView"
+                android:layout_alignParentLeft="true"
+                android:text="Yes"
+                android:background="@drawable/round_shape_yes_btn"
+                android:onClick="onYesButton"/>
+
+            <Button
+                android:id="@+id/no_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:contentDescription="user is not ok"
+                android:src="@drawable/no_icon"
+                android:layout_alignLeft="@id/fakeView"
+                android:layout_alignParentRight="true"
+                android:text="No"
+                android:background="@drawable/round_shape_no_btn"
+                android:onClick="onNoButton"/>
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 

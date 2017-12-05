@@ -3,6 +3,7 @@ package com.example.android.healthwatch.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.wear.widget.CircularProgressLayout;
 import android.support.wear.widget.WearableLinearLayoutManager;
 import android.support.wearable.activity.ConfirmationActivity;
@@ -16,11 +17,13 @@ import android.widget.Toast;
 import com.example.android.healthwatch.R;
 
 
-public class AskUserActivity extends Activity implements
-        CircularProgressLayout.OnTimerFinishedListener, View.OnClickListener{
+public class AskUserActivity extends Activity{
 
-    private CircularProgressLayout mCircularProgress;
     private String TAG = "AskUserActivity";
+
+    private CountDownTimer countDownTimer;
+
+    private TextView mTextField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,38 +38,30 @@ public class AskUserActivity extends Activity implements
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mCircularProgress =
-                        (CircularProgressLayout) findViewById(R.id.circular_progress);
-                mCircularProgress.setOnTimerFinishedListener(AskUserActivity.this);
-                mCircularProgress.setOnClickListener(AskUserActivity.this);
+                mTextField = findViewById(R.id.countdown_view);
 
-                // 1 min to click the action
-                mCircularProgress.setTotalTime(60000);
-                // Start the timer
-                mCircularProgress.startTimer();
+                countDownTimer = new CountDownTimer(60000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+                    }
+
+                    public void onFinish() {
+                        // send message to mobile
+                    }
+                }.start();
             }
         });
 
-
-    }
-
-    /* User did not response */
-    @Override
-    public void onTimerFinished(CircularProgressLayout layout) {
-        Toast.makeText(this, "time finished!", Toast.LENGTH_SHORT).show();
     }
 
 
-    /* User responses */
-    @Override
-    public void onClick(View view) {
-        mCircularProgress.stopTimer();
 
-        Intent intent = new Intent(this, ConfirmationActivity.class);
-        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                ConfirmationActivity.SUCCESS_ANIMATION);
-        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
-                "something");
-        startActivity(intent);
+    private void onYesButton(View v){
+
+    }
+
+    private void onNoButton(View v){
+
     }
 }
