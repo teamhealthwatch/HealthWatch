@@ -13,18 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.DatabaseHelper;
-import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.Model.MedInfoModel;
 import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 public class MedConditionActivity extends AppCompatActivity implements View.OnClickListener, DatabaseHelper.MedInfoCallback {
 
@@ -41,7 +37,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     TextView Other1;
 
     FloatingActionButton floatingButton;
-    boolean fabButtonVisibility;
+    boolean fabIsAdd;
     private FirebaseAuth mAuth;
 
     String medcond_;
@@ -67,6 +63,10 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             firstTime = true;
         }
 
+        floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
+        floatingButton.show();
+        floatingButton.setOnClickListener(this);
+
         Med_Cond = (TextView) findViewById(R.id.MedCondShow1);
         Allergies = (TextView) findViewById(R.id.Allergies1);
         Current_Med = (TextView) findViewById(R.id.curt_med1);
@@ -82,6 +82,25 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         dh = new DatabaseHelper();
         dh.registerCallback(this);
         dh.getMedConditions(login);
+
+        fabIsAdd = true;
+        hasInfo();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 999){
+            if(resultCode == RESULT_OK){
+                conditions(data);
+            }
+        }
+        else if(requestCode == 998)
+        {
+            if(resultCode == RESULT_OK) {
+                deleteMedInfo(data);
+            }
+        }
     }
 
 
@@ -110,7 +129,26 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
 
             }
         });
+    }
 
+    private void hasInfo() {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String b = "fa";
+                if(dataSnapshot.hasChild(login))
+                {
+                    floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
+                    fabIsAdd = false;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void homeClick(View v)
@@ -121,12 +159,12 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
 
-        if(v == floatingButton && fabButtonVisibility == true)
+        if(v == floatingButton && fabIsAdd == true)
         {
             Intent intent = new Intent(this, MedConditionForm.class);
             startActivityForResult(intent, 999);
         }
-        else if(v == floatingButton && fabButtonVisibility == false)
+        else if(v == floatingButton && fabIsAdd == false)
         {
             Log.i("fab", "reaching");
             Intent intent = new Intent(this, MedConditionForm.class);
@@ -153,7 +191,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
 
     public void conditions(Intent data)
     {
-
         Bundle extras = data.getExtras();
         if(extras != null){
             visiblity(false);
@@ -191,7 +228,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             Current_Med.setVisibility(View.INVISIBLE);
             Blood_type.setVisibility(View.INVISIBLE);
             Other.setVisibility(View.INVISIBLE);
-            fabButtonVisibility = true;
+            fabIsAdd = true;
             floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
             floatingButton.show();
             floatingButton.setOnClickListener(this);
@@ -211,7 +248,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             Current_Med.setVisibility(View.VISIBLE);
             Blood_type.setVisibility(View.VISIBLE);
             Other.setVisibility(View.VISIBLE);
-            fabButtonVisibility = false;
+            fabIsAdd = false;
             floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
             floatingButton.show();
             floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
@@ -235,9 +272,9 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         }
         else
         {
-            if(fabButtonVisibility == false)
+            if(fabIsAdd == false)
             {
-                fabButtonVisibility = false;
+                fabIsAdd = false;
                 floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
                 floatingButton.show();
                 floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
@@ -251,22 +288,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 999){
-            if(resultCode == RESULT_OK){
-                conditions(data);
-            }
-        }
-        else if(requestCode == 998)
-        {
-            if(resultCode == RESULT_OK) {
-                deleteMedInfo(data);
-            }
-        }
-    }
-
     private void deleteMedInfo(Intent data) {
         floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
         Bundle extras = data.getExtras();
@@ -274,7 +295,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
 
             if(extras.containsKey("DELETE"))
             {
-                fabButtonVisibility = true;
+                fabIsAdd = true;
                 floatingButton.setImageResource(R.drawable.fab_button);
                 floatingButton.show();
                 medcond_ = extras.getString("MEDCOND");
@@ -292,7 +313,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             }
             else
             {
-                fabButtonVisibility = false;
+                fabIsAdd = false;
                 floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
                 floatingButton.show();
                 medcond_ = extras.getString("MEDCOND");
