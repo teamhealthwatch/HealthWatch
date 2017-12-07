@@ -21,20 +21,27 @@
             android:id="@+id/ask_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your heart rate seems unusual.\n Are you OK?"
+            android:text="Are you OK?"
             android:textAppearance="@style/TextAppearance.Wearable.Medium"
             android:textSize="20sp"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+            android:textAlignment="center"
+            android:layout_gravity="center"/>
 
-        <TextView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/countdown_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="time remaining"
-            android:textAppearance="@style/TextAppearance.Wearable.Small"
-            android:textSize="20sp"
-            android:textColor="#ffffff"/>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+        <!--<TextView-->
+            <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/countdown_view"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="time remaining"-->
+            <!--android:textAppearance="@style/TextAppearance.Wearable.Small"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:layout_gravity="center"/>-->
 
         <Space
             android:layout_width="match_parent"

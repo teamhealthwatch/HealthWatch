@@ -14,6 +14,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.android.healthwatch.Activity.AskUserActivity;
 import com.example.android.healthwatch.Activity.MainActivity;
+import com.example.android.healthwatch.Model.ResponseCountdown;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -65,6 +67,8 @@ public class HeartRateService extends Service implements SensorEventListener,
     private GoogleApiClient googleApiClient;
     private NodeApi.NodeListener nodeListener;
 
+    private CountDownTimer countDownTimer;
+
     public HeartRateService() {
 
 
@@ -83,8 +87,7 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-
+        
         Log.v(TAG, "onStartCommand");
 
         nodeListener = new NodeApi.NodeListener() {
@@ -161,7 +164,7 @@ public class HeartRateService extends Service implements SensorEventListener,
 
         Toast.makeText(getApplicationContext(), "heart rate is " + currentHeartRate, Toast.LENGTH_SHORT).show();
 
-        if (currentHeartRate > 70){
+        if (currentHeartRate > 60){
 //            Log.v(TAG, "should ask intent");
 //            Intent askIntent = new Intent(this, AskUserActivity.class);
 //            startActivity(askIntent);
@@ -258,10 +261,16 @@ public class HeartRateService extends Service implements SensorEventListener,
         // Create yes action
         Intent notiIntent = new Intent(getApplicationContext(), AskUserActivity.class);
 
-        notiIntent.putExtra("NotiID", "Are you OK?");
+//        ResponseCountdown responseCountdown = new ResponseCountdown();
+
+        notiIntent.putExtra("notiID", notificationID);
+//        notiIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notiIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        notiIntent.putExtra("countdown", responseCountdown);
 
         PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, notiIntent, 0);
+                PendingIntent.getActivity(this, 0, notiIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Action.WearableExtender yesAction =
                 new NotificationCompat.Action.WearableExtender()
@@ -285,7 +294,8 @@ public class HeartRateService extends Service implements SensorEventListener,
                         .setChannelId(id)
                         .addAction(pictureAction)
                         .setPriority(Notification.PRIORITY_MAX)
-                        .setDefaults(Notification.DEFAULT_ALL);
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setOnlyAlertOnce(true);
 
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
@@ -293,6 +303,18 @@ public class HeartRateService extends Service implements SensorEventListener,
         // Build the notification and issues it with notification manager.
         notificationManager.notify(notificationID, notificationBuilder.build());
         notificationID++;
+
+        CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
 
     }
 
@@ -303,7 +325,7 @@ public class HeartRateService extends Service implements SensorEventListener,
 
         Intent newIntent = new Intent(this, MainActivity.class);
 
-        newIntent.putExtra("NotiID", "Notification ID is " + notificationID);
+//        newIntent.putExtra("NotiID", "Notification ID is " + notificationID);
         newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, newIntent, 0);
 
