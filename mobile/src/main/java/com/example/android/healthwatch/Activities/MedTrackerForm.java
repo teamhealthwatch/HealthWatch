@@ -184,6 +184,10 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         calendar.set(Calendar.HOUR_OF_DAY, nowCalendar.get(Calendar.HOUR_OF_DAY));
         calendar.set(Calendar.MINUTE, nowCalendar.get(Calendar.MINUTE));
 
+        SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
+        Date date = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), nowCalendar.get(Calendar.DAY_OF_MONTH)-1);
+        dayOfWeek = simpledateformat.format(date);
+
         String medName = medicationName.getText().toString();
         if (TextUtils.isEmpty(medName)) {
             medicationName.setError("Required.");
@@ -203,12 +207,86 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         }
         else if(dateText.equals("Today") && days.size() != 0)
         {
-            for(int i = 0; i < daysInfull.size(); i++)
+
+            if(daysInfull.contains(dayOfWeek))
             {
-                if(dayOfWeek.equals(daysInfull.get(i)))
+                String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
+                String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
+                String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH));
+                allDate = day + "/" + m +  "/" + y;
+                actualDate.setText(allDate);
+            }
+            else {
+
+                int mofy = nowCalendar.get(Calendar.MONTH);
+                int dayInt = nowCalendar.get(Calendar.DAY_OF_MONTH)+1;
+                if(mofy != 1 || mofy != 3 || mofy != 5 || mofy != 8 || mofy != 10)
                 {
-                    Log.i("DaysOfWeek", dayOfWeek);
+                    while (dayInt <= 31)
+                    {
+                        Date date1 = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), dayInt-1);
+                        dayOfWeek = simpledateformat.format(date1);
+                        if(daysInfull.contains(dayOfWeek))
+                        {
+                            calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
+                            calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
+                            calendar.set(Calendar.DAY_OF_MONTH, dayInt);
+                            String y = Integer.toString(nowCalendar.get(Calendar.YEAR));
+                            String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
+                            String day = Integer.toString(dayInt);
+                            allDate = day + "/" + m +  "/" + y;
+                            actualDate.setText(allDate);
+                            break;
+                        }
+                        dayInt++;
+                    }
+                    dayInt = nowCalendar.get(Calendar.DAY_OF_MONTH)+1;
                 }
+                else if(mofy != 1 || mofy == 3 || mofy == 5 || mofy == 8 || mofy == 10)
+                {
+                    while (dayInt <= 30)
+                    {
+                        Date date1 = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), dayInt-1);
+                        dayOfWeek = simpledateformat.format(date1);
+                        if(daysInfull.contains(dayOfWeek))
+                        {
+                            calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
+                            calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
+                            calendar.set(Calendar.DAY_OF_MONTH, dayInt);
+                            String y = Integer.toString(nowCalendar.get(Calendar.YEAR));
+                            String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
+                            String day = Integer.toString(dayInt);
+                            allDate = day + "/" + m +  "/" + y;
+                            actualDate.setText(allDate);
+                            break;
+                        }
+                        dayInt++;
+                    }
+                    dayInt = nowCalendar.get(Calendar.DAY_OF_MONTH)+1;
+                }
+                else if(mofy == 1)
+                {
+                    while (dayInt <= 28)
+                    {
+                        Date date1 = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), dayInt-1);
+                        dayOfWeek = simpledateformat.format(date1);
+                        if(daysInfull.contains(dayOfWeek))
+                        {
+                            calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
+                            calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
+                            calendar.set(Calendar.DAY_OF_MONTH, dayInt);
+                            String y = Integer.toString(nowCalendar.get(Calendar.YEAR));
+                            String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
+                            String day = Integer.toString(dayInt);
+                            allDate = day + "/" + m +  "/" + y;
+                            actualDate.setText(allDate);
+                            break;
+                        }
+                        dayInt++;
+                    }
+                    dayInt = nowCalendar.get(Calendar.DAY_OF_MONTH)+1;
+                }
+                Log.i("","");
             }
 
         }

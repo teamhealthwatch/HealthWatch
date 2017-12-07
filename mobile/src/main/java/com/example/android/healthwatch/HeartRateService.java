@@ -253,7 +253,7 @@ DatabaseHelper.MedInfoCallback{
     }
 
     @RequiresApi(api = 26)
-    
+
     private void addNotification(String medcond, String allergies, String medication, String bloodType, String other) {
         Log.i("Start", "notification");
 
