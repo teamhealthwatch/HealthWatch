@@ -1,11 +1,24 @@
 package com.example.android.healthwatch;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
+import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.android.healthwatch.Activities.MedConditionActivity;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.DatabaseHelper.EmergencyContactCallback;
 import com.google.android.gms.common.ConnectionResult;
@@ -32,6 +45,14 @@ public class ListenerService extends WearableListenerService
     private String login;
 
     public final static String PHONE_CALL_PATH = "/phone_call_path";
+
+    private Contact primaryContact;
+
+    int numMessages = 0;
+
+    public static String id = "test_channel_01";
+
+    NotificationManager mNotificationManager;
 
     @Override
     public void onCreate() {
@@ -83,7 +104,13 @@ public class ListenerService extends WearableListenerService
 
         } else if(messageEvent.getPath().equals(PHONE_CALL_PATH)) {
             {
-                Log.v(TAG, "phone call message received!!!!");
+                final String message = new String(messageEvent.getData());
+                Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
+                Log.v(TAG, "Message received on phone is: " + message);
+
+                // make phone calls
+                makePhoneCall();
+
             }
         }else{
             super.onMessageReceived(messageEvent);
@@ -152,7 +179,123 @@ public class ListenerService extends WearableListenerService
 
     @Override
     public void primaryContact(Contact c) {
+        primaryContact = c;
+    }
 
+    public void makePhoneCall()
+    {
+        String primaryPhoneNumber = primaryContact.getPhoneNumber();
+        Log.i("Phone call", "heart rate is correct");
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+        //801-696-0277
+
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        startActivity(callIntent);
+        // texting
+        textContacts();
+
+        //notification
+        addNotification();
+    }
+
+    public void textContacts()
+    {
+        String phoneNumber = primaryContact.getPhoneNumber();
+        String text = "Be Safe!";
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNumber, null, text, null, null);
+            Toast.makeText(getApplicationContext(), "SMS Sent!",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),
+                    "SMS failed, please try again later!",
+                    Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void addNotification() {
+        Log.i("Start", "notification");
+
+   /* Invoking the default notification service */
+        NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this, id);
+
+        mBuilder.setContentTitle("New Message");
+        mBuilder.setContentText("You've received new message.");
+        mBuilder.setTicker("New Message Alert!");
+        mBuilder.setSmallIcon(R.drawable.newhrt);
+
+   /* Increase notification number every time a new notification arrives */
+        mBuilder.setNumber(++numMessages);
+
+        // show notification on watch
+        // add support to Android 8.0 and above
+        mBuilder.setChannelId(id)
+                .extend(new NotificationCompat.WearableExtender());
+
+   /* Add Big View Specific Configuration */
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+        String[] events = new String[5];
+        events[0] = new String("Medical condition: Diabetic");
+        events[1] = new String("Allergies: Peanut");
+        events[2] = new String("current Medication: none");
+        events[3] = new String("Blood Type: A");
+        events[4] = new String("other: ");
+
+        // Sets a title for the Inbox style big view
+        inboxStyle.setBigContentTitle("Medication Condition:");
+
+        // Moves events into the big view
+        for (int i=0; i < events.length; i++) {
+            inboxStyle.addLine(events[i]);
+        }
+
+        mBuilder.setStyle(inboxStyle);
+
+        int notificationID = 990;
+
+        createchannel();
+
+   /* Creates an explicit intent for an Activity in your app */
+        Intent resultIntent = new Intent(this,MedConditionActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MedConditionActivity.class);
+
+   /* Adds the Intent that starts the Activity to the top of the stack */
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(resultPendingIntent);
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+   /* notificationID allows you to update the notification later on. */
+        mNotificationManager.notify(notificationID, mBuilder.build());
+    }
+
+    private void createchannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel mChannel = new NotificationChannel(id,
+                    "heart rate channel",  //name of the channel
+                    NotificationManager.IMPORTANCE_DEFAULT);   //importance level
+            //important level: default is is high on the phone.  high is urgent on the phone.  low is medium, so none is low?
+            // Configure the notification channel.
+            mChannel.enableLights(true);
+            //Sets the notification light color for notifications posted to this channel, if the device supports this feature.
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setShowBadge(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            nm.createNotificationChannel(mChannel);
+
+        }
     }
 
 }
