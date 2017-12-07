@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.HeartRateService;
+import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.Model.SendThread;
 import com.example.android.healthwatch.R;
 import com.example.android.healthwatch.TimerIntentService;
@@ -29,17 +30,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+
 
 public class AskUserActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
 
     private String TAG = "AskUserActivity";
-
-    private TextView mTextField;
-    AskUserActivity.MessageReceiver messageReceiver;
-
-    private CountDownTimer countDownTimer;
 
     private int notiID;
 
@@ -73,7 +74,10 @@ public class AskUserActivity extends Activity implements
                 .build();
         googleClient.connect();
 
-
+        // Register the local broadcast receiver to receive messages from the listener.
+        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+        AskUserActivity.MessageReceiver messageReceiver = new AskUserActivity.MessageReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
     }
 
 
@@ -144,19 +148,6 @@ public class AskUserActivity extends Activity implements
 
     }
 
-    public class MessageReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Long message = intent.getLongExtra("countdown", -1);
-            Log.v(TAG, "Ask User Activity received message: " + message);
-
-//            if (mTextField == null) {
-//                mTextField = findViewById(R.id.countdown_view);
-//            }
-
-//            mTextField.setText("seconds remaining: " + message.toString());
-        }
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -164,5 +155,26 @@ public class AskUserActivity extends Activity implements
 
         notiID = getIntent().getIntExtra("notiID", 0);
         Log.v(TAG, "notiID is " + notiID);
+    }
+
+    public class MessageReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("kill");
+            Log.v(TAG, "Emergency Contact received message: " + message);
+
+            if(message != null){
+                // finish activity
+                finish();
+
+                // remove notification
+                NotificationManagerCompat notificationManager =
+                        NotificationManagerCompat.from(AskUserActivity.this);
+
+                // Build the notification and issues it with notification manager.
+                notificationManager.cancel(notiID);
+            }
+
+        }
     }
 }

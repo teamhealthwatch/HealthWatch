@@ -63,12 +63,10 @@ public class HeartRateService extends Service implements SensorEventListener,
     private final String HEART_RATE = "/heart_rate";
 
     private String remoteNodeId;
-    private String t;
 
     private GoogleApiClient googleApiClient;
     private NodeApi.NodeListener nodeListener;
 
-    private CountDownTimer countDownTimer;
 
     public HeartRateService() {
 

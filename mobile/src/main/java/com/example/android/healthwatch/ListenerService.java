@@ -127,7 +127,7 @@ public class ListenerService extends WearableListenerService
 
         } else if (messageEvent.getPath().equals(PHONE_CALL_PATH)) {
 
-            dh.getPrimaryContact(login);
+//            dh.getPrimaryContact(login);
 
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
@@ -135,6 +135,7 @@ public class ListenerService extends WearableListenerService
 
             // make phone calls
 //                makePhoneCall();
+            makePhoneCall();
 
 
         } else {
@@ -212,10 +213,11 @@ public class ListenerService extends WearableListenerService
 
     public void makePhoneCall() {
 
-        String primaryPhoneNumber = primaryContact.getPhoneNumber();
+//        String primaryPhoneNumber = primaryContact.getPhoneNumber();
         Log.i("Phone call", "heart rate is correct");
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+//        callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+        callIntent.setData(Uri.parse("tel:" + "801-674-2644"));
         //801-696-0277
 
         if (ActivityCompat.checkSelfPermission(this,
