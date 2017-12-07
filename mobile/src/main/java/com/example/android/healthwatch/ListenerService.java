@@ -54,6 +54,9 @@ public class ListenerService extends WearableListenerService
 
     NotificationManager mNotificationManager;
 
+    DatabaseHelper dh;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -66,6 +69,16 @@ public class ListenerService extends WearableListenerService
                 .build();
 
         googleApiClient.connect();
+
+        //Grab primary contact and a list of emergency contacts for user
+        dh = new DatabaseHelper();
+        dh.registerCallback(this);
+
+        // avoid crashing when user kills the app and the service still try to start
+        if(login != null){
+            dh.getPrimaryContact(login);
+            dh.getEmergencyContactList(login);
+        }
 
     }
 
