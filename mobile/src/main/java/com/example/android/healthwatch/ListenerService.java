@@ -34,7 +34,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class ListenerService extends WearableListenerService
-        implements GoogleApiClient.ConnectionCallbacks, EmergencyContactCallback,
+        implements GoogleApiClient.ConnectionCallbacks, EmergencyContactCallback, DatabaseHelper.MedInfoCallback,
         GoogleApiClient.OnConnectionFailedListener {
     String TAG = "mobile Listener";
 
@@ -43,6 +43,7 @@ public class ListenerService extends WearableListenerService
     final static String EMERGENCY_CONTACT_PATH = "/emergency_contact";
 
     private String login;
+
 
     public final static String PHONE_CALL_PATH = "/phone_call_path";
 
@@ -55,6 +56,12 @@ public class ListenerService extends WearableListenerService
     NotificationManager mNotificationManager;
 
     DatabaseHelper dh;
+
+    String medcond_;
+    String allergies_;
+    String curr_med_;
+    String blood_type_;
+    String other_;
 
 
     @Override
@@ -72,10 +79,10 @@ public class ListenerService extends WearableListenerService
 
         //Grab primary contact and a list of emergency contacts for user
         dh = new DatabaseHelper();
-        dh.registerCallback(this);
+        dh.registerEmergencyCallback(this);
 
         // avoid crashing when user kills the app and the service still try to start
-        if(login != null){
+        if (login != null) {
             dh.getPrimaryContact(login);
             dh.getEmergencyContactList(login);
         }
@@ -85,8 +92,8 @@ public class ListenerService extends WearableListenerService
     /*
     Method used to pass login to the ListenerService so it can call the appropriate database methods
      */
-    public int onStartCommand(Intent intent, int flags, int startId){
-        if (intent != null && intent.getExtras() != null){
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.getExtras() != null) {
             login = intent.getStringExtra("login");
         }
         return flags;
@@ -94,6 +101,11 @@ public class ListenerService extends WearableListenerService
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
+
+        // Uses callback method contactList declared at bottom to send emergency contacts to watch
+        DatabaseHelper dh = new DatabaseHelper();
+        dh.registerEmergencyCallback(this);
+
 
         if (messageEvent.getPath().equals(EMERGENCY_CONTACT_PATH)) {
             final String message = new String(messageEvent.getData());
@@ -107,34 +119,31 @@ public class ListenerService extends WearableListenerService
 //            LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
 
 
-            // Uses callback method contactList declared at bottom to send emergency contacts to watch
-            DatabaseHelper dh = new DatabaseHelper();
-            dh.registerEmergencyCallback(this);
             //Grab username
-            if(login != null){
+            if (login != null) {
                 dh.getEmergencyContactList(login);
             }
 
-        } else if(messageEvent.getPath().equals(PHONE_CALL_PATH)) {
-            {
-                final String message = new String(messageEvent.getData());
-                Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
-                Log.v(TAG, "Message received on phone is: " + message);
 
-                // make phone calls
-                makePhoneCall();
+        } else if (messageEvent.getPath().equals(PHONE_CALL_PATH)) {
 
-            }
-        }else{
+            dh.getPrimaryContact(login);
+
+            final String message = new String(messageEvent.getData());
+            Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
+            Log.v(TAG, "Message received on phone is: " + message);
+
+            // make phone calls
+//                makePhoneCall();
+
+
+        } else {
             super.onMessageReceived(messageEvent);
         }
-
     }
 
 
     private void sendList(ArrayList<Contact> list) {
-
-        Log.v(TAG, "send list!!!!!");
 
 
         ObjectOutput out = null;
@@ -183,6 +192,7 @@ public class ListenerService extends WearableListenerService
 
     /**
      * EmergencyContactCallback method that runs after the database finishes pulling the list
+     *
      * @param myList - A returned list of all primary contacts
      */
     @Override
@@ -193,11 +203,15 @@ public class ListenerService extends WearableListenerService
 
     @Override
     public void primaryContact(Contact c) {
+
+
+        Log.v(TAG, "CALLBACK!!!!");
         primaryContact = c;
+        makePhoneCall();
     }
 
-    public void makePhoneCall()
-    {
+    public void makePhoneCall() {
+
         String primaryPhoneNumber = primaryContact.getPhoneNumber();
         Log.i("Phone call", "heart rate is correct");
         Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -213,13 +227,12 @@ public class ListenerService extends WearableListenerService
         textContacts();
 
         //notification
-        addNotification();
+        addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
     }
 
-    public void textContacts()
-    {
+    public void textContacts() {
         String phoneNumber = primaryContact.getPhoneNumber();
-        String text = "Be Safe!";
+        String text = "Please contact me, I may be need in help.";
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumber, null, text, null, null);
@@ -233,11 +246,15 @@ public class ListenerService extends WearableListenerService
         }
     }
 
-    private void addNotification() {
+    private void addNotification(String medcond, String allergies, String medication, String bloodType, String other) {
         Log.i("Start", "notification");
 
+        DatabaseHelper dbhelper = new DatabaseHelper();
+        dbhelper.registerMedInfoCallback(this);
+        dbhelper.getMedConditions(login);
+
    /* Invoking the default notification service */
-        NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this, id);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, id);
 
         mBuilder.setContentTitle("New Message");
         mBuilder.setContentText("You've received new message.");
@@ -256,17 +273,17 @@ public class ListenerService extends WearableListenerService
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         String[] events = new String[5];
-        events[0] = new String("Medical condition: Diabetic");
-        events[1] = new String("Allergies: Peanut");
-        events[2] = new String("current Medication: none");
-        events[3] = new String("Blood Type: A");
-        events[4] = new String("other: ");
+        events[0] = new String("Medical condition: " + medcond);
+        events[1] = new String("Allergies: " + allergies);
+        events[2] = new String("current Medication: " + medication);
+        events[3] = new String("Blood Type: " + bloodType);
+        events[4] = new String("other: " + other);
 
         // Sets a title for the Inbox style big view
         inboxStyle.setBigContentTitle("Medication Condition:");
 
         // Moves events into the big view
-        for (int i=0; i < events.length; i++) {
+        for (int i = 0; i < events.length; i++) {
             inboxStyle.addLine(events[i]);
         }
 
@@ -277,14 +294,14 @@ public class ListenerService extends WearableListenerService
         createchannel();
 
    /* Creates an explicit intent for an Activity in your app */
-        Intent resultIntent = new Intent(this,MedConditionActivity.class);
+        Intent resultIntent = new Intent(this, MedConditionActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MedConditionActivity.class);
 
    /* Adds the Intent that starts the Activity to the top of the stack */
         stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mBuilder.setContentIntent(resultPendingIntent);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -292,6 +309,7 @@ public class ListenerService extends WearableListenerService
    /* notificationID allows you to update the notification later on. */
         mNotificationManager.notify(notificationID, mBuilder.build());
     }
+
 
     private void createchannel() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -310,6 +328,15 @@ public class ListenerService extends WearableListenerService
             nm.createNotificationChannel(mChannel);
 
         }
+    }
+
+    @Override
+    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other) {
+        medCond = medcond_;
+        allergies = allergies_;
+        medications = curr_med_;
+        bloodType = blood_type_;
+        other = other_;
     }
 
 }
