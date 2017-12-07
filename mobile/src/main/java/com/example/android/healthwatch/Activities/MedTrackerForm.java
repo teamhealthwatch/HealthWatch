@@ -24,6 +24,7 @@ import com.example.android.healthwatch.Fragments.AlarmFragment;
 import com.example.android.healthwatch.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,7 +33,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     ImageView setTime;
     ImageView setDate;
     ImageView repeat;
-//    NumberPicker numberPicker = null;
     Calendar calendar;
     TextView actualTime;
     TextView actualDate;
@@ -45,9 +45,10 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     String allDate;
     String medName;
     String dayOfWeek;
-//    String dsg;
-
-
+    Boolean isDate;
+    Boolean isTime;
+    ArrayList<String> days = new ArrayList<String>();
+    ArrayList<String> daysInfull = new ArrayList<String>();
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -63,7 +64,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         repeatText = (TextView)findViewById(R.id.repeat_day);
         medicationMessage = (EditText) findViewById(R.id.notification_content);
         actualDate = (TextView)findViewById(R.id.actualDate);
-//        numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
+        isDate = true;
 
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +76,11 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectDate();
+                if(isDate)
+                {
+                    selectDate();
+                }
+
             }
         });
 
@@ -85,7 +90,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                 selectDays();
             }
         });
-        medInfo();
         calendar = Calendar.getInstance();
 
         Intent intent = getIntent();
@@ -116,7 +120,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public void selectTime()
     {
-
         TimePickerDialog timePicker = new TimePickerDialog(MedTrackerForm.this, new TimePickerDialog.OnTimeSetListener(){
             @Override
             public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute)
@@ -151,14 +154,8 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                 Log.i("dayofweek", dayOfWeek);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        datePicker.show();
-    }
+      datePicker.show();
 
-    public void medInfo()
-    {
-        medMessage = medicationMessage.getText().toString();
-
-        Log.i("medicationMessage", medicationMessage.getText().toString());
     }
 
     public void getInfoForIntent()
@@ -169,9 +166,6 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         bundle.putString("NAME", medName);
         bundle.putString("TIME", allTime);
         bundle.putString("DATE", allDate);
-        if(medMessage == null){
-            medMessage = "";
-        }
         bundle.putString("MESSAGE", medMessage);
         intent.putExtras(bundle);
 
@@ -190,6 +184,10 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         calendar.set(Calendar.HOUR_OF_DAY, nowCalendar.get(Calendar.HOUR_OF_DAY));
         calendar.set(Calendar.MINUTE, nowCalendar.get(Calendar.MINUTE));
 
+        SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
+        Date date = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), nowCalendar.get(Calendar.DAY_OF_MONTH)-1);
+        dayOfWeek = simpledateformat.format(date);
+
         String medName = medicationName.getText().toString();
         if (TextUtils.isEmpty(medName)) {
             medicationName.setError("Required.");
@@ -199,13 +197,98 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         }
 
         String dateText = actualDate.getText().toString();
-        if (dateText.equals("Today")) {
+        if (dateText.equals("Today") && days.size() == 0) {
 
             String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
             String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
             String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH));
             allDate = day + "/" + m +  "/" + y;
             actualDate.setText(allDate);
+        }
+        else if(dateText.equals("Today") && days.size() != 0)
+        {
+
+            if(daysInfull.contains(dayOfWeek))
+            {
+                String y = Integer.toString( nowCalendar.get(Calendar.YEAR));
+                String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
+                String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH));
+                allDate = day + "/" + m +  "/" + y;
+                actualDate.setText(allDate);
+            }
+            else {
+
+                int mofy = nowCalendar.get(Calendar.MONTH);
+                int dayInt = nowCalendar.get(Calendar.DAY_OF_MONTH)+1;
+                if(mofy != 1 || mofy != 3 || mofy != 5 || mofy != 8 || mofy != 10)
+                {
+                    while (dayInt <= 31)
+                    {
+                        Date date1 = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), dayInt-1);
+                        dayOfWeek = simpledateformat.format(date1);
+                        if(daysInfull.contains(dayOfWeek))
+                        {
+                            calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
+                            calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
+                            calendar.set(Calendar.DAY_OF_MONTH, dayInt);
+                            String y = Integer.toString(nowCalendar.get(Calendar.YEAR));
+                            String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
+                            String day = Integer.toString(dayInt);
+                            allDate = day + "/" + m +  "/" + y;
+                            actualDate.setText(allDate);
+                            break;
+                        }
+                        dayInt++;
+                    }
+                    dayInt = nowCalendar.get(Calendar.DAY_OF_MONTH)+1;
+                }
+                else if(mofy != 1 || mofy == 3 || mofy == 5 || mofy == 8 || mofy == 10)
+                {
+                    while (dayInt <= 30)
+                    {
+                        Date date1 = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), dayInt-1);
+                        dayOfWeek = simpledateformat.format(date1);
+                        if(daysInfull.contains(dayOfWeek))
+                        {
+                            calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
+                            calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
+                            calendar.set(Calendar.DAY_OF_MONTH, dayInt);
+                            String y = Integer.toString(nowCalendar.get(Calendar.YEAR));
+                            String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
+                            String day = Integer.toString(dayInt);
+                            allDate = day + "/" + m +  "/" + y;
+                            actualDate.setText(allDate);
+                            break;
+                        }
+                        dayInt++;
+                    }
+                    dayInt = nowCalendar.get(Calendar.DAY_OF_MONTH)+1;
+                }
+                else if(mofy == 1)
+                {
+                    while (dayInt <= 28)
+                    {
+                        Date date1 = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), dayInt-1);
+                        dayOfWeek = simpledateformat.format(date1);
+                        if(daysInfull.contains(dayOfWeek))
+                        {
+                            calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
+                            calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
+                            calendar.set(Calendar.DAY_OF_MONTH, dayInt);
+                            String y = Integer.toString(nowCalendar.get(Calendar.YEAR));
+                            String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
+                            String day = Integer.toString(dayInt);
+                            allDate = day + "/" + m +  "/" + y;
+                            actualDate.setText(allDate);
+                            break;
+                        }
+                        dayInt++;
+                    }
+                    dayInt = nowCalendar.get(Calendar.DAY_OF_MONTH)+1;
+                }
+                Log.i("","");
+            }
+
         }
         // check dates
         if (DateAndTimeUtil.toLongDateAndTime(calendar) < DateAndTimeUtil.toLongDateAndTime(nowCalendar)) {
@@ -233,6 +316,10 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         }
         else {
             actualTime.setError(null);
+        }
+        medMessage = medicationMessage.getText().toString();
+        if(medMessage == null){
+            medMessage = "";
         }
 
         return valid;
@@ -287,7 +374,59 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     }
 
     @Override
-    public void onRepeatSelection(DialogFragment dialog, int interval, String repeatText) {
+    public void onRepeatSelection(ArrayList items) {
 
+      for(int i = 0; i < items.size(); i++)
+      {
+          int j = (int) items.get(i);
+          String day = Integer.toString(j);
+          Log.i("Days", day);
+          if(j == 0)
+          {
+              // Sunday == 0
+              days.add("Sun");
+              daysInfull.add("Sunday");
+          }
+          else if( j == 1)
+          {
+              // Monday == 1
+              days.add("Mon");
+              daysInfull.add("Monday");
+          }
+          else if( j == 2)
+          {
+              // Tuesday == 2
+              days.add("Tue");
+              daysInfull.add("Tuesday");
+          }
+          else if( j == 3)
+          {
+              // Wednesday == 3
+              days.add("Wed");
+              daysInfull.add("Wednesday");
+          }
+          else if( j == 4)
+          {
+              // Thursday == 4
+              days.add("Thur");
+              daysInfull.add("Thursday");
+          }
+          else if( j == 5)
+          {
+              // Friday == 5
+              days.add("Fri");
+              daysInfull.add("Friday");
+          }
+      }
+
+        if(days.size() != 0)
+        {
+            String allReapetDays = " ";
+            for(int i = 0; i < days.size(); i++) {
+                allReapetDays = allReapetDays + days.get(i) + " ";
+            }
+            repeatText.setText(allReapetDays);
+            isDate = false;
+        }
     }
 }

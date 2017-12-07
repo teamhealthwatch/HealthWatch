@@ -1,5 +1,6 @@
 package com.example.android.healthwatch;
 
+import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,6 +15,7 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -46,7 +48,8 @@ import java.util.ArrayList;
 public class HeartRateService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        DatabaseHelper.EmergencyContactCallback{
+        DatabaseHelper.EmergencyContactCallback,
+DatabaseHelper.MedInfoCallback{
 
     private final String HEART_RATE = "/heart_rate";
     private GoogleApiClient googleApiClient;
@@ -67,6 +70,14 @@ public class HeartRateService extends Service implements
     private ArrayList<Contact> contactList;
 
     public static String id = "test_channel_01";
+
+    private boolean makeCall = false;
+
+    String medcond_;
+    String allergies_;
+    String curr_med_;
+    String blood_type_;
+    String other_;
 
 
     @Nullable
@@ -186,7 +197,7 @@ public class HeartRateService extends Service implements
 
         //Grab primary contact and a list of emergency contacts for user
         dh = new DatabaseHelper();
-        dh.registerCallback(this);
+        dh.registerEmergencyCallback(this);
 
         // avoid crashing when user kills the app and the service still try to start
         if(login != null){
@@ -311,22 +322,14 @@ public class HeartRateService extends Service implements
         primaryContact = c;
     }
 
-//    private void createchannel() {
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//            NotificationChannel mChannel = new NotificationChannel(id,
-//                    "heart rate channel",  //name of the channel
-//                    NotificationManager.IMPORTANCE_DEFAULT);   //importance level
-//            //important level: default is is high on the phone.  high is urgent on the phone.  low is medium, so none is low?
-//            // Configure the notification channel.
-//            mChannel.enableLights(true);
-//            //Sets the notification light color for notifications posted to this channel, if the device supports this feature.
-//            mChannel.setLightColor(Color.RED);
-//            mChannel.enableVibration(true);
-//            mChannel.setShowBadge(true);
-//            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-//            nm.createNotificationChannel(mChannel);
-//
-//        }
-//    }
+
+
+    @Override
+    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other) {
+        medCond = medcond_;
+        allergies = allergies_;
+        medications = curr_med_;
+        bloodType = blood_type_;
+        other = other_;
+    }
 }

@@ -54,8 +54,6 @@ public class MedConditionForm extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_finish:
-                return true;
             case R.id.action_save:
                 Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
                 getInfoForIntent();

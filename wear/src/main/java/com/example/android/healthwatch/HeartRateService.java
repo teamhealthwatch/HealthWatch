@@ -88,7 +88,7 @@ public class HeartRateService extends Service implements SensorEventListener,
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        
+
         Log.v(TAG, "onStartCommand");
 
         nodeListener = new NodeApi.NodeListener() {

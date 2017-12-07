@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.android.healthwatch.R;
 
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 public class AlarmFragment extends DialogFragment {
 
     public interface RepeatSelectionListener {
-        void onRepeatSelection(android.support.v4.app.DialogFragment dialog, int interval, String repeatText);
+        void onRepeatSelection(ArrayList items);
     }
 
     RepeatSelectionListener listener;
@@ -44,6 +45,8 @@ public class AlarmFragment extends DialogFragment {
                             if(isChecked)
                             {
                                 items.add(which);
+                                String wh = Integer.toString(which);
+                                Log.i("Log-stuff", wh);
                             }
                             else if (items.contains(which)) {
                                 items.remove(Integer.valueOf(which));
@@ -54,7 +57,7 @@ public class AlarmFragment extends DialogFragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        listener.onRepeatSelection(items);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

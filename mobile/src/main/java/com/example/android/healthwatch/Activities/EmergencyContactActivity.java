@@ -1,23 +1,19 @@
 package com.example.android.healthwatch.Activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
-
 
 import com.example.android.healthwatch.Adapters.EmergencyContactAdapter;
 import com.example.android.healthwatch.DatabaseHelper;
@@ -34,8 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener, EmergencyContactCallback {
 
@@ -85,7 +79,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         getSupportActionBar().setTitle("Emergency Contacts");
 
         dh = new DatabaseHelper();
-        dh.registerCallback(this);
+        dh.registerEmergencyCallback(this);
     }
 
 
@@ -96,7 +90,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
     private void showEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        EmergencyContactFragment editNameDialogFragment = EmergencyContactFragment.newInstance("Some Title");
+        EmergencyContactFragment editNameDialogFragment = EmergencyContactFragment.newInstance("New");
         editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
@@ -321,7 +315,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         b.putBoolean("pContact", pContact);
 
         FragmentManager fm = getSupportFragmentManager();
-        EmergencyContactFragment editNameDialogFragment = EmergencyContactFragment.newInstance("Some Title");
+        EmergencyContactFragment editNameDialogFragment = EmergencyContactFragment.newInstance("Edit");
         editNameDialogFragment.setArguments(b);
         editNameDialogFragment.show(fm, "fragment_edit_name");
 

@@ -1,6 +1,8 @@
 package com.example.android.healthwatch;
 
 import com.example.android.healthwatch.Model.Contact;
+import com.example.android.healthwatch.Model.MedInfoModel;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class DatabaseHelper {
     ArrayList<Contact> contacts;
     EmergencyContactCallback contactListCallback;
+    MedInfoCallback medInfoCallback;
 
 
     public void getEmergencyContactList(final String username){
@@ -179,9 +182,67 @@ public class DatabaseHelper {
         });
     }
 
+    public void getMedConditions(final String login) {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean a = dataSnapshot.hasChild(login);
+                if(dataSnapshot.hasChild(login))
+                {
+                    String medcond_ = (String) dataSnapshot.child(login).child("medcond").getValue().toString();
+                    String allergies_ = (String) dataSnapshot.child(login).child("allergies").getValue().toString();
+                    String curr_med_ = (String) dataSnapshot.child(login).child("curr_med").getValue().toString();
+                    String blood_type_ = (String) dataSnapshot.child(login).child("blood_type").getValue().toString();
+                    String other_ = (String) dataSnapshot.child(login).child("other").getValue().toString();
+                    medInfoCallback.medInfoValues(medcond_, allergies_, curr_med_, blood_type_, other_);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void updateMedConditions(final String login, final String medCond, final String allergies,
+                                    final String medications, final String bloodType, final String other){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference medInfoRef = database.getReference();
+                for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
+                    String name = childSnapshot.getKey();
+                    if(name.equals(login)){
+                        MedInfoModel m = new MedInfoModel(medCond, allergies, medications, bloodType, other);
+                        medInfoRef.child("medInfo").child(login).setValue(m);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void deleteMedConditions(String login){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medInfo").child(login).removeValue();
+    }
+
     //Instantiates the callback for the current session
-    public void registerCallback(EmergencyContactCallback callBackClass){
+    public void registerEmergencyCallback(EmergencyContactCallback callBackClass){
         contactListCallback = callBackClass;
+    }
+
+    public void registerMedInfoCallback(MedInfoCallback callBackClass){
+        medInfoCallback = callBackClass;
     }
 
 
@@ -190,6 +251,10 @@ public class DatabaseHelper {
         void contactList(ArrayList<Contact> myList);
         //Returns the current primary contact of a user
         void primaryContact(Contact c);
+    }
+
+    public interface MedInfoCallback{
+        void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other);
     }
 
 
