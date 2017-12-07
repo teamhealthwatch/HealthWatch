@@ -31,6 +31,8 @@ public class ListenerService extends WearableListenerService
 
     private String login;
 
+    public final static String PHONE_CALL_PATH = "/phone_call_path";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -79,9 +81,14 @@ public class ListenerService extends WearableListenerService
                 dh.getEmergencyContactList(login);
             }
 
-        } else {
+        } else if(messageEvent.getPath().equals(PHONE_CALL_PATH)) {
+            {
+                Log.v(TAG, "phone call message received!!!!");
+            }
+        }else{
             super.onMessageReceived(messageEvent);
         }
+
     }
 
 

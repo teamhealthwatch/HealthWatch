@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wear.widget.CircularProgressLayout;
@@ -20,11 +22,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.HeartRateService;
+import com.example.android.healthwatch.Model.SendThread;
 import com.example.android.healthwatch.R;
 import com.example.android.healthwatch.TimerIntentService;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Wearable;
 
 
-public class AskUserActivity extends Activity{
+public class AskUserActivity extends Activity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
 
     private String TAG = "AskUserActivity";
 
@@ -34,6 +42,10 @@ public class AskUserActivity extends Activity{
     private CountDownTimer countDownTimer;
 
     private int notiID;
+
+    public final static String PHONE_CALL_PATH = "/phone_call_path";
+
+    GoogleApiClient googleClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,42 +60,19 @@ public class AskUserActivity extends Activity{
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-//                mTextField = findViewById(R.id.countdown_view);
-//
-//                countDownTimer = new CountDownTimer(60000, 1000) {
-//
-//                    public void onTick(long millisUntilFinished) {
-//                        mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
-//                    }
-//
-//                    public void onFinish() {
-//                        // send message to mobile
-//
-//                    }
-//                }.start();
             }
         });
 
-
-        // Register the local broadcast receiver to receive messages from the listener.
-//        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
-//        messageReceiver = new AskUserActivity.MessageReceiver();
-//        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
-
-//        countDownTimer = new CountDownTimer(60000, 1000) {
-//
-//            public void onTick(long millisUntilFinished) {
-////                mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
-////                currentSec = millisUntilFinished / 1000;
-//            }
-//
-//            public void onFinish() {
-//                // send message to mobile to make calls
-//
-//            }
-//        }.start();
         notiID = getIntent().getIntExtra("notiID", 0);
         Log.v(TAG, "notiID is " + notiID);
+
+        googleClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        googleClient.connect();
+
 
     }
 
@@ -91,11 +80,16 @@ public class AskUserActivity extends Activity{
 
     public void onYesButton(View v){
 
+        Toast.makeText(getApplicationContext(), "Start heart rate monitor in 5 minutes", Toast.LENGTH_SHORT);
+
         // stop heart rate service
         stopService(new Intent(getApplicationContext(), HeartRateService.class));
 
         // stop timer service
-        stopService(new Intent(getApplicationContext(), TimerIntentService.class));
+        Intent yesIntent = new Intent(getApplicationContext(), TimerIntentService.class);
+        yesIntent.putExtra("simpleKill", false);
+        startService(yesIntent);
+        stopService(yesIntent);
 
         // finish activity
         finish();
@@ -109,6 +103,44 @@ public class AskUserActivity extends Activity{
     }
 
     public void onNoButton(View v){
+
+        // send message to mobile to make phone calls
+        String message = "make phone call";
+        new SendThread(PHONE_CALL_PATH, message, googleClient).start();
+
+        // stop heart rate service
+        stopService(new Intent(getApplicationContext(), HeartRateService.class));
+
+        // start then stop timer service in order to pass extra
+        Intent noIntent = new Intent(getApplicationContext(), TimerIntentService.class);
+        noIntent.putExtra("simpleKill", true);
+        startService(noIntent);
+        stopService(noIntent);
+
+
+        // finish activity
+        finish();
+
+        // remove notification
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Build the notification and issues it with notification manager.
+        notificationManager.cancel(notiID);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.v(TAG, "connection suspended");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 

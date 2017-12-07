@@ -137,13 +137,16 @@ public class HeartRateService extends Service implements
 //                    heartRate.setText(payload);
                     if(payload != null) {
                         //setProgressBar(Integer.parseInt(payload));
-                        int hR = (Integer.parseInt(payload));
-                        if(primaryContact != null){
-                            makePhoneCall(hR);
-                        }
+//                        int hR = (Integer.parseInt(payload));
+//                        if(primaryContact != null){
+//                            makePhoneCall(hR);
+//                        }
                     }
                 }
-                else{
+                // TODO:CHANGE THIS PATH
+                else if(messageEvent.getPath().equals(HEART_RATE)){
+
+                }else{
                     Log.i("heart rate info", "couldn't get in");
                 }
             }
@@ -200,10 +203,6 @@ public class HeartRateService extends Service implements
     {
         // check heart rate
 
-        if(heartRate >60){
-            askNotification();
-        }
-
         if (heartRate >= 50 ||  heartRate <= 30)
         {
             String primaryPhoneNumber = primaryContact.getPhoneNumber();
@@ -240,62 +239,6 @@ public class HeartRateService extends Service implements
                     Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
-    }
-
-    private void askNotification(){
-
-
-        //create the intent to launch the notiactivity, then the pentingintent.
-//        Intent viewIntent = new Intent(this, AskNotiActivity.class);
-//        viewIntent.putExtra("NotiID", "Notification ID is " + 111);
-//
-//        PendingIntent viewPendingIntent =
-//                PendingIntent.getActivity(this, 0, viewIntent, 0);
-//
-//        // we are going to add an intent to open the camera here.
-//        //Intent cameraIntent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-//        Intent yesIntent = new Intent(this, ConfirmActivity.class);
-//        PendingIntent yesPendingIntent =
-//                PendingIntent.getActivity(this, 0, yesIntent, 0);
-//
-//        NotificationCompat.Action.WearableExtender inlineActionForWear2 =
-//                new NotificationCompat.Action.WearableExtender()
-//                        .setHintDisplayActionInline(true)
-//                        .setHintLaunchesActivity(true);
-//
-////         Add an action to allow replies.
-//        NotificationCompat.Action pictureAction =
-//                new NotificationCompat.Action.Builder(
-//                        R.drawable.newhrt,
-//                        "Open Camera",
-//                        yesPendingIntent)
-//                        .extend(inlineActionForWear2)
-//                        .build();
-//
-//        //Now create the notification.  We must use the NotificationCompat or it will not work on the wearable.
-//        NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(this, id)
-//                        .setSmallIcon(R.drawable.ic_launcher)
-//                        .setContentTitle("HealthWatch")
-//                        .setContentText("Are you OK?")
-//                        .setContentIntent(viewPendingIntent)
-//                        .setChannelId(id);
-//
-//        // Get an instance of the NotificationManager service
-//        NotificationManagerCompat notificationManager =
-//                NotificationManagerCompat.from(this);
-//
-//        // Build the notification and issues it with notification manager.
-//        notificationManager.notify(111, notificationBuilder.build());
-
-
-
-    }
-
-    void showDialog() {
-//        android.app.FragmentManager fm = this.getFra
-//        TimePickerFragment timePickerFragment = TimePickerFragment.newInstance("Some Title");
-//        timePickerFragment.show(fm, "fragment_edit_name");
     }
 
     private void addNotification() {

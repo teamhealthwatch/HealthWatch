@@ -4,7 +4,9 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 
 /**
@@ -20,8 +22,8 @@ public class TimerIntentService extends IntentService {
     public static final String ACTION_RESTART = "com.example.android.healthwatch.action.RESTART";
 
     // TODO: Rename parameters
-    public static final String EXTRA_PARAM1 = "com.example.android.healthwatch.extra.PARAM1";
-    public static final String EXTRA_PARAM2 = "com.example.android.healthwatch.extra.PARAM2";
+//    public static final String EXTRA_PARAM1 = "com.example.android.healthwatch.extra.PARAM1";
+//    public static final String EXTRA_PARAM2 = "com.example.android.healthwatch.extra.PARAM2";
 
     public TimerIntentService() {
         super("TimerIntentService");
@@ -29,8 +31,20 @@ public class TimerIntentService extends IntentService {
 
     public String TAG = "TimerIntentService";
 
+    private boolean simpleKill;
+
+    @Override
+    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        simpleKill = intent.getBooleanExtra("simpleKill", true);
+        Log.v(TAG, "boolean is " + simpleKill);
+
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
+
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_RESPONSE.equals(action)) {
@@ -66,9 +80,12 @@ public class TimerIntentService extends IntentService {
 
         Log.v(TAG, "HERE!!!!!");
 
-        Intent timerIntent = new Intent(this, TimerIntentService.class);
-        timerIntent.setAction(ACTION_RESTART);
-        startService(timerIntent);
+        if(!simpleKill){
+            Intent timerIntent = new Intent(this, TimerIntentService.class);
+            timerIntent.setAction(ACTION_RESTART);
+            startService(timerIntent);
+        }
+
     }
 
     @Override

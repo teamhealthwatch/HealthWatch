@@ -179,13 +179,7 @@ public class HeartRateService extends Service implements SensorEventListener,
         LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
         Log.v(TAG, "heart rate sent to MainActivity");
 
-        // TODO: UNCOMMENT THIS BACK!!!
-//        sentToMobile();
-
-
-
-
-
+        sentToMobile();
 
     }
 
