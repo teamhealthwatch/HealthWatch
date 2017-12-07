@@ -72,7 +72,7 @@ public class EmergencyContactFragment extends DialogFragment implements View.OnC
         if(!b.containsKey("title")){
             editMode = true;
             buildForm(b);
-            add.setText("Edit");
+            add.setText("Save");
             cancel.setText("Delete");
         }
     }
