@@ -20,15 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.healthwatch.HeartRateService;
-import com.example.android.healthwatch.Model.ResponseCountdown;
 import com.example.android.healthwatch.R;
+import com.example.android.healthwatch.TimerIntentService;
 
 
 public class AskUserActivity extends Activity{
 
     private String TAG = "AskUserActivity";
-
-    private ResponseCountdown responseCountdown;
 
     private TextView mTextField;
     AskUserActivity.MessageReceiver messageReceiver;
@@ -92,7 +90,12 @@ public class AskUserActivity extends Activity{
 
 
     public void onYesButton(View v){
+
+        // stop heart rate service
         stopService(new Intent(getApplicationContext(), HeartRateService.class));
+
+        // stop timer service
+        stopService(new Intent(getApplicationContext(), TimerIntentService.class));
 
         // finish activity
         finish();

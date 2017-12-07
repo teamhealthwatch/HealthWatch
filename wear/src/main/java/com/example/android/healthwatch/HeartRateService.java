@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.example.android.healthwatch.Activity.AskUserActivity;
 import com.example.android.healthwatch.Activity.MainActivity;
-import com.example.android.healthwatch.Model.ResponseCountdown;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -39,6 +38,8 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+
+import static com.example.android.healthwatch.TimerIntentService.ACTION_RESPONSE;
 
 public class HeartRateService extends Service implements SensorEventListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -258,6 +259,9 @@ public class HeartRateService extends Service implements SensorEventListener,
     private void showAskingNoti(){
 //        createchannel("id2");
 
+        // pause heart rate
+        sensorManager.unregisterListener(this);
+
         // Create yes action
         Intent notiIntent = new Intent(getApplicationContext(), AskUserActivity.class);
 
@@ -304,17 +308,9 @@ public class HeartRateService extends Service implements SensorEventListener,
         notificationManager.notify(notificationID, notificationBuilder.build());
         notificationID++;
 
-        CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
-            @Override
-            public void onTick(long l) {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        }.start();
+        Intent timerIntent = new Intent(this, TimerIntentService.class);
+        timerIntent.setAction(ACTION_RESPONSE);
+        startService(timerIntent);
 
     }
 

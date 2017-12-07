@@ -76,10 +76,12 @@
 
         <activity
             android:name=".Activity.AskUserActivity"
-            android:label="@string/title_activity_ask_user"></activity>
-        <activity
-            android:name="android.support.wearable.activity.ConfirmationActivity">
-        </activity>
+            android:label="@string/title_activity_ask_user" />
+        <activity android:name="android.support.wearable.activity.ConfirmationActivity" />
+
+        <service
+            android:name=".TimerIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
