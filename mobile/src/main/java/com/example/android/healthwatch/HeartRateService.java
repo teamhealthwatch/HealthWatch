@@ -111,6 +111,7 @@ DatabaseHelper.MedInfoCallback{
         }
 
 
+
         // Create NodeListener that enables buttons when a node is connected and disables buttons when a node is disconnected
         nodeListener = new NodeApi.NodeListener() {
             @Override
@@ -204,8 +205,6 @@ DatabaseHelper.MedInfoCallback{
             dh.getPrimaryContact(login);
             dh.getEmergencyContactList(login);
         }
-
-
 
         return super.onStartCommand(intent, flags, startId);
     }

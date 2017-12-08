@@ -7,11 +7,11 @@ package com.example.android.healthwatch.Model;
 public class MedModel {
 
     private int id;
-    String time;
-    String date;
-    String name;
-    String medMessage;
-    public String repeatDays;
+    private String time;
+    private String date;
+    private String name;
+    private String medMessage;
+    private String repeatDays;
 
 
     public MedModel()
@@ -33,6 +33,14 @@ public class MedModel {
         this.date = date;
         this.medMessage = dosage;
         this.id = id;
+        this.repeatDays = repeatDays;
+    }
+
+    public MedModel(String name, String time, String date, String medMessage, String repeatDays){
+        this.name = name;
+        this.time = time;
+        this.date = date;
+        this.medMessage = medMessage;
         this.repeatDays = repeatDays;
     }
 
@@ -76,13 +84,12 @@ public class MedModel {
         this.medMessage = medMessage;
     }
 
-
     public String getRepeatDays() {
         return repeatDays;
     }
 
-    public void setRepeatDays(String reapetDays) {
-        this.repeatDays = reapetDays;
+    public void setRepeatDays(String repeatDays) {
+        this.repeatDays = repeatDays;
     }
 
 
