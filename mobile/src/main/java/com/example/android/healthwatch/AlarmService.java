@@ -43,6 +43,7 @@ public class AlarmService extends Service {
                 getSystemService(NOTIFICATION_SERVICE);
         // set up an intent that goes to the Main Activity
         Intent intent_main_activity = new Intent(this.getApplicationContext(), MedTrackerActivity.class);
+        intent_main_activity.putExtra("login", "Not_Registered");
         // set up a pending intent
         PendingIntent pending_intent_main_activity = PendingIntent.getActivity(this, 0,
                 intent_main_activity, 0);

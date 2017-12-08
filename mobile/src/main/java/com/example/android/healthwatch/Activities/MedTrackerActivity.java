@@ -44,6 +44,8 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     String repeatDays;
     Calendar calendar;
     Intent myIntent;
+    String dayOfWeek;
+    String monthString;
 
     //Declare authentication, used to know who is signed in
     private FirebaseAuth mAuth;
@@ -228,6 +230,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         if(format.equals("PM")){
             hour += 12;
         }
+
         //Split allDate form of dd/mm/yy
         String[] parsedDate = allDate.split("/");
         int day = Integer.parseInt(parsedDate[0]);
@@ -258,6 +261,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         AlarmUtil.cancelAlarm(this, alarmIntent, position);
         alarmIntent.putExtra("extra", "alarm off");
         sendBroadcast(alarmIntent);
+
     }
 
     public void onItemClick(int mPosition)
