@@ -3,11 +3,13 @@ package com.example.android.healthwatch.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by faitholadele on 10/6/17.
  */
 
-public class MedModel implements Parcelable {
+public class MedModel implements Parcelable, Serializable{
 
     private int id;
     String time;

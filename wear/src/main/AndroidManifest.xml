@@ -81,7 +81,11 @@
 
         <service
             android:name=".TimerIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity
+            android:name=".Activity.PersonalInfoActivity"
+            android:label="@string/title_activity_personal_info"></activity>
     </application>
 
 </manifest>
