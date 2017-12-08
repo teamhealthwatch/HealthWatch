@@ -67,6 +67,7 @@ public class ListenerService extends WearableListenerService
     String blood_type_;
     String other_;
 
+    
 
     @Override
     public void onCreate() {

@@ -44,6 +44,8 @@ public class MedModel {
         this.repeatDays = repeatDays;
     }
 
+
+
     public void setId(int id){
         this.id = id;
     }

@@ -50,6 +50,8 @@ public class DatabaseHelper {
 
     }
 
+
+
     /**
      * Updates Emergency Contacts with the new state of the Primary Contact.
      * If newPrimary is empty set all current contact's primary field to false.

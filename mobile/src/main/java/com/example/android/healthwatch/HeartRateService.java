@@ -58,6 +58,7 @@ public class HeartRateService extends Service implements
     private String TAG = "HeartRateService mobile";
 
 
+
     DatabaseHelper dh;
 
     private String login;
