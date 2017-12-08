@@ -92,7 +92,7 @@ public class ListenerService extends WearableListenerService
         // avoid crashing when user kills the app and the service still try to start
         if (login != null) {
             dh.getPrimaryContact(login);
-            dh.getEmergencyContactList(login);
+            dh.getEmergencyContactList(login, "");
         }
 
     }
@@ -121,6 +121,7 @@ public class ListenerService extends WearableListenerService
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
+            dh.getEmergencyContactList(login, "");
 
 
 
@@ -129,6 +130,7 @@ public class ListenerService extends WearableListenerService
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
+            dh.getEmergencyContactList(login, "phone");
 
 
         } else if(messageEvent.getPath().equals(MEDICATION_PATH)){
@@ -360,11 +362,13 @@ public class ListenerService extends WearableListenerService
      * @param myList - A returned list of all primary contacts
      */
     @Override
-    public void contactList(ArrayList<Contact> myList) {
+    public void contactList(ArrayList<Contact> myList, String path) {
 
         sendContactList(myList);
         allContactlist = myList;
-        makePhoneCall();
+        if(path.equals("phone")){
+            makePhoneCall();
+        }
     }
 
     @Override
@@ -373,7 +377,7 @@ public class ListenerService extends WearableListenerService
 
         Log.v(TAG, "CALLBACK!!!!");
         primaryContact = c;
-        dh.getEmergencyContactList(login);
+        dh.getEmergencyContactList(login, "");
     }
 
     @Override

@@ -95,7 +95,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         dh = new DatabaseHelper();
         dh.registerEmergencyCallback(this);
         dh.getPrimaryContact(login);
-        dh.getEmergencyContactList(login);
+        dh.getEmergencyContactList(login, "");
 
         // Register the local broadcast receiver to receive messages from the listener.
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
@@ -346,7 +346,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     }
 
     @Override
-    public void contactList(ArrayList<Contact> myList) {
+    public void contactList(ArrayList<Contact> myList, String path) {
         contactList = myList;
     }
 

@@ -323,7 +323,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     }
 
     @Override
-    public void contactList(ArrayList<Contact> myList) {
+    public void contactList(ArrayList<Contact> myList, String path) {
         contacts = myList;
 
         displayContacts(contacts);
