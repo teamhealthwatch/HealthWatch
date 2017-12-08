@@ -265,7 +265,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
             floatingButton.show();
             floatingButton.setOnClickListener(this);
-//            visiblity(true);
             MenuInflater mi = getMenuInflater();
             mi.inflate(R.menu.menu_finish, menu);
             return super.onCreateOptionsMenu(menu);
@@ -282,9 +281,17 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
                 getMenuInflater().inflate(R.menu.menu, menu);
                 return true;
             }
-
+            else
+            {
+                fabIsAdd = true;
+                floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
+                floatingButton.show();
+                floatingButton.setOnClickListener(this);
+                getMenuInflater().inflate(R.menu.menu, menu);
+                return true;
+            }
         }
-       return false;
+//       return false;
     }
 
 

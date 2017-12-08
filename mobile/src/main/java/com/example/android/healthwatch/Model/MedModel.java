@@ -11,25 +11,29 @@ public class MedModel {
     String date;
     String name;
     String medMessage;
+    public String repeatDays;
+
 
     public MedModel()
     {
 
     }
 
-    public MedModel(String name, String time, String date, String dosage, int id){
+    public MedModel(String name, String time, String date, String dosage, int id, String repeatDays){
         this.time = time;
         this.date = date;
         this.name = name;
         this.medMessage = dosage;
         this.id = id;
+        this.repeatDays = repeatDays;
     }
 
-    public MedModel(String time, String date, String dosage, int id){
+    public MedModel(String time, String date, String dosage, int id, String repeatDays){
         this.time = time;
         this.date = date;
         this.medMessage = dosage;
         this.id = id;
+        this.repeatDays = repeatDays;
     }
 
     public void setId(int id){
@@ -71,4 +75,15 @@ public class MedModel {
     public void setMedMessage(String medMessage) {
         this.medMessage = medMessage;
     }
+
+
+    public String getRepeatDays() {
+        return repeatDays;
+    }
+
+    public void setRepeatDays(String reapetDays) {
+        this.repeatDays = reapetDays;
+    }
+
+
 }

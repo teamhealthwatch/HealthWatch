@@ -41,6 +41,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     String allDate;
     String medName;
     String msg;
+    String repeatDays;
     Calendar calendar;
     Intent myIntent;
 
@@ -107,6 +108,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                     allTime = extras.getString("TIME");
                     allDate = extras.getString("DATE");
                     msg = extras.getString("MESSAGE");
+                    repeatDays = extras.getString("DAYS");
                     buildAlarm(allTime, allDate, 3536);
                     storeMedication();
                 }
@@ -141,7 +143,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("medication");
-                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, msg, alarmId), new DatabaseReference.CompletionListener(){
+                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, msg, alarmId, repeatDays), new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -149,7 +151,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                             } else {
                                 alarmId++;
                                 if(firstTime){
-                                    medications.add(new MedModel(medName, allTime, allDate, msg, alarmId));
+                                    medications.add(new MedModel(medName, allTime, allDate, msg, alarmId, repeatDays));
                                     displayMedications(medications);
                                 }
 
@@ -179,10 +181,11 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 String medTime = (String) dataSnapshot.child("time").getValue().toString();
                 String medDay = (String) dataSnapshot.child("date").getValue().toString();
                 String medDosage = (String) dataSnapshot.child("medMessage").getValue().toString();
+                String medRepeatDays = (String) dataSnapshot.child("repeatDays").getValue().toString();
                 int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
                 alarmId = medId;
 
-                MedModel m = new MedModel(medName,medTime,medDay,medDosage, medId);
+                MedModel m = new MedModel(medName,medTime,medDay,medDosage, medId, medRepeatDays);
                 medications.add(m);
                 displayMedications(medications);
             }
@@ -264,11 +267,13 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         String date = tempValues.getDate();
         String time = tempValues.getTime();
         String msg = tempValues.getMedMessage();
+        String repeatDays = tempValues.getRepeatDays();
         Bundle b = new Bundle();
         b.putString("name", name);
         b.putString("date", date);
         b.putString("time", time);
         b.putString("msg", msg);
+        b.putString("days", repeatDays);
 
         Intent intent = new Intent(this, MedTrackerForm.class);
         intent.putExtras(b);
