@@ -1,3 +1,5 @@
+
+
 package com.example.android.healthwatch;
 
 import android.app.NotificationChannel;
@@ -83,8 +85,8 @@ public class ListenerService extends WearableListenerService
 
         // avoid crashing when user kills the app and the service still try to start
         if (login != null) {
-            dh.getPrimaryContact(login);
-            dh.getEmergencyContactList(login);
+            dh.getPrimaryContact(login, "");
+            dh.getEmergencyContactList(login, "");
         }
 
     }
@@ -111,6 +113,7 @@ public class ListenerService extends WearableListenerService
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
+            //dh.getEmergencyContactList(login);
 
             // Broadcast message to MainActivity for display
 //            Intent messageIntent = new Intent();
@@ -121,7 +124,7 @@ public class ListenerService extends WearableListenerService
 
             //Grab username
             if (login != null) {
-                dh.getEmergencyContactList(login);
+                dh.getEmergencyContactList(login, "");
             }
 
 
@@ -197,13 +200,13 @@ public class ListenerService extends WearableListenerService
      * @param myList - A returned list of all primary contacts
      */
     @Override
-    public void contactList(ArrayList<Contact> myList) {
+    public void contactList(ArrayList<Contact> myList, String path) {
 
         sendList(myList);
     }
 
     @Override
-    public void primaryContact(Contact c) {
+    public void primaryContact(Contact c, String path) {
 
 
         Log.v(TAG, "CALLBACK!!!!");
@@ -217,7 +220,7 @@ public class ListenerService extends WearableListenerService
         Log.i("Phone call", "heart rate is correct");
         Intent callIntent = new Intent(Intent.ACTION_CALL);
 //        callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
-        callIntent.setData(Uri.parse("tel:" + "801-674-2644"));
+        callIntent.setData(Uri.parse("tel:" + "555-555-5555"));
         //801-696-0277
 
         if (ActivityCompat.checkSelfPermission(this,

@@ -23,7 +23,7 @@ public class DatabaseHelper {
     MedInfoCallback medInfoCallback;
 
 
-    public void getEmergencyContactList(final String username){
+    public void getEmergencyContactList(final String username, final String path){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         contacts = new ArrayList<>();
         myRef.child("contacts").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -36,7 +36,7 @@ public class DatabaseHelper {
                     Contact c = new Contact(name, phoneNumber, primaryContact);
                     contacts.add(c);
                 }
-                contactListCallback.contactList(contacts);
+                contactListCallback.contactList(contacts, path);
             }
 
             @Override
@@ -110,7 +110,7 @@ public class DatabaseHelper {
 
                 }
 
-                contactListCallback.contactList(contacts);
+                contactListCallback.contactList(contacts, "");
             }
 
             @Override
@@ -144,7 +144,7 @@ public class DatabaseHelper {
                         contacts.add(new Contact(name, pNumber, primaryContact));
                     }
                 }
-                contactListCallback.contactList(contacts);
+                contactListCallback.contactList(contacts, "");
 
             }
 
@@ -160,7 +160,7 @@ public class DatabaseHelper {
         myRef.child("contacts").child(login).child(username).removeValue();
     }
 
-    public void getPrimaryContact(String username){
+    public void getPrimaryContact(String username, final String path){
 
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
 
@@ -170,7 +170,7 @@ public class DatabaseHelper {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if((boolean) childSnapshot.child("primary").getValue()){
                         Contact c = new Contact(childSnapshot.getKey(), (String) childSnapshot.child("phoneNumber").getValue().toString(), true);
-                        contactListCallback.primaryContact(c);
+                        contactListCallback.primaryContact(c, path);
                     }
                 }
             }
@@ -248,9 +248,9 @@ public class DatabaseHelper {
 
     public interface EmergencyContactCallback {
         //Used to get a one-time list of the current emergency contacts associated with a user
-        void contactList(ArrayList<Contact> myList);
+        void contactList(ArrayList<Contact> myList, String path);
         //Returns the current primary contact of a user
-        void primaryContact(Contact c);
+        void primaryContact(Contact c, String path);
     }
 
     public interface MedInfoCallback{

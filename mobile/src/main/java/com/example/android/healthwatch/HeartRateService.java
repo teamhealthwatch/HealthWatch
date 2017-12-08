@@ -201,8 +201,8 @@ DatabaseHelper.MedInfoCallback{
 
         // avoid crashing when user kills the app and the service still try to start
         if(login != null){
-            dh.getPrimaryContact(login);
-            dh.getEmergencyContactList(login);
+            dh.getPrimaryContact(login, "");
+            dh.getEmergencyContactList(login, "");
         }
 
 
@@ -313,12 +313,12 @@ DatabaseHelper.MedInfoCallback{
 //    }
 
     @Override
-    public void contactList(ArrayList<Contact> myList) {
+    public void contactList(ArrayList<Contact> myList, String path) {
         contactList = myList;
     }
 
     @Override
-    public void primaryContact(Contact c) {
+    public void primaryContact(Contact c, String path) {
         primaryContact = c;
     }
 

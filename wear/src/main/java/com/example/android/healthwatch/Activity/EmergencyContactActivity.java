@@ -101,7 +101,7 @@ public class EmergencyContactActivity extends WearableActivity implements
     public class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("message");
+            String message = intent.getStringExtra("contact");
             Log.v(TAG, "Emergency Contact received message: " + message);
 
             if(message != null){
