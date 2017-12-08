@@ -51,6 +51,8 @@ public class ListenerService extends WearableListenerService
 
     private Contact primaryContact;
 
+    private ArrayList<Contact> contacts;
+
     int numMessages = 0;
 
     public static String id = "test_channel_01";
@@ -201,8 +203,13 @@ public class ListenerService extends WearableListenerService
      */
     @Override
     public void contactList(ArrayList<Contact> myList, String path) {
-
-        sendList(myList);
+        contacts = myList;
+        if(path.equals("phone")){
+            dh.getPrimaryContact(login, path);
+        }
+        else{
+            sendList(myList);
+        }
     }
 
     @Override
@@ -220,7 +227,7 @@ public class ListenerService extends WearableListenerService
         Log.i("Phone call", "heart rate is correct");
         Intent callIntent = new Intent(Intent.ACTION_CALL);
 //        callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
-        callIntent.setData(Uri.parse("tel:" + "555-555-5555"));
+        callIntent.setData(Uri.parse(primaryContact.getPhoneNumber()));
         //801-696-0277
 
         if (ActivityCompat.checkSelfPermission(this,
@@ -230,33 +237,36 @@ public class ListenerService extends WearableListenerService
         startActivity(callIntent);
         // texting
         textContacts();
-
+        DatabaseHelper dbhelper = new DatabaseHelper();
+        dbhelper.registerMedInfoCallback(this);
+        dbhelper.getMedConditions(login);
         //notification
-        addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
+
     }
 
     public void textContacts() {
-        String phoneNumber = primaryContact.getPhoneNumber();
         String text = "Please contact me, I may be need in help.";
-        try {
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNumber, null, text, null, null);
-            Toast.makeText(getApplicationContext(), "SMS Sent!",
-                    Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(),
-                    "SMS failed, please try again later!",
-                    Toast.LENGTH_LONG).show();
-            e.printStackTrace();
+        for(Contact i : contacts){
+            try {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(i.getPhoneNumber(), null, text, null, null);
+                Toast.makeText(getApplicationContext(), "SMS Sent!",
+                        Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(),
+                        "SMS failed, please try again later!",
+                        Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
         }
+
+
     }
 
     private void addNotification(String medcond, String allergies, String medication, String bloodType, String other) {
         Log.i("Start", "notification");
 
-        DatabaseHelper dbhelper = new DatabaseHelper();
-        dbhelper.registerMedInfoCallback(this);
-        dbhelper.getMedConditions(login);
+
 
    /* Invoking the default notification service */
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, id);
@@ -342,6 +352,7 @@ public class ListenerService extends WearableListenerService
         medications = curr_med_;
         bloodType = blood_type_;
         other = other_;
+        addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
     }
 
 }

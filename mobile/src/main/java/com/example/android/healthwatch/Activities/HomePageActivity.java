@@ -111,7 +111,6 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         this.startService(mIntent);
 
     }
-
     private void startHeartRateService(String username){
         Intent mIntent = new Intent(this, HeartRateService.class);
         mIntent.putExtra("login", username);

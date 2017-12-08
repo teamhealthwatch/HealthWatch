@@ -101,30 +101,23 @@ public class EmergencyContactActivity extends WearableActivity implements
     public class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("contact");
-            Log.v(TAG, "Emergency Contact received message: " + message);
-            if(message != null){
-                Log.v(TAG, "ZZZZZZZZZZZ");
-            }
 
-            if(message != null){
-                message += "\n";
-                // convert to Contact
-                // TODO: able to sort the receiving items in the sending order
-                byte[] newBytes = intent.getByteArrayExtra("contact");
+            byte[] newBytes = intent.getByteArrayExtra("contact");
+
+            if (newBytes != null) {
                 ByteArrayInputStream bis = new ByteArrayInputStream(newBytes);
                 ObjectInput in = null;
                 try {
                     in = new ObjectInputStream(bis);
                     Contact newContact = (Contact) in.readObject();
-                    // Display message in UI
+// Display message in UI
                     Log.v(TAG, "Contact name is " + newContact.getName());
-//                textView.append(newContact.getName() + "\n");
+// textView.append(newContact.getName() + "\n");
 
-                    // store contact in list
+// store contact in list
                     contacts.add(newContact);
 
-                    // refresh adapter
+// refresh adapter
                     displayContacts(contacts);
 
                 } catch (IOException e) {
@@ -137,7 +130,7 @@ public class EmergencyContactActivity extends WearableActivity implements
                             in.close();
                         }
                     } catch (IOException ex) {
-                        // ignore close exception
+// ignore close exception
                     }
                 }
             }
