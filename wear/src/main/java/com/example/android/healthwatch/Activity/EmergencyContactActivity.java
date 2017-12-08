@@ -101,38 +101,41 @@ public class EmergencyContactActivity extends WearableActivity implements
     public class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("message") + "\n";
+            String message = intent.getStringExtra("message");
             Log.v(TAG, "Emergency Contact received message: " + message);
 
-            // convert to Contact
-            // TODO: able to sort the receiving items in the sending order
-            byte[] newBytes = intent.getByteArrayExtra("contact");
-            ByteArrayInputStream bis = new ByteArrayInputStream(newBytes);
-            ObjectInput in = null;
-            try {
-                in = new ObjectInputStream(bis);
-                Contact newContact = (Contact) in.readObject();
-                // Display message in UI
-                Log.v(TAG, "Contact name is " + newContact.getName());
+            if(message != null){
+                message += "\n";
+                // convert to Contact
+                // TODO: able to sort the receiving items in the sending order
+                byte[] newBytes = intent.getByteArrayExtra("contact");
+                ByteArrayInputStream bis = new ByteArrayInputStream(newBytes);
+                ObjectInput in = null;
+                try {
+                    in = new ObjectInputStream(bis);
+                    Contact newContact = (Contact) in.readObject();
+                    // Display message in UI
+                    Log.v(TAG, "Contact name is " + newContact.getName());
 //                textView.append(newContact.getName() + "\n");
 
-                // store contact in list
-                contacts.add(newContact);
+                    // store contact in list
+                    contacts.add(newContact);
 
-                // refresh adapter
-                displayContacts(contacts);
+                    // refresh adapter
+                    displayContacts(contacts);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (in != null) {
-                        in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (in != null) {
+                            in.close();
+                        }
+                    } catch (IOException ex) {
+                        // ignore close exception
                     }
-                } catch (IOException ex) {
-                    // ignore close exception
                 }
             }
 

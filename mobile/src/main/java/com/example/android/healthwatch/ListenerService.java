@@ -116,12 +116,6 @@ public class ListenerService extends WearableListenerService
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
 
-            // Broadcast message to MainActivity for display
-//            Intent messageIntent = new Intent();
-//            messageIntent.setAction(Intent.ACTION_SEND);
-//            messageIntent.putExtra("message", message);
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
-
 
             //Grab username
             if (login != null) {
@@ -137,8 +131,6 @@ public class ListenerService extends WearableListenerService
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
 
-            // make phone calls
-//                makePhoneCall();
 
 
         } else if(messageEvent.getPath().equals(MEDICATION_PATH)){
@@ -237,6 +229,7 @@ public class ListenerService extends WearableListenerService
         Log.i("Phone call", "heart rate is correct");
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+//        callIntent.setData(Uri.parse("tel:" + "801-674-2644"));
         //801-696-0277
 
         if (ActivityCompat.checkSelfPermission(this,

@@ -192,7 +192,12 @@ public class MainActivity extends WearableActivity implements WearableNavigation
                 heartRateView = findViewById(R.id.heartRateView);
             }
 
-            heartRateView.setText(message.toString());
+            if(message != -1){
+                heartRateView.setText(message.toString());
+            }
+
+
+
         }
     }
 
