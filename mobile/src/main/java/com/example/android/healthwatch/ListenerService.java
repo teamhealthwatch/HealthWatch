@@ -67,7 +67,7 @@ public class ListenerService extends WearableListenerService
     String blood_type_;
     String other_;
 
-    
+
 
     @Override
     public void onCreate() {
@@ -85,6 +85,8 @@ public class ListenerService extends WearableListenerService
         //Grab primary contact and a list of emergency contacts for user
         dh = new DatabaseHelper();
         dh.registerEmergencyCallback(this);
+        dh.registerMedInfoCallback(this);
+        dh.registerMedicationCallback(this);
 
         // avoid crashing when user kills the app and the service still try to start
         if (login != null) {
@@ -110,6 +112,8 @@ public class ListenerService extends WearableListenerService
         // Uses callback method contactList declared at bottom to send emergency contacts to watch
         DatabaseHelper dh = new DatabaseHelper();
         dh.registerEmergencyCallback(this);
+        dh.registerMedInfoCallback(this);
+        dh.registerMedicationCallback(this);
 
 
         if (messageEvent.getPath().equals(EMERGENCY_CONTACT_PATH)) {
@@ -118,20 +122,12 @@ public class ListenerService extends WearableListenerService
             Log.v(TAG, "Message received on phone is: " + message);
 
 
-            //Grab username
-            if (login != null) {
-                dh.getEmergencyContactList(login);
-            }
-
 
         } else if (messageEvent.getPath().equals(PHONE_CALL_PATH)) {
-
-            dh.getPrimaryContact(login);
 
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
-
 
 
         } else if(messageEvent.getPath().equals(MEDICATION_PATH)){

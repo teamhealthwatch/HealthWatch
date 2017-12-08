@@ -57,12 +57,6 @@ public class HeartRateService extends Service implements
 
     private String TAG = "HeartRateService mobile";
 
-
-
-    DatabaseHelper dh;
-
-    private String login;
-
     public static String id = "test_channel_01";
 
 
@@ -92,12 +86,6 @@ public class HeartRateService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         Log.v(TAG, "onStartCommand");
-
-        if (intent != null && intent.getExtras() != null){
-            login = intent.getStringExtra("login");
-        }
-
-
 
         // Create NodeListener that enables buttons when a node is connected and disables buttons when a node is disconnected
         nodeListener = new NodeApi.NodeListener() {
@@ -179,19 +167,7 @@ public class HeartRateService extends Service implements
 
         googleApiClient.connect();
 
-        //Grab primary contact and a list of emergency contacts for user
-        dh = new DatabaseHelper();
-
-
-        // avoid crashing when user kills the app and the service still try to start
-        if(login != null){
-            dh.getPrimaryContact(login);
-            dh.getEmergencyContactList(login);
-        }
-
         return super.onStartCommand(intent, flags, startId);
     }
-
-
 
 }

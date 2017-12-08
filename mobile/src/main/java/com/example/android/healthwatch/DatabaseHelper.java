@@ -243,7 +243,7 @@ public class DatabaseHelper {
 
     public void getMedications(String login){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        contacts = new ArrayList<>();
+        medications = new ArrayList<>();
         myRef.child("medication").child(login).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

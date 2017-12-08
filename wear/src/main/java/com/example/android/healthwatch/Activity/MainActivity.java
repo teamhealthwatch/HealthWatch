@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.android.healthwatch.Adapter.NavigationAdapter;
 import com.example.android.healthwatch.HeartRateService;
+import com.example.android.healthwatch.Model.Medication;
 import com.example.android.healthwatch.Model.NavigationItem;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;
