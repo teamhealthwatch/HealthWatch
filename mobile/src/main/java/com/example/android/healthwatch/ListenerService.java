@@ -135,6 +135,7 @@ public class ListenerService extends WearableListenerService
 
 
         } else if(messageEvent.getPath().equals(MEDICATION_PATH)){
+            Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             dh.getMedications(login);
         }
         else{

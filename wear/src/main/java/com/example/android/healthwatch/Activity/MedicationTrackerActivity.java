@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.AdapterView;
 
 import com.example.android.healthwatch.Adapter.MedAdapter;
+import com.example.android.healthwatch.Model.MedModel;
 import com.example.android.healthwatch.Model.Medication;
 import com.example.android.healthwatch.Model.SendThread;
 import com.example.android.healthwatch.R;
@@ -31,7 +32,7 @@ public class MedicationTrackerActivity extends WearableActivity implements
 
     private WearableRecyclerView wearableRecyclerView;
     private MedAdapter medAdapter;
-    private ArrayList<Medication> medication;
+    private ArrayList<MedModel> medication;
 
 
 
@@ -52,16 +53,17 @@ public class MedicationTrackerActivity extends WearableActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_condition);
 
-        medication = new ArrayList<>();
+//        medication = new ArrayList<>();
 
 //        for (int i = 0; i < 10; i++){
 //            medication.add(new Medication("medication"+ i, "dosage" + i));
 //        }
-        medication.add(new Medication("Hydrocodone", "Dosage: 3"));
-        medication.add(new Medication("Cephalexin", "Dosage: 1"));
-        medication.add(new Medication("Generic Zocor", "Dosage: 2"));
-        medication.add(new Medication("Lisinopril", "Dosage: 2"));
-        medication.add(new Medication("Generic Synthroid", "Dosage: 2"));
+//        medication.add(new Medication("Hydrocodone", "Dosage: 3"));
+//        medication.add(new Medication("Cephalexin", "Dosage: 1"));
+//        medication.add(new Medication("Generic Zocor", "Dosage: 2"));
+//        medication.add(new Medication("Lisinopril", "Dosage: 2"));
+//        medication.add(new Medication("Generic Synthroid", "Dosage: 2"));
+        medication = new ArrayList<MedModel>();
 
 
 

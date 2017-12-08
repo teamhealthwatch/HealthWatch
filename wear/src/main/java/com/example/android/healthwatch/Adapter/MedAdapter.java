@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.healthwatch.Model.MedModel;
 import com.example.android.healthwatch.Model.Medication;
 import com.example.android.healthwatch.R;
 
@@ -18,12 +19,12 @@ import java.util.ArrayList;
 
 public class MedAdapter extends WearableRecyclerView.Adapter<MedAdapter.ViewHolder>{
 
-    private ArrayList<Medication> medList;
+    private ArrayList<MedModel> medList;
     private Context context;
     private MedClickListener medClickListener;
 
 
-    public MedAdapter(ArrayList<Medication> medList, Context context, MedClickListener medClickListener) {
+    public MedAdapter(ArrayList<MedModel> medList, Context context, MedClickListener medClickListener) {
         this.medList = medList;
         this.context = context;
         this.medClickListener = medClickListener;
@@ -38,10 +39,9 @@ public class MedAdapter extends WearableRecyclerView.Adapter<MedAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(MedAdapter.ViewHolder holder, int position) {
-        Medication medication = medList.get(position);
+        MedModel medication = medList.get(position);
 
-        holder.titleView.setText(medication.getMedName());
-        holder.dosageView.setText(medication.getDosage());
+        holder.titleView.setText(medication.getName());
 
     }
 
@@ -54,16 +54,15 @@ public class MedAdapter extends WearableRecyclerView.Adapter<MedAdapter.ViewHold
     public class ViewHolder extends WearableRecyclerView.ViewHolder{
 
         public TextView titleView;
-        public TextView dosageView;
-        public TextView timeView;
+
+
 
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             titleView = itemView.findViewById(R.id.med_title_view);
-            dosageView = itemView.findViewById(R.id.dosage_view);
-//            timeView = itemView.findViewById(R.id.next_alarm_view);
+
 
 
 

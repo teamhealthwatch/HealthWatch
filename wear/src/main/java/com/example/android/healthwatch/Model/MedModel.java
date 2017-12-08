@@ -1,10 +1,13 @@
 package com.example.android.healthwatch.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by faitholadele on 10/6/17.
  */
 
-public class MedModel {
+public class MedModel implements Parcelable {
 
     private int id;
     String time;
@@ -35,6 +38,27 @@ public class MedModel {
         this.id = id;
         this.repeatDays = repeatDays;
     }
+
+    protected MedModel(Parcel in) {
+        id = in.readInt();
+        time = in.readString();
+        date = in.readString();
+        name = in.readString();
+        medMessage = in.readString();
+        repeatDays = in.readString();
+    }
+
+    public static final Creator<MedModel> CREATOR = new Creator<MedModel>() {
+        @Override
+        public MedModel createFromParcel(Parcel in) {
+            return new MedModel(in);
+        }
+
+        @Override
+        public MedModel[] newArray(int size) {
+            return new MedModel[size];
+        }
+    };
 
     public void setId(int id){
         this.id = id;
@@ -83,6 +107,22 @@ public class MedModel {
 
     public void setRepeatDays(String reapetDays) {
         this.repeatDays = reapetDays;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(time);
+        parcel.writeString(date);
+        parcel.writeString(name);
+        parcel.writeString(medMessage);
+        parcel.writeString(repeatDays);
     }
 
 

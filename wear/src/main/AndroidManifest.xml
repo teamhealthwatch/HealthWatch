@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.MedConditionActivity"
+            android:name=".Activity.MedicationTrackerActivity"
             android:label="@string/title_activity_med_condition" />
         <activity
             android:name=".Activity.MedInfoActivity"
