@@ -135,11 +135,14 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
                 calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
                 calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
                 calendar.set(Calendar.DAY_OF_MONTH, nowCalendar.get(Calendar.DAY_OF_MONTH));
-                calendar.set(Calendar.DAY_OF_MONTH, day-1);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
 
                 if(timesplit[3].equals("PM"))
                 {
                     calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timesplit[0]) + 12);
+                    int su = Integer.parseInt(timesplit[0]) + 12;
+
+                    Log.i(" ", Integer.toString(su));
 
                 }
                 else
@@ -165,6 +168,7 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
                     holder._date.setText( dayOfWeek.substring(0,3) + "," + monthString.substring(0,3) + " " + Integer.toString(day));
                     holder._time.setText( dataModel.getTime() );
                     holder._msg.setText( dataModel.getMedMessage() );
+                    holder._alarmbttn.setChecked(true);
                     holder._alarmbttn.setVisibility(View.VISIBLE);
                 }
 

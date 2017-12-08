@@ -38,10 +38,11 @@ import java.util.ArrayList;
 public class ListenerService extends WearableListenerService
         implements GoogleApiClient.ConnectionCallbacks, EmergencyContactCallback,
         DatabaseHelper.MedInfoCallback, DatabaseHelper.MedicationCallback,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener{
     String TAG = "mobile Listener";
 
     GoogleApiClient googleApiClient;
+    ArrayList<Contact> allContactlist;
 
     final static String EMERGENCY_CONTACT_PATH = "/emergency_contact";
 
@@ -247,7 +248,9 @@ public class ListenerService extends WearableListenerService
         String text = "Please contact me, I may be need in help.";
         try {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNumber, null, text, null, null);
+            for(int i = 0; i < allContactlist.size(); i++) {
+                smsManager.sendTextMessage(allContactlist.get(i).getPhoneNumber(), null, text, null, null);
+            }
             Toast.makeText(getApplicationContext(), "SMS Sent!",
                     Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -360,6 +363,8 @@ public class ListenerService extends WearableListenerService
     public void contactList(ArrayList<Contact> myList) {
 
         sendContactList(myList);
+        allContactlist = myList;
+        makePhoneCall();
     }
 
     @Override
@@ -368,7 +373,7 @@ public class ListenerService extends WearableListenerService
 
         Log.v(TAG, "CALLBACK!!!!");
         primaryContact = c;
-        makePhoneCall();
+        dh.getEmergencyContactList(login);
     }
 
     @Override

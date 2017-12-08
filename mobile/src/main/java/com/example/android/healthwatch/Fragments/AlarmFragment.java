@@ -42,7 +42,7 @@ public class AlarmFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        days = getArguments().getString("days");
+//        days = getArguments().getString("days");
 
         final ArrayList items = new ArrayList();
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

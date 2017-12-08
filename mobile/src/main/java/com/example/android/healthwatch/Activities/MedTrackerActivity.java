@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.android.healthwatch.AlarmReceiver;
 import com.example.android.healthwatch.Adapters.MedTrackerAdapter;
+import com.example.android.healthwatch.AlarmService;
 import com.example.android.healthwatch.AlarmUtil;
 import com.example.android.healthwatch.Model.MedModel;
 import com.example.android.healthwatch.R;
@@ -242,6 +243,10 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         AlarmUtil.setAlarm(this, alarmIntent, pos, calendar, "alarm on");
 
+        Intent someBroadCast = new Intent(this, AlarmService.class);
+        someBroadCast.putExtra("login", login);
+        sendBroadcast(someBroadCast);
+
     }
 
     public void getAlarmPosition(int position, boolean isOn) {
@@ -261,6 +266,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         AlarmUtil.cancelAlarm(this, alarmIntent, position);
         alarmIntent.putExtra("extra", "alarm off");
         sendBroadcast(alarmIntent);
+
 
     }
 

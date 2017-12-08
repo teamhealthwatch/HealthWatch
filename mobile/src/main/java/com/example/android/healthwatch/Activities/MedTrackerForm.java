@@ -116,9 +116,14 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         actualTime.setText(allTime);
         medicationName.setText(medName);
         medicationMessage.setText(medMessage);
-        repeatText.setText(reapetDays);
-
-        Log.i("", "");
+        if(reapetDays.equals(" "))
+        {
+            repeatText.setText("repeat");
+        }
+        else
+        {
+            repeatText.setText(reapetDays);
+        }
     }
 
     private void selectDays() {
