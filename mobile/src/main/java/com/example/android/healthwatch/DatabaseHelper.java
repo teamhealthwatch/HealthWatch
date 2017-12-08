@@ -236,6 +236,12 @@ public class DatabaseHelper {
         myRef.child("medInfo").child(login).removeValue();
     }
 
+
+    public void deleteMedications(String login, final String medName){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medication").child(login).child(medName).removeValue();
+    }
+
     //Instantiates the callback for the current session
     public void registerEmergencyCallback(EmergencyContactCallback callBackClass){
         contactListCallback = callBackClass;
