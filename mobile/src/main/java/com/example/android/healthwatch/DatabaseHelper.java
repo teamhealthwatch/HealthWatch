@@ -257,6 +257,7 @@ public class DatabaseHelper {
                     medications.add(m);
                 }
                 medicationCallback.medicationList(medications);
+                
             }
 
             @Override

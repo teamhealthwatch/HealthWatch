@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -95,7 +96,7 @@ public class MedicationTrackerActivity extends WearableActivity implements
                         Log.i("MedClickListener", "clicked " + pos);
                         Intent newIntent = new Intent(MedicationTrackerActivity.this, MedInfoActivity.class);
 
-                        newIntent.putExtra(MED_ITEM, medication.get(pos));
+                        newIntent.putExtra(MED_ITEM, (Parcelable)medication.get(pos));
                         startActivity(newIntent);
                     }
                 };
