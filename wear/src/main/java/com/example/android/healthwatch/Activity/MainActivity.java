@@ -29,6 +29,7 @@ import com.example.android.healthwatch.Adapter.NavigationAdapter;
 import com.example.android.healthwatch.HeartRateService;
 import com.example.android.healthwatch.Model.NavigationItem;
 import com.example.android.healthwatch.R;
+import com.example.android.healthwatch.TimerIntentService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -230,5 +231,11 @@ public class MainActivity extends WearableActivity implements WearableNavigation
 
         // change boolean;
         isMeasuring = true;
+    }
+
+    public void onTestButton(View v){
+        Intent testIntent = new Intent(this, TimerIntentService.class);
+        testIntent.putExtra("test", 1000);
+        startService(testIntent);
     }
 }

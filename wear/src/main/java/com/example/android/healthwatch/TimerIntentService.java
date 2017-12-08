@@ -47,10 +47,14 @@ public class TimerIntentService extends IntentService implements
 
     GoogleApiClient googleClient;
 
+    private long testMillsec;
+
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         simpleKill = intent.getBooleanExtra("simpleKill", true);
         Log.v(TAG, "boolean is " + simpleKill);
+
+        testMillsec = intent.getIntExtra("test", 60000);
 
         googleClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -84,7 +88,8 @@ public class TimerIntentService extends IntentService implements
      * parameters.
      */
     private void handleActionResponse() {
-        CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
+
+        CountDownTimer countDownTimer = new CountDownTimer(testMillsec, 1000) {
             @Override
             public void onTick(long l) {
                 Log.v(TAG, "second remaining: " + l/1000);

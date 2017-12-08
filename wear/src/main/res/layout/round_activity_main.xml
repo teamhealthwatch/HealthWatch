@@ -84,7 +84,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/linearLayout">
+                android:layout_below="@+id/linearLayout"
+                android:id="@+id/relative_layout">
 
                 <Space
                     android:layout_width="match_parent"
@@ -93,16 +94,32 @@
                     android:id="@id/space2"/>
 
                 <Button
-                    android:id="@+id/heartRateButton"
+                android:id="@+id/heartRateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/screen_percentage_10"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_weight="1.29"
+                android:background="@drawable/button_custom"
+                android:onClick="onHeartRateButton"
+                android:text="Stop"
+                android:layout_above="@id/space2" />
+
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="1dp"
+                    android:id="@+id/space5"/>
+
+                <Button
+                    android:id="@+id/testButton"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/screen_percentage_10"
+                    android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_gravity="center"
                     android:layout_weight="1.29"
                     android:background="@drawable/button_custom"
-                    android:onClick="onHeartRateButton"
-                    android:text="Stop"
-                    android:layout_above="@id/space2" />
+                    android:onClick="onTestButton"
+                    android:text="test" />
 
 
 
