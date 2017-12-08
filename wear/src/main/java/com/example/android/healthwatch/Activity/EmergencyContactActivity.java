@@ -103,6 +103,9 @@ public class EmergencyContactActivity extends WearableActivity implements
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("contact");
             Log.v(TAG, "Emergency Contact received message: " + message);
+            if(message != null){
+                Log.v(TAG, "ZZZZZZZZZZZ");
+            }
 
             if(message != null){
                 message += "\n";
