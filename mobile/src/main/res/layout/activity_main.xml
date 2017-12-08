@@ -64,10 +64,6 @@
             android:id="@+id/skip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Skip to Contacts Form"
-            android:visibility="invisible"/>
-
-
-
+            android:text="Skip to Contacts Form" />
     </LinearLayout>
 </RelativeLayout>

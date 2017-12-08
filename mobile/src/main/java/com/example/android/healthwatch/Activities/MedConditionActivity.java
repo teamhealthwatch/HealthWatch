@@ -104,7 +104,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     }
 
 
-
     private void storeMedConditions() {
 
         final String medcond  = medcond_;

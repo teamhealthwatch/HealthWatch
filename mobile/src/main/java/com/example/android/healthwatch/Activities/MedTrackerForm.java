@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.view.View.VISIBLE;
 
 public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.RepeatSelectionListener{
 
@@ -49,8 +52,11 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     String dayOfWeek;
     Boolean isDate;
     Boolean isReapet;
+    Button deleteMedication;
     String reapetDays;
     String monthString;
+    String position;
+    String old_name;
     ArrayList<String> days = new ArrayList<String>();
     ArrayList<String> daysInfull = new ArrayList<String>();
 
@@ -69,6 +75,8 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         medicationMessage = (EditText) findViewById(R.id.notification_content);
         actualDate = (TextView)findViewById(R.id.actualDate);
         reapetDays = " ";
+        position = " ";
+        old_name = " ";
         isDate = true;
         isReapet = false;
         setTime.setOnClickListener(new View.OnClickListener() {
@@ -106,12 +114,15 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
             allDate = b.getString("date");
             medName = b.getString("name");
             reapetDays = b.getString("days");
+            position = b.getString("position");
+            old_name =b.getString("old_name");
 
             displayForm();
         }
     }
 
     private void displayForm(){
+
         actualDate.setText(allDate);
         actualTime.setText(allTime);
         medicationName.setText(medName);
@@ -124,6 +135,31 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         {
             repeatText.setText(reapetDays);
         }
+        deleteMedication = (Button) findViewById(R.id.deleteMed);
+        deleteMedication.setVisibility(VISIBLE);
+        deleteMedication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                medMessage = " ";
+                allTime = " ";
+                allDate =  "";
+                reapetDays ="";
+                String delete = "true";
+
+                Intent intent = new Intent(getApplicationContext(), MedTrackerActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("NAME", medName);
+                bundle.putString("TIME", allTime);
+                bundle.putString("DATE", allDate);
+                bundle.putString("MESSAGE", medMessage);
+                bundle.putString("DAYS", reapetDays);
+                bundle.putString("DELETE", delete);
+                bundle.putString("POSITION", position);
+                intent.putExtras(bundle);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     private void selectDays() {
@@ -194,6 +230,11 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         bundle.putString("DATE", allDate);
         bundle.putString("MESSAGE", medMessage);
         bundle.putString("DAYS", reapetDays);
+        if(!position.equals(""))
+        {
+            bundle.putString("POSITION", position);
+            bundle.putString("old_name", old_name);
+        }
         intent.putExtras(bundle);
 
         Log.i("name", medName + allTime + allDate + medMessage + " " + reapetDays);
@@ -410,44 +451,72 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
           if(j == 0)
           {
               // Sunday == 0
-              days.add("S");
-              daysInfull.add("Sunday");
+              if(!days.contains("S"))
+              {
+                  days.add("S");
+                  daysInfull.add("Sunday");
+              }
+
           }
           else if( j == 1)
           {
               // Monday == 1
-              days.add("M");
-              daysInfull.add("Monday");
+              if(!days.contains("M"))
+              {
+                  days.add("M");
+                  daysInfull.add("Monday");
+              }
+
           }
           else if( j == 2)
           {
               // Tuesday == 2
-              days.add("T");
-              daysInfull.add("Tuesday");
+              if(!days.contains("T"))
+              {
+                  days.add("T");
+                  daysInfull.add("Tuesday");
+              }
+
           }
           else if( j == 3)
           {
               // Wednesday == 3
-              days.add("W");
-              daysInfull.add("Wednesday");
+              if(!days.contains("W"))
+              {
+                  days.add("W");
+                  daysInfull.add("Wednesday");
+              }
+
           }
           else if( j == 4)
           {
               // Thursday == 4
-              days.add("Th");
-              daysInfull.add("Thursday");
+              if(!days.contains("Th"))
+              {
+                  days.add("Th");
+                  daysInfull.add("Thursday");
+              }
+
           }
           else if( j == 5)
           {
               // Friday == 5
-              days.add("F");
-              daysInfull.add("Friday");
+              if(!days.contains("F"))
+              {
+                  days.add("F");
+                  daysInfull.add("Friday");
+              }
+
           }
           else if( j == 6)
           {
               // Saturday == 5
-              days.add("S");
-              daysInfull.add("Saturday");
+              if(!days.contains("Sa"))
+              {
+                  days.add("Sa");
+                  daysInfull.add("Saturday");
+              }
+
           }
       }
 

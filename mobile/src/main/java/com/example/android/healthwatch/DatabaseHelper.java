@@ -235,10 +235,38 @@ public class DatabaseHelper {
             }
         });
     }
+//    public void updateMedication(final String login, final String medName, final String allTime,
+//                                    final String allDate, final String msg, final String repeatDays){
+//        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+//        myRef.child("medication").child(login).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                DatabaseReference medicationRef = database.getReference();
+//                for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
+//                    String name = childSnapshot.getKey();
+//                    if(name.equals(login)){
+//                        MedModel m = new MedModel(medName, allTime, allDate, msg, repeatDays);
+//                        medicationRef.child("medication").child(login).setValue(m);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     public void deleteMedConditions(String login){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("medInfo").child(login).removeValue();
+    }
+
+    public void deleteMedications(String login, final String medName){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("medication").child(login).child(medName).removeValue();
     }
 
     public void getMedications(String login){
