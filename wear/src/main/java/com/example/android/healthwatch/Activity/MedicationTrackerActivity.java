@@ -204,6 +204,5 @@ public class MedicationTrackerActivity extends WearableActivity implements
 
         mWearableNavigationDrawer.setAdapter(new NavigationAdapter(MedicationTrackerActivity.this, drawerList));
         mWearableNavigationDrawer.addOnItemSelectedListener(this);
-
     }
 }

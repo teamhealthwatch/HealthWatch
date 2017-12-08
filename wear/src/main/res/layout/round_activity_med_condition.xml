@@ -22,6 +22,11 @@
             android:id="@+id/med_recycler_view"
             android:clickable="true" />
 
+        <android.support.wear.widget.drawer.WearableNavigationDrawerView
+            android:id="@+id/top_navigation_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </android.support.wear.widget.drawer.WearableDrawerLayout>
 
 
