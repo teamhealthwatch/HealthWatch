@@ -34,7 +34,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class ListenerService extends WearableListenerService
-        implements GoogleApiClient.ConnectionCallbacks, EmergencyContactCallback, DatabaseHelper.MedInfoCallback,
+        implements GoogleApiClient.ConnectionCallbacks,
+        EmergencyContactCallback,
+        DatabaseHelper.MedInfoCallback,
         GoogleApiClient.OnConnectionFailedListener {
     String TAG = "mobile Listener";
 
@@ -112,12 +114,6 @@ public class ListenerService extends WearableListenerService
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
 
-            // Broadcast message to MainActivity for display
-//            Intent messageIntent = new Intent();
-//            messageIntent.setAction(Intent.ACTION_SEND);
-//            messageIntent.putExtra("message", message);
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
-
 
             //Grab username
             if (login != null) {
@@ -127,15 +123,12 @@ public class ListenerService extends WearableListenerService
 
         } else if (messageEvent.getPath().equals(PHONE_CALL_PATH)) {
 
-//            dh.getPrimaryContact(login);
+            dh.getPrimaryContact(login);
 
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
 
-            // make phone calls
-//                makePhoneCall();
-            makePhoneCall();
 
 
         } else {
@@ -213,11 +206,11 @@ public class ListenerService extends WearableListenerService
 
     public void makePhoneCall() {
 
-//        String primaryPhoneNumber = primaryContact.getPhoneNumber();
+        String primaryPhoneNumber = primaryContact.getPhoneNumber();
         Log.i("Phone call", "heart rate is correct");
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-//        callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
-        callIntent.setData(Uri.parse("tel:" + "801-674-2644"));
+        callIntent.setData(Uri.parse("tel:" + primaryPhoneNumber));
+//        callIntent.setData(Uri.parse("tel:" + "801-674-2644"));
         //801-696-0277
 
         if (ActivityCompat.checkSelfPermission(this,
