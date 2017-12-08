@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by faitholadele on 10/6/17.
  */
 
-public class MedModel implements Parcelable, Serializable{
+public class MedModel implements Serializable {
 
     private int id;
     String time;
@@ -41,6 +41,15 @@ public class MedModel implements Parcelable, Serializable{
         this.repeatDays = repeatDays;
     }
 
+
+    public MedModel(String name, String time, String date, String notification, String repeatDays){
+        this.time = time;
+        this.date = date;
+        this.name = name;
+        this.medMessage = notification;
+        this.repeatDays = repeatDays;
+    }
+
     protected MedModel(Parcel in) {
         id = in.readInt();
         time = in.readString();
@@ -49,18 +58,6 @@ public class MedModel implements Parcelable, Serializable{
         medMessage = in.readString();
         repeatDays = in.readString();
     }
-
-    public static final Creator<MedModel> CREATOR = new Creator<MedModel>() {
-        @Override
-        public MedModel createFromParcel(Parcel in) {
-            return new MedModel(in);
-        }
-
-        @Override
-        public MedModel[] newArray(int size) {
-            return new MedModel[size];
-        }
-    };
 
     public void setId(int id){
         this.id = id;
@@ -109,22 +106,6 @@ public class MedModel implements Parcelable, Serializable{
 
     public void setRepeatDays(String reapetDays) {
         this.repeatDays = reapetDays;
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeString(time);
-        parcel.writeString(date);
-        parcel.writeString(name);
-        parcel.writeString(medMessage);
-        parcel.writeString(repeatDays);
     }
 
 
