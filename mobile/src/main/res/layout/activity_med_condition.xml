@@ -126,7 +126,6 @@
             android:src="@drawable/fab_button"
             app:layout_anchorGravity="bottom|right|end"/>
 
-
     </LinearLayout>
 
 
