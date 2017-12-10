@@ -1,8 +1,10 @@
 package com.example.android.healthwatch.Model;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
@@ -30,13 +32,18 @@ public class SendThread extends Thread {
     public void run() {
         NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await();
         for (Node node : nodes.getNodes()) {
-            MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(googleApiClient, node.getId(), path, message.getBytes()).await();
-            if (result.getStatus().isSuccess()) {
-                Log.v(TAG, "SendThread: message send to " + node.getDisplayName());
+            Wearable.MessageApi.sendMessage(googleApiClient, node.getId(), path, message.getBytes()).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+                @Override
+                public void onResult(MessageApi.SendMessageResult sendMessageResult) {
 
-            } else {
-                Log.v(TAG, "SendThread: message failed to" + node.getDisplayName());
-            }
+                    if (sendMessageResult.getStatus().isSuccess()) {
+                        Log.i("heart rate", "heart rate sent to phone ");
+                    } else {
+                        Log.i("heart rate", "problem sending heart rate");
+                    }
+
+                }
+            });
         }
     }
 }
