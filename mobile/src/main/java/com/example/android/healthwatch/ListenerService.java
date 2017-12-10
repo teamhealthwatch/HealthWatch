@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.android.healthwatch.Activities.MedConditionActivity;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.DatabaseHelper.EmergencyContactCallback;
+import com.example.android.healthwatch.Model.MedModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageEvent;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 
 public class ListenerService extends WearableListenerService
         implements GoogleApiClient.ConnectionCallbacks, EmergencyContactCallback, DatabaseHelper.MedInfoCallback,
+        DatabaseHelper.MedicationCallback,
         GoogleApiClient.OnConnectionFailedListener {
     String TAG = "mobile Listener";
 
@@ -44,8 +46,9 @@ public class ListenerService extends WearableListenerService
 
     private String login;
 
-
     public final static String PHONE_CALL_PATH = "/phone_call_path";
+
+    public final static String MEDICATION_PATH = "/medication";
 
     int numMessages = 0;
 
@@ -63,6 +66,7 @@ public class ListenerService extends WearableListenerService
 
     private Contact primaryContact;
     private ArrayList<Contact> contacts;
+    private ArrayList<MedModel> medications;
 
 
     @Override
@@ -133,21 +137,24 @@ public class ListenerService extends WearableListenerService
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
-
-            // make phone calls
-//                makePhoneCall();
-            //makePhoneCall();
             dh.getEmergencyContactList(login, "phone");
+        }
+        else if (messageEvent.getPath().equals(MEDICATION_PATH)) {
+            final String message = new String(messageEvent.getData());
+            Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
+            Log.v(TAG, "Message received on phone is: " + message);
+            if(login != null){
+                dh.getMedications(login);
+            }
+        }
 
-
-
-        } else {
+        else {
             super.onMessageReceived(messageEvent);
         }
     }
 
 
-    private void sendList(ArrayList<Contact> list) {
+    private void sendContactList(ArrayList<Contact> list) {
 
 
         ObjectOutput out = null;
@@ -179,6 +186,38 @@ public class ListenerService extends WearableListenerService
         }
     }
 
+    private void sendMedicationList(ArrayList<MedModel> list) {
+
+
+        ObjectOutput out = null;
+        try {
+
+
+            // covert each contact to byte array, and send to wear using sendthread
+            for (int i = 0; i < list.size(); i++) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                out = new ObjectOutputStream(bos);
+
+                out.writeObject(list.get(i));
+                out.flush();
+                byte[] newBytes = bos.toByteArray();
+
+                // sending in threads causing random order on receiving items
+                new SendThread(MEDICATION_PATH, newBytes, googleApiClient).start();
+                Log.v(TAG, "sending " + i + " item");
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -192,33 +231,6 @@ public class ListenerService extends WearableListenerService
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-
-    /**
-     * EmergencyContactCallback method that runs after the database finishes pulling the list
-     *
-     * @param myList - A returned list of all primary contacts
-     */
-    @Override
-    public void contactList(ArrayList<Contact> myList, String path) {
-        contacts = myList;
-        if(path.equals("phone")){
-            dh.getPrimaryContact(login, "phone");
-        }
-        else{
-            sendList(myList);
-        }
-    }
-
-    @Override
-    public void primaryContact(Contact c, String path) {
-
-
-        Log.v(TAG, "CALLBACK!!!!");
-        primaryContact = c;
-        if(path.equals("phone")){
-            makePhoneCall();
-        }
     }
 
     public void makePhoneCall() {
@@ -357,4 +369,36 @@ public class ListenerService extends WearableListenerService
         addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
     }
 
+    /**
+     * EmergencyContactCallback method that runs after the database finishes pulling the list
+     *
+     * @param myList - A returned list of all primary contacts
+     */
+    @Override
+    public void contactList(ArrayList<Contact> myList, String path) {
+        contacts = myList;
+        if(path.equals("phone")){
+            dh.getPrimaryContact(login, "phone");
+        }
+        else{
+            sendContactList(myList);
+        }
+    }
+
+    @Override
+    public void primaryContact(Contact c, String path) {
+
+
+        Log.v(TAG, "CALLBACK!!!!");
+        primaryContact = c;
+        if(path.equals("phone")){
+            makePhoneCall();
+        }
+    }
+
+    @Override
+    public void medicationList(ArrayList<MedModel> medList) {
+        medications = medList;
+        sendMedicationList(medications);
+    }
 }

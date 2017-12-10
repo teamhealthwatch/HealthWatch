@@ -1,4 +1,5 @@
 package com.example.android.healthwatch.Activities;
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -119,6 +120,16 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
 
     }
 
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,6 +142,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.hmpg:
+                boolean gary = isMyServiceRunning(ListenerService.class);
                 Toast.makeText(this, "Homepage", Toast.LENGTH_SHORT).show();
                 Intent intt = new Intent(this, HomePageActivity.class);
                 intt.putExtra("login", login);
