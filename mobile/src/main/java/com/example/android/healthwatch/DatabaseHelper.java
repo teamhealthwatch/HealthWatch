@@ -2,6 +2,7 @@ package com.example.android.healthwatch;
 
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.Model.MedInfoModel;
+import com.example.android.healthwatch.Model.MedModel;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,8 +20,10 @@ import java.util.Map;
 
 public class DatabaseHelper {
     ArrayList<Contact> contacts;
+    ArrayList<MedModel> medications;
     EmergencyContactCallback contactListCallback;
     MedInfoCallback medInfoCallback;
+    MedicationCallback medicationCallback;
 
 
     public void getEmergencyContactList(final String username, final String path){
@@ -236,6 +239,32 @@ public class DatabaseHelper {
         myRef.child("medInfo").child(login).removeValue();
     }
 
+    public void getMedications(final String username){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        contacts = new ArrayList<>();
+        myRef.child("medication").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
+                    String name = childSnapshot.getKey();
+                    String time = (String) childSnapshot.child("time").getValue().toString();
+                    String date = (String) childSnapshot.child("date").getValue().toString();
+                    String msg = (String) childSnapshot.child("medMessage").getValue().toString();
+                    String days = (String) childSnapshot.child("repeatDays").getValue().toString();
+                    MedModel m = new MedModel(name, time, date, msg, days);
+                    medications.add(m);
+                }
+                medicationCallback.medicationList(medications);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
     public void deleteMedications(String login, final String medName){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
@@ -251,6 +280,10 @@ public class DatabaseHelper {
         medInfoCallback = callBackClass;
     }
 
+    public void registerMedicationCallback(MedicationCallback callBackClass){
+        medicationCallback = callBackClass;
+    }
+
 
     public interface EmergencyContactCallback {
         //Used to get a one-time list of the current emergency contacts associated with a user
@@ -261,6 +294,10 @@ public class DatabaseHelper {
 
     public interface MedInfoCallback{
         void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other);
+    }
+
+    public interface MedicationCallback{
+        void medicationList(ArrayList<MedModel> medList);
     }
 
 
