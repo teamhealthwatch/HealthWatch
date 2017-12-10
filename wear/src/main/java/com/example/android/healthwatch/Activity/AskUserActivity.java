@@ -48,6 +48,8 @@ public class AskUserActivity extends Activity implements
 
     GoogleApiClient googleClient;
 
+    AskUserActivity.MessageReceiver messageReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +78,7 @@ public class AskUserActivity extends Activity implements
 
         // Register the local broadcast receiver to receive messages from the listener.
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
-        AskUserActivity.MessageReceiver messageReceiver = new AskUserActivity.MessageReceiver();
+        messageReceiver = new AskUserActivity.MessageReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
     }
 
@@ -161,7 +163,7 @@ public class AskUserActivity extends Activity implements
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("kill");
-            Log.v(TAG, "Emergency Contact received message: " + message);
+            Log.v(TAG, "Ask user activity received message: " + message);
 
             if(message != null){
                 // finish activity
@@ -176,5 +178,14 @@ public class AskUserActivity extends Activity implements
             }
 
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.v(TAG, "onPause!!!!!");
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 }

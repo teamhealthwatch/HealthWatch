@@ -45,6 +45,8 @@ public class EmergencyContactActivity extends WearableActivity implements
 
     private Contact primaryContact;
 
+    EmergencyContactActivity.MessageReceiver messageReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +68,7 @@ public class EmergencyContactActivity extends WearableActivity implements
 
         // Register the local broadcast receiver to receive messages from the listener.
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
-        MessageReceiver messageReceiver = new MessageReceiver();
+        messageReceiver = new EmergencyContactActivity.MessageReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
 
         // Build a new GoogleApiClient that includes the Wearable API
@@ -157,6 +159,15 @@ public class EmergencyContactActivity extends WearableActivity implements
         contactAdapter = new ContactAdapter(list, EmergencyContactActivity.this);
         wearableRecyclerView.setAdapter(contactAdapter);
         wearableRecyclerView.setFocusable(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.v(TAG, "onPause!!!!!");
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
 }

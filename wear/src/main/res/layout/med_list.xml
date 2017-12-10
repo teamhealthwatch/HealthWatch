@@ -14,12 +14,6 @@
         android:text="Medication Title"
         android:textAppearance="@style/TextAppearance.WearDiag.Message" />
 
-    <TextView
-        android:id="@+id/dosage_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dosage" />
-
 
 
 </LinearLayout>

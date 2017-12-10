@@ -1,19 +1,11 @@
 package com.example.android.healthwatch.Activity;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wear.widget.drawer.WearableNavigationDrawerView;
@@ -29,13 +21,6 @@ import com.example.android.healthwatch.Adapter.NavigationAdapter;
 import com.example.android.healthwatch.HeartRateService;
 import com.example.android.healthwatch.Model.NavigationItem;
 import com.example.android.healthwatch.R;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 
@@ -165,7 +150,7 @@ public class MainActivity extends WearableActivity implements WearableNavigation
                 break;
             case 1:
                 Toast.makeText(MainActivity.this, "Medication Tracker", Toast.LENGTH_SHORT).show();
-                newIntent = new Intent(MainActivity.this, MedConditionActivity.class);
+                newIntent = new Intent(MainActivity.this, MedicationTrackerActivity.class);
                 startActivity(newIntent);
                 finish();
                 break;
