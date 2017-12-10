@@ -201,18 +201,6 @@
                         android:text="repeat"
                         android:textSize="16sp" />
                 </LinearLayout>
-
-                <Button
-                    android:id="@+id/deleteMed"
-                    android:textStyle="bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/holo_blue_dark"
-                    android:text="Delete"
-                    android:textSize="18dp"
-                    android:visibility="invisible"
-                    android:textColor="@color/colorPrimaryDark"
-                    />
             </LinearLayout>
 
         </ScrollView>

@@ -29,7 +29,6 @@
         <item>Wednesday</item>
         <item>Thursday</item>
         <item>Friday</item>
-        <item>Saturday</item>
     </string-array>
     <string name="title_activity_ask_noti">AskNotiActivity</string>
 

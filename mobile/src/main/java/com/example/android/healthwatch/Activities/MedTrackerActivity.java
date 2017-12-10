@@ -16,9 +16,7 @@ import android.widget.Toast;
 
 import com.example.android.healthwatch.AlarmReceiver;
 import com.example.android.healthwatch.Adapters.MedTrackerAdapter;
-import com.example.android.healthwatch.AlarmService;
 import com.example.android.healthwatch.AlarmUtil;
-import com.example.android.healthwatch.DatabaseHelper;
 import com.example.android.healthwatch.Model.MedModel;
 import com.example.android.healthwatch.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,18 +41,14 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     String allDate;
     String medName;
     String msg;
-    String repeatDays;
     Calendar calendar;
     Intent myIntent;
-    String dayOfWeek;
-    String monthString;
 
     //Declare authentication, used to know who is signed in
     private FirebaseAuth mAuth;
 
     String login;
     boolean firstTime;
-    DatabaseHelper dh;
 
     PendingIntent pendingIntent;
     AlarmManager alarm_manager;
@@ -101,8 +95,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         myIntent = new Intent(MedTrackerActivity.this, AlarmReceiver.class);
         alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        dh = new DatabaseHelper();
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -115,46 +107,11 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                     allTime = extras.getString("TIME");
                     allDate = extras.getString("DATE");
                     msg = extras.getString("MESSAGE");
-                    repeatDays = extras.getString("DAYS");
                     buildAlarm(allTime, allDate, 3536);
                     storeMedication();
                 }
                 else{
                     Toast.makeText(MedTrackerActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-        else if(requestCode == 2)
-        {
-            if(resultCode == RESULT_OK)
-            {
-                Bundle extras = data.getExtras();
-                if(extras != null){
-                    String pos  = extras.getString("POSITION");
-                    String ol_name = extras.getString("old_name");
-                    if(extras.containsKey("DELETE"))
-                    {
-                        medName = extras.getString("NAME");
-                        allTime = extras.getString("TIME");
-                        allDate = extras.getString("DATE");
-                        msg = extras.getString("MESSAGE");
-                        repeatDays = extras.getString("DAYS");
-                        dh.deleteMedications(login, medName);
-                        adapter.remove(adapter.getItem(Integer.parseInt(pos)));
-                    }
-                    else
-                    {
-                        adapter.remove(adapter.getItem(Integer.parseInt(pos)));
-                        dh.deleteMedications(login, ol_name);
-                        medName = extras.getString("NAME");
-                        allTime = extras.getString("TIME");
-                        allDate = extras.getString("DATE");
-                        msg = extras.getString("MESSAGE");
-                        repeatDays = extras.getString("DAYS");
-                        buildAlarm(allTime, allDate, 5469);
-//                        dh.updateMedication(login, medName, allTime, allDate, msg, repeatDays);
-                        storeMedication();
-                    }
                 }
             }
         }
@@ -184,7 +141,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 } else {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference usersRef = database.getReference("medication");
-                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, msg, alarmId, repeatDays), new DatabaseReference.CompletionListener(){
+                    usersRef.child(login).child(medName).setValue(new MedModel(allTime, allDate, msg, alarmId), new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -192,7 +149,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                             } else {
                                 alarmId++;
                                 if(firstTime){
-                                    medications.add(new MedModel(medName, allTime, allDate, msg, alarmId, repeatDays));
+                                    medications.add(new MedModel(medName, allTime, allDate, msg, alarmId));
                                     displayMedications(medications);
                                 }
 
@@ -222,11 +179,10 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 String medTime = (String) dataSnapshot.child("time").getValue().toString();
                 String medDay = (String) dataSnapshot.child("date").getValue().toString();
                 String medDosage = (String) dataSnapshot.child("medMessage").getValue().toString();
-                String medRepeatDays = (String) dataSnapshot.child("repeatDays").getValue().toString();
                 int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
                 alarmId = medId;
 
-                MedModel m = new MedModel(medName,medTime,medDay,medDosage, medId, medRepeatDays);
+                MedModel m = new MedModel(medName,medTime,medDay,medDosage, medId);
                 medications.add(m);
                 displayMedications(medications);
             }
@@ -269,7 +225,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         if(format.equals("PM")){
             hour += 12;
         }
-
         //Split allDate form of dd/mm/yy
         String[] parsedDate = allDate.split("/");
         int day = Integer.parseInt(parsedDate[0]);
@@ -280,10 +235,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         calendar.set(year, month-1, day, hour, minute, 0);
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         AlarmUtil.setAlarm(this, alarmIntent, pos, calendar, "alarm on");
-
-        Intent someBroadCast = new Intent(this, AlarmService.class);
-        someBroadCast.putExtra("login", login);
-        sendBroadcast(someBroadCast);
 
     }
 
@@ -304,8 +255,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         AlarmUtil.cancelAlarm(this, alarmIntent, position);
         alarmIntent.putExtra("extra", "alarm off");
         sendBroadcast(alarmIntent);
-
-
     }
 
     public void onItemClick(int mPosition)
@@ -315,18 +264,15 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         String date = tempValues.getDate();
         String time = tempValues.getTime();
         String msg = tempValues.getMedMessage();
-        String repeatDays = tempValues.getRepeatDays();
         Bundle b = new Bundle();
         b.putString("name", name);
-        b.putString("old_name", name);
         b.putString("date", date);
         b.putString("time", time);
         b.putString("msg", msg);
-        b.putString("days", repeatDays);
-        b.putString("position", Integer.toString(mPosition));
+
         Intent intent = new Intent(this, MedTrackerForm.class);
         intent.putExtras(b);
-        startActivityForResult(intent, 2);
+        startActivityForResult(intent, 1);
     }
 
     @Override
@@ -370,6 +316,12 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 Intent intent3 = new Intent(this, MedConditionActivity.class);
                 intent3.putExtra("login", login);
                 startActivity(intent3);
+                return true;
+            case R.id.history:
+                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
+                Intent intent4 = new Intent(this, MainActivity.class);
+                intent4.putExtra("login", login);
+                startActivity(intent4);
                 return true;
             case R.id.signout:
                 Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();

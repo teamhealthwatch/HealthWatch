@@ -268,6 +268,12 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                 intent3.putExtra("login", login);
                 startActivity(intent3);
                 return true;
+            case R.id.history:
+                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
+                Intent intent4 = new Intent(this, MainActivity.class);
+                intent4.putExtra("login", login);
+                startActivity(intent4);
+                return true;
             case R.id.signout:
                 Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();
                 mAuth.signOut();
@@ -324,7 +330,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
     }
 
     @Override
-    public void primaryContact(Contact c) {
+    public void primaryContact(Contact c, String path) {
 
     }
 

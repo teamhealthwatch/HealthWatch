@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.example.android.healthwatch.Adapter.NavigationAdapter;
 import com.example.android.healthwatch.HeartRateService;
-import com.example.android.healthwatch.Model.Medication;
 import com.example.android.healthwatch.Model.NavigationItem;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -166,7 +165,7 @@ public class MainActivity extends WearableActivity implements WearableNavigation
                 break;
             case 1:
                 Toast.makeText(MainActivity.this, "Medication Tracker", Toast.LENGTH_SHORT).show();
-                newIntent = new Intent(MainActivity.this, MedicationTrackerActivity.class);
+                newIntent = new Intent(MainActivity.this, MedConditionActivity.class);
                 startActivity(newIntent);
                 finish();
                 break;

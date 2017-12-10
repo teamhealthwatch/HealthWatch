@@ -43,6 +43,8 @@ public class EmergencyContactActivity extends WearableActivity implements
 
     private ArrayList<Contact> contacts;
 
+    private Contact primaryContact;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +58,6 @@ public class EmergencyContactActivity extends WearableActivity implements
                 wearableRecyclerView.setLayoutManager(new WearableLinearLayoutManager(EmergencyContactActivity.this));
 //                textView = findViewById(R.id.textView3);
 //                textView.setText("Emergency Contacts:\n");
-
-
-
 
 
             }
@@ -101,14 +100,10 @@ public class EmergencyContactActivity extends WearableActivity implements
     public class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("message");
-            Log.v(TAG, "Emergency Contact received message: " + message);
 
-            if(message != null){
-                message += "\n";
-                // convert to Contact
-                // TODO: able to sort the receiving items in the sending order
-                byte[] newBytes = intent.getByteArrayExtra("contact");
+            byte[] newBytes = intent.getByteArrayExtra("contact");
+
+            if (newBytes != null) {
                 ByteArrayInputStream bis = new ByteArrayInputStream(newBytes);
                 ObjectInput in = null;
                 try {

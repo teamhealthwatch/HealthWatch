@@ -107,16 +107,6 @@
             android:inputType="textPersonName" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/unused"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"
-            android:visibility="invisible"
-            android:src="@drawable/fab_button"
-            app:layout_anchorGravity="bottom|right|end"/>
-
-        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabButton3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -125,6 +115,7 @@
             android:visibility="invisible"
             android:src="@drawable/fab_button"
             app:layout_anchorGravity="bottom|right|end"/>
+
 
     </LinearLayout>
 

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:rectLayout="@layout/rect_activity_med_condition"
     app:roundLayout="@layout/round_activity_med_condition"
-    tools:context="com.example.android.healthwatch.Activity.MedicationTrackerActivity"
+    tools:context="com.example.android.healthwatch.Activity.MedConditionActivity"
     tools:deviceIds="wear">
 
 

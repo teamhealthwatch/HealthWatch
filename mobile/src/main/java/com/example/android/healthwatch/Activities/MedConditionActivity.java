@@ -104,6 +104,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     }
 
 
+
     private void storeMedConditions() {
 
         final String medcond  = medcond_;
@@ -264,6 +265,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
             floatingButton.show();
             floatingButton.setOnClickListener(this);
+//            visiblity(true);
             MenuInflater mi = getMenuInflater();
             mi.inflate(R.menu.menu_finish, menu);
             return super.onCreateOptionsMenu(menu);
@@ -280,17 +282,9 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
                 getMenuInflater().inflate(R.menu.menu, menu);
                 return true;
             }
-            else
-            {
-                fabIsAdd = true;
-                floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
-                floatingButton.show();
-                floatingButton.setOnClickListener(this);
-                getMenuInflater().inflate(R.menu.menu, menu);
-                return true;
-            }
+
         }
-//       return false;
+       return false;
     }
 
 
@@ -367,6 +361,17 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
                 Intent intent3 = new Intent(this, MedConditionActivity.class);
                 intent3.putExtra("login", login);
                 startActivity(intent3);
+                return true;
+            case R.id.acct:
+                Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
+                Intent intent5 = new Intent(this, AccountActivity.class);
+                startActivity(intent5);
+                return true;
+            case R.id.history:
+                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
+                Intent intent4 = new Intent(this, MainActivity.class);
+                intent4.putExtra("login", login);
+                startActivity(intent4);
                 return true;
             case R.id.signout:
                 Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();

@@ -2,7 +2,6 @@ package com.example.android.healthwatch;
 
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.Model.MedInfoModel;
-import com.example.android.healthwatch.Model.MedModel;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,13 +19,11 @@ import java.util.Map;
 
 public class DatabaseHelper {
     ArrayList<Contact> contacts;
-    ArrayList<MedModel> medications;
     EmergencyContactCallback contactListCallback;
     MedInfoCallback medInfoCallback;
-    MedicationCallback medicationCallback;
 
 
-    public void getEmergencyContactList(final String username,final String path){
+    public void getEmergencyContactList(final String username, final String path){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         contacts = new ArrayList<>();
         myRef.child("contacts").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -49,8 +46,6 @@ public class DatabaseHelper {
         });
 
     }
-
-
 
     /**
      * Updates Emergency Contacts with the new state of the Primary Contact.
@@ -165,7 +160,7 @@ public class DatabaseHelper {
         myRef.child("contacts").child(login).child(username).removeValue();
     }
 
-    public void getPrimaryContact(String username){
+    public void getPrimaryContact(String username, final String path){
 
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
 
@@ -175,7 +170,7 @@ public class DatabaseHelper {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if((boolean) childSnapshot.child("primary").getValue()){
                         Contact c = new Contact(childSnapshot.getKey(), (String) childSnapshot.child("phoneNumber").getValue().toString(), true);
-                        contactListCallback.primaryContact(c);
+                        contactListCallback.primaryContact(c, path);
                     }
                 }
             }
@@ -235,64 +230,16 @@ public class DatabaseHelper {
             }
         });
     }
-//    public void updateMedication(final String login, final String medName, final String allTime,
-//                                    final String allDate, final String msg, final String repeatDays){
-//        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-//        myRef.child("medication").child(login).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                DatabaseReference medicationRef = database.getReference();
-//                for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
-//                    String name = childSnapshot.getKey();
-//                    if(name.equals(login)){
-//                        MedModel m = new MedModel(medName, allTime, allDate, msg, repeatDays);
-//                        medicationRef.child("medication").child(login).setValue(m);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
 
     public void deleteMedConditions(String login){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("medInfo").child(login).removeValue();
     }
 
+
     public void deleteMedications(String login, final String medName){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("medication").child(login).child(medName).removeValue();
-    }
-
-    public void getMedications(String login){
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        medications = new ArrayList<>();
-        myRef.child("medication").child(login).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
-                    String name = childSnapshot.getKey();
-                    String date = (String) childSnapshot.child("date").getValue().toString();
-                    String repeats = (String) childSnapshot.child("repeatDays").getValue().toString();
-                    String time = (String) childSnapshot.child("time").getValue().toString();
-                    String notification = (String) childSnapshot.child("medMessage").getValue().toString();
-                    MedModel m = new MedModel(name, time, date, notification, repeats);
-                    medications.add(m);
-                }
-                medicationCallback.medicationList(medications);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     //Instantiates the callback for the current session
@@ -304,24 +251,16 @@ public class DatabaseHelper {
         medInfoCallback = callBackClass;
     }
 
-    public void registerMedicationCallback(MedicationCallback callBackClass){
-        medicationCallback = callBackClass;
-    }
-
 
     public interface EmergencyContactCallback {
         //Used to get a one-time list of the current emergency contacts associated with a user
         void contactList(ArrayList<Contact> myList, String path);
         //Returns the current primary contact of a user
-        void primaryContact(Contact c);
+        void primaryContact(Contact c, String path);
     }
 
     public interface MedInfoCallback{
         void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other);
-    }
-
-    public interface MedicationCallback{
-        void medicationList(ArrayList<MedModel> medList);
     }
 
 

@@ -94,7 +94,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
         //Grab primary contact and a list of emergency contacts for user
         dh = new DatabaseHelper();
         dh.registerEmergencyCallback(this);
-        dh.getPrimaryContact(login);
+        dh.getPrimaryContact(login, "");
         dh.getEmergencyContactList(login, "");
 
         // Register the local broadcast receiver to receive messages from the listener.
@@ -153,6 +153,17 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
                 Intent intent3 = new Intent(this, MedConditionActivity.class);
                 intent3.putExtra("login", login);
                 startActivity(intent3);
+                return true;
+            case R.id.acct:
+                Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
+                Intent intent5 = new Intent(this, AccountActivity.class);
+                startActivity(intent5);
+                return true;
+            case R.id.history:
+                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
+                Intent intent4 = new Intent(this, MainActivity.class);
+                intent4.putExtra("login", login);
+                startActivity(intent4);
                 return true;
             case R.id.signout:
                 Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();
@@ -340,7 +351,7 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
     }
 
     @Override
-    public void primaryContact(Contact c) {
+    public void primaryContact(Contact c, String path) {
 
         primaryContact = c;
     }

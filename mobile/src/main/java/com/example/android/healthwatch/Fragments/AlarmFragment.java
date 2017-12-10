@@ -19,31 +19,21 @@ import java.util.ArrayList;
  */
 
 public class AlarmFragment extends DialogFragment {
-    String days;
+
     public interface RepeatSelectionListener {
         void onRepeatSelection(ArrayList items);
     }
 
     RepeatSelectionListener listener;
 
-    public static AlarmFragment newInstance(String days){
-        DialogFragment dialog =  new AlarmFragment();
-        Bundle args = new Bundle();
-        args.putString("days", days);
-        dialog.setArguments(args);
-        return (AlarmFragment) dialog;
-    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (RepeatSelectionListener) context;
-        Bundle b = this.getArguments();
     }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-//        days = getArguments().getString("days");
-
         final ArrayList items = new ArrayList();
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.week_days)

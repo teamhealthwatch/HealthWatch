@@ -21,8 +21,6 @@ import android.widget.Toast;
 import com.example.android.healthwatch.Activities.MedConditionActivity;
 import com.example.android.healthwatch.Model.Contact;
 import com.example.android.healthwatch.DatabaseHelper.EmergencyContactCallback;
-import com.example.android.healthwatch.Model.MedInfoModel;
-import com.example.android.healthwatch.Model.MedModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageEvent;
@@ -36,23 +34,18 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class ListenerService extends WearableListenerService
-        implements GoogleApiClient.ConnectionCallbacks, EmergencyContactCallback,
-        DatabaseHelper.MedInfoCallback, DatabaseHelper.MedicationCallback,
-        GoogleApiClient.OnConnectionFailedListener{
+        implements GoogleApiClient.ConnectionCallbacks, EmergencyContactCallback, DatabaseHelper.MedInfoCallback,
+        GoogleApiClient.OnConnectionFailedListener {
     String TAG = "mobile Listener";
 
     GoogleApiClient googleApiClient;
-    ArrayList<Contact> allContactlist;
 
     final static String EMERGENCY_CONTACT_PATH = "/emergency_contact";
 
-    public final static String PHONE_CALL_PATH = "/phone_call_path";
-
-    public final static String MEDICATION_PATH = "/medication_path";
-
-    private Contact primaryContact;
-
     private String login;
+
+
+    public final static String PHONE_CALL_PATH = "/phone_call_path";
 
     int numMessages = 0;
 
@@ -68,6 +61,8 @@ public class ListenerService extends WearableListenerService
     String blood_type_;
     String other_;
 
+    private Contact primaryContact;
+    private ArrayList<Contact> contacts;
 
 
     @Override
@@ -86,12 +81,10 @@ public class ListenerService extends WearableListenerService
         //Grab primary contact and a list of emergency contacts for user
         dh = new DatabaseHelper();
         dh.registerEmergencyCallback(this);
-        dh.registerMedInfoCallback(this);
-        dh.registerMedicationCallback(this);
 
         // avoid crashing when user kills the app and the service still try to start
         if (login != null) {
-            dh.getPrimaryContact(login);
+            dh.getPrimaryContact(login, "");
             dh.getEmergencyContactList(login, "");
         }
 
@@ -113,37 +106,48 @@ public class ListenerService extends WearableListenerService
         // Uses callback method contactList declared at bottom to send emergency contacts to watch
         DatabaseHelper dh = new DatabaseHelper();
         dh.registerEmergencyCallback(this);
-        dh.registerMedInfoCallback(this);
-        dh.registerMedicationCallback(this);
 
 
         if (messageEvent.getPath().equals(EMERGENCY_CONTACT_PATH)) {
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
-            dh.getEmergencyContactList(login, "");
 
+            // Broadcast message to MainActivity for display
+//            Intent messageIntent = new Intent();
+//            messageIntent.setAction(Intent.ACTION_SEND);
+//            messageIntent.putExtra("message", message);
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
+
+
+            //Grab username
+            if (login != null) {
+                dh.getEmergencyContactList(login, "");
+            }
 
 
         } else if (messageEvent.getPath().equals(PHONE_CALL_PATH)) {
 
+            //dh.getPrimaryContact(login);
+
             final String message = new String(messageEvent.getData());
             Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
             Log.v(TAG, "Message received on phone is: " + message);
+
+            // make phone calls
+//                makePhoneCall();
+            //makePhoneCall();
             dh.getEmergencyContactList(login, "phone");
 
 
-        } else if(messageEvent.getPath().equals(MEDICATION_PATH)){
-            Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
-            dh.getMedications(login);
-        }
-        else{
+
+        } else {
             super.onMessageReceived(messageEvent);
         }
     }
 
 
-    private void sendContactList(ArrayList<Contact> list) {
+    private void sendList(ArrayList<Contact> list) {
 
 
         ObjectOutput out = null;
@@ -175,38 +179,6 @@ public class ListenerService extends WearableListenerService
         }
     }
 
-    private void sendMedicationList(ArrayList<MedModel> list) {
-
-
-        ObjectOutput out = null;
-        try {
-
-
-            // covert each contact to byte array, and send to wear using sendthread
-            for (int i = 0; i < list.size(); i++) {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                out = new ObjectOutputStream(bos);
-
-                out.writeObject(list.get(i));
-                out.flush();
-                byte[] newBytes = bos.toByteArray();
-
-                // sending in threads causing random order on receiving items
-                new SendThread(MEDICATION_PATH, newBytes, googleApiClient).start();
-                Log.v(TAG, "sending " + i + " item");
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -222,7 +194,32 @@ public class ListenerService extends WearableListenerService
 
     }
 
+    /**
+     * EmergencyContactCallback method that runs after the database finishes pulling the list
+     *
+     * @param myList - A returned list of all primary contacts
+     */
+    @Override
+    public void contactList(ArrayList<Contact> myList, String path) {
+        contacts = myList;
+        if(path.equals("phone")){
+            dh.getPrimaryContact(login, "phone");
+        }
+        else{
+            sendList(myList);
+        }
+    }
 
+    @Override
+    public void primaryContact(Contact c, String path) {
+
+
+        Log.v(TAG, "CALLBACK!!!!");
+        primaryContact = c;
+        if(path.equals("phone")){
+            makePhoneCall();
+        }
+    }
 
     public void makePhoneCall() {
 
@@ -240,35 +237,38 @@ public class ListenerService extends WearableListenerService
         startActivity(callIntent);
         // texting
         textContacts();
+        DatabaseHelper dbhelper = new DatabaseHelper();
+        dbhelper.registerMedInfoCallback(this);
+        dbhelper.getMedConditions(login);
 
         //notification
-        addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
+
+
     }
 
     public void textContacts() {
         String phoneNumber = primaryContact.getPhoneNumber();
         String text = "Please contact me, I may be need in help.";
-        try {
-            SmsManager smsManager = SmsManager.getDefault();
-            for(int i = 0; i < allContactlist.size(); i++) {
-                smsManager.sendTextMessage(allContactlist.get(i).getPhoneNumber(), null, text, null, null);
+        for(Contact i : contacts){
+            try {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(i.getPhoneNumber(), null, text, null, null);
+                Toast.makeText(getApplicationContext(), "SMS Sent!",
+                        Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(),
+                        "SMS failed, please try again later!",
+                        Toast.LENGTH_LONG).show();
+                e.printStackTrace();
             }
-            Toast.makeText(getApplicationContext(), "SMS Sent!",
-                    Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(),
-                    "SMS failed, please try again later!",
-                    Toast.LENGTH_LONG).show();
-            e.printStackTrace();
         }
+
     }
 
     private void addNotification(String medcond, String allergies, String medication, String bloodType, String other) {
         Log.i("Start", "notification");
 
-        DatabaseHelper dbhelper = new DatabaseHelper();
-        dbhelper.registerMedInfoCallback(this);
-        dbhelper.getMedConditions(login);
+
 
    /* Invoking the default notification service */
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, id);
@@ -354,34 +354,7 @@ public class ListenerService extends WearableListenerService
         medications = curr_med_;
         bloodType = blood_type_;
         other = other_;
+        addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
     }
 
-    /**
-     * EmergencyContactCallback method that runs after the database finishes pulling the list
-     *
-     * @param myList - A returned list of all primary contacts
-     */
-    @Override
-    public void contactList(ArrayList<Contact> myList, String path) {
-
-        sendContactList(myList);
-        allContactlist = myList;
-        if(path.equals("phone")){
-            makePhoneCall();
-        }
-    }
-
-    @Override
-    public void primaryContact(Contact c) {
-
-
-        Log.v(TAG, "CALLBACK!!!!");
-        primaryContact = c;
-        dh.getEmergencyContactList(login, "");
-    }
-
-    @Override
-    public void medicationList(ArrayList<MedModel> medList) {
-        sendMedicationList(medList);
-    }
 }

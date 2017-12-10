@@ -12,10 +12,17 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -31,8 +38,6 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-
-import java.util.ArrayList;
 
 import static com.example.android.healthwatch.TimerIntentService.ACTION_RESPONSE;
 
@@ -62,10 +67,6 @@ public class HeartRateService extends Service implements SensorEventListener,
     private GoogleApiClient googleApiClient;
     private NodeApi.NodeListener nodeListener;
 
-    private int counter;
-    private int averageHeartRate;
-    private ArrayList<Integer> heartRates;
-
 
     public HeartRateService() {
 
@@ -79,9 +80,6 @@ public class HeartRateService extends Service implements SensorEventListener,
         Log.v(TAG, "onCreate");
 
         currentHeartRate = 0;
-        averageHeartRate = 0;
-        counter = 0;
-        heartRates = new ArrayList<>();
 
     }
 
@@ -160,24 +158,17 @@ public class HeartRateService extends Service implements SensorEventListener,
     public void onSensorChanged(SensorEvent sensorEvent) {
         currentHeartRate = (int) (sensorEvent.values.length > 0 ? sensorEvent.values[0] : 0.0f);
 
-        if(counter != 10){
-            heartRates.add(currentHeartRate);
-            averageHeartRate = (averageHeartRate + currentHeartRate)/2;
-            counter++;
+
+        Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
+
+        Toast.makeText(getApplicationContext(), "heart rate is " + currentHeartRate, Toast.LENGTH_SHORT).show();
+
+        if (currentHeartRate > 60){
+//            Log.v(TAG, "should ask intent");
+//            Intent askIntent = new Intent(this, AskUserActivity.class);
+//            startActivity(askIntent);
+            showAskingNoti();
         }
-        else{
-            updateAverageHeartRate(currentHeartRate);
-        }
-
-
-        //Log.i("sensorChanged", "sensor changed " + currentHeartRate + " " + sensorEvent.sensor.getType());
-
-        //Toast.makeText(getApplicationContext(), "heart rate is " + currentHeartRate, Toast.LENGTH_SHORT).show();
-
-        //if (currentHeartRate > 60){
-
-           // showAskingNoti();
-       // }
 
         // Broadcast message to wearable activity for display
         Intent messageIntent = new Intent();
@@ -189,24 +180,6 @@ public class HeartRateService extends Service implements SensorEventListener,
         sentToMobile();
 
     }
-
-    private void updateAverageHeartRate(int curr){
-        heartRates.remove(0);
-        heartRates.add(curr);
-        int ave = 0;
-        for(int i : heartRates){
-            ave += i;
-        }
-        int newAve = ave / 10;
-        averageHeartRate = ave / 10;
-        if(newAve <= averageHeartRate*.4 || newAve >= averageHeartRate*1.3){
-            showAskingNoti();
-        }
-        else{
-            averageHeartRate = (averageHeartRate + newAve) / 2;
-        }
-    }
-
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
@@ -284,17 +257,18 @@ public class HeartRateService extends Service implements SensorEventListener,
         // Create yes action
         Intent notiIntent = new Intent(getApplicationContext(), AskUserActivity.class);
 
+//        ResponseCountdown responseCountdown = new ResponseCountdown();
 
         notiIntent.putExtra("notiID", notificationID);
-
+//        notiIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         notiIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
+//        notiIntent.putExtra("countdown", responseCountdown);
 
         PendingIntent viewPendingIntent =
                 PendingIntent.getActivity(this, 0, notiIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Action.WearableExtender wearAction =
+        NotificationCompat.Action.WearableExtender yesAction =
                 new NotificationCompat.Action.WearableExtender()
                         .setHintDisplayActionInline(true)
                         .setHintLaunchesActivity(true);
@@ -304,7 +278,7 @@ public class HeartRateService extends Service implements SensorEventListener,
                         R.drawable.reply_icon,
                         "HealthWatch",
                         viewPendingIntent)
-                        .extend(wearAction)
+                        .extend(yesAction)
                         .build();
 
         NotificationCompat.Builder notificationBuilder =
@@ -333,6 +307,7 @@ public class HeartRateService extends Service implements SensorEventListener,
     }
 
     private void showForegroundNoti(){
+//        createchannel();
 
         // start foreground with notification
 

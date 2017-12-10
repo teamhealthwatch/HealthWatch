@@ -52,14 +52,14 @@
                     android:layout_toEndOf="@+id/Time"
                     android:layout_toRightOf="@+id/Time"
                     android:gravity="center"
-                    android:text="Date"
+                    android:text=""
                     android:textColor="@android:color/white" />
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="75dp"
                     android:gravity="center"
-                    android:text="on/off"
+                    android:text="Date"
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/Dosage"
                     android:layout_toEndOf="@+id/Dosage"

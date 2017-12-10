@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
@@ -27,7 +26,6 @@ public class AlarmService extends Service {
     private boolean isRunning;
     private Context context;
     MediaPlayer mMediaPlayer;
-    String login;
 
 
     @Nullable
@@ -40,13 +38,11 @@ public class AlarmService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         sendNotification("Medication time!");
-        //login = intent.getExtras().getString("login");
+
         NotificationManager notify_manager = (NotificationManager)
                 getSystemService(NOTIFICATION_SERVICE);
         // set up an intent that goes to the Main Activity
         Intent intent_main_activity = new Intent(this.getApplicationContext(), MedTrackerActivity.class);
-
-        intent_main_activity.putExtra("login", "testUser");
         // set up a pending intent
         PendingIntent pending_intent_main_activity = PendingIntent.getActivity(this, 0,
                 intent_main_activity, 0);
@@ -60,9 +56,9 @@ public class AlarmService extends Service {
                 .setAutoCancel(true)
                 .build();
 
-
-        //Log.e("service", state);
         String state = intent.getExtras().getString("extra");
+        //Log.e("service", state);
+
         assert state != null;
         switch (state) {
             case "alarm on":
@@ -78,9 +74,7 @@ public class AlarmService extends Service {
 
         if(!this.isRunning && startId == 1)
         {
-//            Vibrator v = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
-//            v.vibrate(1000);
-            mMediaPlayer = MediaPlayer.create(this, R.raw.solemn);
+            mMediaPlayer = MediaPlayer.create(this, R.raw.annoying_alarm_clock);
             mMediaPlayer.start();
             this.isRunning = true;
             startId = 0;

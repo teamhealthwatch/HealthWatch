@@ -21,14 +21,19 @@ import com.google.android.gms.wearable.Wearable;
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  * <p>
+ * TODO: Customize class - update intent actions and extra parameters.
  */
 public class TimerIntentService extends IntentService implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
-
+    // TODO: Rename actions, choose action names that describe tasks that this
+    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_RESPONSE = "com.example.android.healthwatch.action.RESPONSE";
     public static final String ACTION_RESTART = "com.example.android.healthwatch.action.RESTART";
 
+    // TODO: Rename parameters
+//    public static final String EXTRA_PARAM1 = "com.example.android.healthwatch.extra.PARAM1";
+//    public static final String EXTRA_PARAM2 = "com.example.android.healthwatch.extra.PARAM2";
 
     public TimerIntentService() {
         super("TimerIntentService");
@@ -63,15 +68,19 @@ public class TimerIntentService extends IntentService implements
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_RESPONSE.equals(action)) {
+//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
                 handleActionResponse();
             } else if (ACTION_RESTART.equals(action)) {
+//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
                 handleActionRestart();
             }
         }
     }
 
     /**
-     * Handle action Response in the provided background thread with the provided
+     * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
     private void handleActionResponse() {
@@ -118,7 +127,7 @@ public class TimerIntentService extends IntentService implements
     }
 
     /**
-     * Handle action Restart in the provided background thread with the provided
+     * Handle action Baz in the provided background thread with the provided
      * parameters.
      */
     private void handleActionRestart() {
