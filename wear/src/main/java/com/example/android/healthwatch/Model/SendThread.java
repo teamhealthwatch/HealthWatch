@@ -37,9 +37,9 @@ public class SendThread extends Thread {
                 public void onResult(MessageApi.SendMessageResult sendMessageResult) {
 
                     if (sendMessageResult.getStatus().isSuccess()) {
-                        Log.i("heart rate", "heart rate sent to phone ");
+                        Log.i(TAG, "Successful PATH is " + path);
                     } else {
-                        Log.i("heart rate", "problem sending heart rate");
+                        Log.i(TAG, "Unsuccessful PATH is " + path);
                     }
 
                 }

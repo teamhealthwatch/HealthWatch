@@ -111,7 +111,7 @@ public class MedicationTrackerActivity extends WearableActivity implements
             }
         });
 
-        requestMeds();
+
 
         // Register the local broadcast receiver to receive messages from the listener.
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
@@ -127,8 +127,16 @@ public class MedicationTrackerActivity extends WearableActivity implements
                 .build();
 
         googleClient.connect();
+        //requestMeds();
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleClient.connect();
+        requestMeds();
     }
 
     private void requestMeds() {

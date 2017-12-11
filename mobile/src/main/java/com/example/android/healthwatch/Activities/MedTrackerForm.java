@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,10 +24,14 @@ import com.example.android.healthwatch.DateAndTimeUtil;
 import com.example.android.healthwatch.Fragments.AlarmFragment;
 import com.example.android.healthwatch.R;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.view.View.VISIBLE;
+
 
 public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.RepeatSelectionListener{
 
@@ -46,9 +51,15 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     String medName;
     String dayOfWeek;
     Boolean isDate;
-    Boolean isTime;
-    ArrayList<String> days = new ArrayList<String>();
+    Boolean isReapet;
+    Button deleteMedication;
+    String reapetDays;
+    String monthString;
+    String position;
+    String old_name;    ArrayList<String> days = new ArrayList<String>();
     ArrayList<String> daysInfull = new ArrayList<String>();
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -64,7 +75,11 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         repeatText = (TextView)findViewById(R.id.repeat_day);
         medicationMessage = (EditText) findViewById(R.id.notification_content);
         actualDate = (TextView)findViewById(R.id.actualDate);
+        reapetDays = " ";
+        position = " ";
+        old_name = " ";
         isDate = true;
+        isReapet = false;
 
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +114,9 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
             allTime = b.getString("time");
             allDate = b.getString("date");
             medName = b.getString("name");
+            reapetDays = b.getString("days");
+            position = b.getString("position");
+            old_name =b.getString("old_name");
             displayForm();
         }
     }
@@ -108,11 +126,56 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         actualTime.setText(allTime);
         medicationName.setText(medName);
         medicationMessage.setText(medMessage);
+        if(reapetDays.equals(" "))
+        {
+            repeatText.setText("repeat");
+        }
+        else
+        {
+            repeatText.setText(reapetDays);
+        }
+        deleteMedication = (Button) findViewById(R.id.deleteMed);
+        deleteMedication.setVisibility(VISIBLE);
+        deleteMedication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                medMessage = " ";
+                allTime = " ";
+                allDate =  "";
+                reapetDays ="";
+                String delete = "true";
+
+                Intent intent = new Intent(getApplicationContext(), MedTrackerActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("NAME", medName);
+                bundle.putString("TIME", allTime);
+                bundle.putString("DATE", allDate);
+                bundle.putString("MESSAGE", medMessage);
+                bundle.putString("DAYS", reapetDays);
+                bundle.putString("DELETE", delete);
+                bundle.putString("POSITION", position);
+                intent.putExtras(bundle);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     private void selectDays() {
-        DialogFragment dialog =  new AlarmFragment();
-        dialog.show(getSupportFragmentManager(), "AlarmFragment");
+        if(repeatText.equals("repeat"))
+        {
+            DialogFragment dialog =  new AlarmFragment();
+            dialog.show(getSupportFragmentManager(), "AlarmFragment");
+        }
+        else
+        {
+//            DialogFragment dialog =  new AlarmFragment();
+//            AlarmFragment al = AlarmFragment.newInstance("days");
+//            al.show(getSupportFragmentManager(), "AlarmFragment");
+
+            DialogFragment dialog =  new AlarmFragment();
+            dialog.show(getSupportFragmentManager(), "AlarmFragment");
+        }
     }
 
 
@@ -149,8 +212,10 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
 
                 SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
                 Date date = new Date(year, month, dayOfMonth-1);
+                monthString = new DateFormatSymbols().getMonths()[month-1];
                 dayOfWeek = simpledateformat.format(date);
-
+                allDate = day + "/" + m +  "/" + y;
+                actualDate.setText(dayOfWeek.substring(0,3) + ", " + monthString.substring(0,3) + " " + day);
                 Log.i("dayofweek", dayOfWeek);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -167,6 +232,12 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         bundle.putString("TIME", allTime);
         bundle.putString("DATE", allDate);
         bundle.putString("MESSAGE", medMessage);
+        bundle.putString("DAYS", reapetDays);
+        if(!position.equals(""))
+        {
+            bundle.putString("POSITION", position);
+            bundle.putString("old_name", old_name);
+        }
         intent.putExtras(bundle);
 
         Log.i("name", medName + allTime + allDate + medMessage);
@@ -187,6 +258,8 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
         SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
         Date date = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), nowCalendar.get(Calendar.DAY_OF_MONTH)-1);
         dayOfWeek = simpledateformat.format(date);
+        monthString = new DateFormatSymbols().getMonths()[nowCalendar.get(Calendar.MONTH)-1];
+
 
         String medName = medicationName.getText().toString();
         if (TextUtils.isEmpty(medName)) {
@@ -203,7 +276,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
             String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
             String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH));
             allDate = day + "/" + m +  "/" + y;
-            actualDate.setText(allDate);
+            actualDate.setText(dayOfWeek.substring(0,3) + "," + monthString.substring(0,3) + " " + day);
         }
         else if(dateText.equals("Today") && days.size() != 0)
         {
@@ -214,7 +287,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                 String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
                 String day = Integer.toString(nowCalendar.get(Calendar.DAY_OF_MONTH));
                 allDate = day + "/" + m +  "/" + y;
-                actualDate.setText(allDate);
+                actualDate.setText(dayOfWeek.substring(0));
             }
             else {
 
@@ -235,7 +308,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                             String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
                             String day = Integer.toString(dayInt);
                             allDate = day + "/" + m +  "/" + y;
-                            actualDate.setText(allDate);
+                            actualDate.setText(dayOfWeek.substring(0));
                             break;
                         }
                         dayInt++;
@@ -257,7 +330,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                             String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
                             String day = Integer.toString(dayInt);
                             allDate = day + "/" + m +  "/" + y;
-                            actualDate.setText(allDate);
+                            actualDate.setText(dayOfWeek.substring(0));
                             break;
                         }
                         dayInt++;
@@ -279,7 +352,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                             String m = Integer.toString(nowCalendar.get(Calendar.MONTH)+1);
                             String day = Integer.toString(dayInt);
                             allDate = day + "/" + m +  "/" + y;
-                            actualDate.setText(allDate);
+                            actualDate.setText(dayOfWeek.substring(0));
                             break;
                         }
                         dayInt++;
@@ -376,48 +449,82 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
     @Override
     public void onRepeatSelection(ArrayList items) {
 
-      for(int i = 0; i < items.size(); i++)
-      {
-          int j = (int) items.get(i);
-          String day = Integer.toString(j);
-          Log.i("Days", day);
-          if(j == 0)
-          {
-              // Sunday == 0
-              days.add("Sun");
-              daysInfull.add("Sunday");
-          }
-          else if( j == 1)
-          {
-              // Monday == 1
-              days.add("Mon");
-              daysInfull.add("Monday");
-          }
-          else if( j == 2)
-          {
-              // Tuesday == 2
-              days.add("Tue");
-              daysInfull.add("Tuesday");
-          }
-          else if( j == 3)
-          {
-              // Wednesday == 3
-              days.add("Wed");
-              daysInfull.add("Wednesday");
-          }
-          else if( j == 4)
-          {
-              // Thursday == 4
-              days.add("Thur");
-              daysInfull.add("Thursday");
-          }
-          else if( j == 5)
-          {
-              // Friday == 5
-              days.add("Fri");
-              daysInfull.add("Friday");
-          }
-      }
+        for(int i = 0; i < items.size(); i++)
+        {
+            int j = (int) items.get(i);
+            String day = Integer.toString(j);
+            Log.i("Days", day);
+            if(j == 0)
+            {
+                // Sunday == 0
+                if(!days.contains("S"))
+                {
+                    days.add("S");
+                    daysInfull.add("Sunday");
+                }
+
+            }
+            else if( j == 1)
+            {
+                // Monday == 1
+                if(!days.contains("M"))
+                {
+                    days.add("M");
+                    daysInfull.add("Monday");
+                }
+
+            }
+            else if( j == 2)
+            {
+                // Tuesday == 2
+                if(!days.contains("T"))
+                {
+                    days.add("T");
+                    daysInfull.add("Tuesday");
+                }
+
+            }
+            else if( j == 3)
+            {
+                // Wednesday == 3
+                if(!days.contains("W"))
+                {
+                    days.add("W");
+                    daysInfull.add("Wednesday");
+                }
+
+            }
+            else if( j == 4)
+            {
+                // Thursday == 4
+                if(!days.contains("Th"))
+                {
+                    days.add("Th");
+                    daysInfull.add("Thursday");
+                }
+
+            }
+            else if( j == 5)
+            {
+                // Friday == 5
+                if(!days.contains("F"))
+                {
+                    days.add("F");
+                    daysInfull.add("Friday");
+                }
+
+            }
+            else if( j == 6)
+            {
+                // Saturday == 5
+                if(!days.contains("Sa"))
+                {
+                    days.add("Sa");
+                    daysInfull.add("Saturday");
+                }
+
+            }
+        }
 
         if(days.size() != 0)
         {
@@ -426,6 +533,7 @@ public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.R
                 allReapetDays = allReapetDays + days.get(i) + " ";
             }
             repeatText.setText(allReapetDays);
+            reapetDays = allReapetDays;
             isDate = false;
         }
     }

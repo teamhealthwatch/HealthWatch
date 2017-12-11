@@ -48,7 +48,7 @@ public class ListenerService extends WearableListenerService
 
     public final static String PHONE_CALL_PATH = "/phone_call_path";
 
-    public final static String MEDICATION_PATH = "/medication";
+    public final static String MEDICATION_PATH = "/medication_path";
 
     int numMessages = 0;
 
@@ -110,6 +110,8 @@ public class ListenerService extends WearableListenerService
         // Uses callback method contactList declared at bottom to send emergency contacts to watch
         DatabaseHelper dh = new DatabaseHelper();
         dh.registerEmergencyCallback(this);
+        dh.registerMedicationCallback(this);
+        dh.registerMedInfoCallback(this);
 
 
         if (messageEvent.getPath().equals(EMERGENCY_CONTACT_PATH)) {

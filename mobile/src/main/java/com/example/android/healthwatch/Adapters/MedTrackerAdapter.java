@@ -12,10 +12,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.android.healthwatch.Activities.MedTrackerActivity;
+import com.example.android.healthwatch.DateAndTimeUtil;
 import com.example.android.healthwatch.Model.MedModel;
 import com.example.android.healthwatch.R;
 
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by faitholadele on 10/11/17.
@@ -112,11 +117,73 @@ public class MedTrackerAdapter extends ArrayAdapter<MedModel> implements View.On
         else
         {
 
-            holder._name.setText( dataModel.getName() );
-            holder._date.setText( dataModel.getDate() );
-            holder._time.setText( dataModel.getTime() );
-            holder._msg.setText( dataModel.getMedMessage() );
-            holder._alarmbttn.setVisibility(View.VISIBLE);
+            String dates = dataModel.getDate();
+            String time = dataModel.getTime();
+            String[] timesplit  = time.split("\\s");
+            String repeatDay = dataModel.getRepeatDays();
+            if(repeatDay.equals(" "))
+            {
+                String[] words=dates.split("\\/");
+
+                Calendar nowCalendar = Calendar.getInstance();
+                Calendar calendar = Calendar.getInstance();
+
+                int day = Integer.parseInt (words[0]);
+                int month = Integer.parseInt (words[1]);
+                SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
+                Date date = new Date(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), day-1);
+                String dayOfWeek = simpledateformat.format(date);
+                String monthString = new DateFormatSymbols().getMonths()[month-1];
+                calendar.set(Calendar.YEAR, nowCalendar.get(Calendar.YEAR));
+                calendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH));
+                calendar.set(Calendar.DAY_OF_MONTH, nowCalendar.get(Calendar.DAY_OF_MONTH));
+                calendar.set(Calendar.DAY_OF_MONTH, day);
+
+                if(timesplit[3].equals("PM"))
+                {
+                    calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timesplit[0]) + 12);
+                    int su = Integer.parseInt(timesplit[0]) + 12;
+
+                    Log.i(" ", Integer.toString(su));
+
+                }
+                else
+                {
+                    calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timesplit[0]));
+
+                }
+
+                calendar.set(Calendar.MINUTE,  Integer.parseInt(timesplit[2]));
+
+                if (DateAndTimeUtil.toLongDateAndTime(calendar) < DateAndTimeUtil.toLongDateAndTime(nowCalendar)) {
+
+                    holder._name.setText( dataModel.getName() );
+                    holder._date.setText( dayOfWeek.substring(0,3) + "," + monthString.substring(0,3) + " " + Integer.toString(day));
+                    holder._time.setText( dataModel.getTime() );
+                    holder._msg.setText( dataModel.getMedMessage() );
+                    holder._alarmbttn.setVisibility(View.VISIBLE);
+                    holder._alarmbttn.setChecked(false);
+                }
+                else
+                {
+                    holder._name.setText( dataModel.getName() );
+                    holder._date.setText( dayOfWeek.substring(0,3) + "," + monthString.substring(0,3) + " " + Integer.toString(day));
+                    holder._time.setText( dataModel.getTime() );
+                    holder._msg.setText( dataModel.getMedMessage() );
+                    holder._alarmbttn.setChecked(true);
+                    holder._alarmbttn.setVisibility(View.VISIBLE);
+                }
+
+            }
+            else
+            {
+                holder._name.setText( dataModel.getName() );
+                holder._date.setText( dataModel.getRepeatDays());
+                holder._time.setText( dataModel.getTime() );
+                holder._msg.setText( dataModel.getMedMessage() );
+                holder._alarmbttn.setVisibility(View.VISIBLE);
+
+            }
 
             convertView.setOnClickListener(new OnItemClickListener( position ));
         }

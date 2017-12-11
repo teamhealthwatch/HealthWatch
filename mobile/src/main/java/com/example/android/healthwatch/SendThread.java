@@ -3,6 +3,7 @@ package com.example.android.healthwatch;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
@@ -14,32 +15,35 @@ import com.google.android.gms.wearable.Wearable;
 
 public class SendThread extends Thread {
     String path;
-    byte[] bytes;
+    byte[] message;
     GoogleApiClient googleApiClient;
+
     String TAG = "Mobile SendThread";
 
-    //constructor
-    SendThread(String p, byte[] b, GoogleApiClient g) {
+
+    public SendThread(String p, byte[] msg, GoogleApiClient g) {
         path = p;
-        bytes = b;
+        message = msg;
         googleApiClient = g;
     }
 
-    //sends the message via the thread.  this will send to all wearables connected, but
-    //since there is (should only?) be one, no problem.
+
     public void run() {
         NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await();
         for (Node node : nodes.getNodes()) {
-            MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(googleApiClient, node.getId(), path, bytes).await();
-            if (result.getStatus().isSuccess()) {
-//                    sendmessage("SendThread: message send to " + node.getDisplayName());
-                Log.v(TAG, "SendThread: message send to " + node.getDisplayName());
+            Wearable.MessageApi.sendMessage(googleApiClient, node.getId(), path, message).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+                @Override
+                public void onResult(MessageApi.SendMessageResult sendMessageResult) {
 
-            } else {
-                // Log an error
-//                    sendmessage("SendThread: message failed to" + node.getDisplayName());
-                Log.v(TAG, "SendThread: message failed to" + node.getDisplayName());
-            }
+                    if (sendMessageResult.getStatus().isSuccess()) {
+                        Log.i(TAG, "Successful PATH is " + path);
+                    } else {
+                        Log.i(TAG, "Unsuccessful PATH is " + path);
+                    }
+
+                }
+            });
         }
     }
 }
+
