@@ -51,6 +51,6 @@ public class DatePickerFragment extends DialogFragment
 
         String date = i1 + "/" + i2 + "/" + i;
 
-        medInfoActivity.addAlarm(date);
+//        medInfoActivity.addAlarm(date);
     }
 }

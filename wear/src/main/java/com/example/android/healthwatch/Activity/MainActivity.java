@@ -162,6 +162,9 @@ public class MainActivity extends WearableActivity implements WearableNavigation
                 break;
             case 3:
                 Toast.makeText(MainActivity.this, "Personal Info", Toast.LENGTH_SHORT).show();
+                newIntent = new Intent(MainActivity.this, PersonalInfoActivity.class);
+                startActivity(newIntent);
+                finish();
                 break;
         }
     }

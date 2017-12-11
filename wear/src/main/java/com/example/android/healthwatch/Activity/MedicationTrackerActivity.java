@@ -93,9 +93,10 @@ public class MedicationTrackerActivity extends WearableActivity implements
                     @Override
                     public void onMedClickListener(int pos) {
                         Log.i("MedClickListener", "clicked " + pos);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(MED_ITEM, medication.get(pos));
                         Intent newIntent = new Intent(MedicationTrackerActivity.this, MedInfoActivity.class);
-
-                        newIntent.putExtra(MED_ITEM, medication.get(pos));
+                        newIntent.putExtras(bundle);
                         startActivity(newIntent);
                     }
                 };
@@ -171,6 +172,9 @@ public class MedicationTrackerActivity extends WearableActivity implements
                 break;
             case 3:
                 Toast.makeText(MedicationTrackerActivity.this, "Personal Info", Toast.LENGTH_SHORT).show();
+                newIntent = new Intent(MedicationTrackerActivity.this, PersonalInfoActivity.class);
+                startActivity(newIntent);
+                finish();
                 break;
         }
     }

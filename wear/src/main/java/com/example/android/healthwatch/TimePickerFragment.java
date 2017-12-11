@@ -73,6 +73,6 @@ public class TimePickerFragment extends DialogFragment
         String time = hourOfDay + ":" + minuteStr + " " + format;
 
 //        medInfoActivity.addAlarm(time);
-        medInfoActivity.setTempTime(time);
+//        medInfoActivity.setTempTime(time);
     }
 }

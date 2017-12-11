@@ -9,61 +9,88 @@
     android:orientation="vertical"
     android:padding="15dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp"
-        app:boxedEdges="left|right"
-        android:orientation="vertical">
+        app:boxedEdges="left|right">
 
-
-        <TextView
-            android:id="@+id/med_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.WearDiag.Message"
-
-            />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
-
-        <TextView
-            android:id="@+id/med_dosage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textAlignment="center"
-            />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
-
-
-
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/time"
-            android:layout_gravity="center"
-            android:id="@+id/time_button"/>
-
-        <android.support.v7.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="5dp"
             android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="true"
-            android:id="@+id/alarm_recycler_view">
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center">
 
-        </android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/med_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:text="test"
+
+                />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:id="@+id/med_dosage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="test"
+                />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:id="@+id/days_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="test"
+                />
+
+
+
+            <!--<Button-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:background="@drawable/time"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:id="@+id/time_button"/>-->
+
+            <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical"-->
+            <!--android:clickable="true"-->
+            <!--android:focusable="true"-->
+            <!--android:id="@+id/alarm_recycler_view">-->
+
+            <!--</android.support.v7.widget.RecyclerView>-->
 
 
         </LinearLayout>
+
+
+
+
+    </RelativeLayout>
+
+
 
 
 
