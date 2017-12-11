@@ -129,7 +129,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                         if(pc){
                             dh.updatePrimaryContact(login, "");
                         }
-                        if(extras.getBoolean("edit")){
+                        if(extras.getBoolean("Save")){
                             dh.updateEmergencyContact(login, fullName, phoneNumber, pc);
                         }
                         else{
