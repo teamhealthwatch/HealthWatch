@@ -326,7 +326,7 @@ public class ListenerService extends WearableListenerService
 
    /* Creates an explicit intent for an Activity in your app */
         Intent resultIntent = new Intent(this, MedConditionActivity.class);
-
+        resultIntent.putExtra("login", login);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MedConditionActivity.class);
 
@@ -363,11 +363,11 @@ public class ListenerService extends WearableListenerService
 
     @Override
     public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other) {
-        medCond = medcond_;
-        allergies = allergies_;
-        medications = curr_med_;
-        bloodType = blood_type_;
-        other = other_;
+        medcond_ = medCond;
+        allergies_ = allergies;
+        curr_med_ = medications;
+        blood_type_ = bloodType;
+        other_ = other;
         addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
     }
 
