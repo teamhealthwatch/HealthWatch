@@ -22,6 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/*
+Handles getting getting data from the form and sending it to the database helper. LoC = 205
+ */
 public class MedConditionActivity extends AppCompatActivity implements View.OnClickListener, DatabaseHelper.MedInfoCallback {
 
     TextView Med_Cond;
@@ -81,7 +84,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
 
         dh = new DatabaseHelper();
         dh.registerMedInfoCallback(this);
-        dh.getMedConditions(login);
+        dh.getMedConditions(login, "");
 
         fabIsAdd = true;
         hasInfo();
@@ -271,19 +274,20 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         }
         else
         {
-            if(fabIsAdd == false)
-            {
+            //if(fabIsAdd == false)
+            //{
                 fabIsAdd = false;
                 floatingButton = (FloatingActionButton)findViewById(R.id.fabButton3);
                 floatingButton.show();
                 floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
                 floatingButton.setOnClickListener(this);
-                getMenuInflater().inflate(R.menu.menu, menu);
-                return true;
-            }
+                MenuInflater mi = getMenuInflater();
+                mi.inflate(R.menu.menu, menu);
+                return super.onCreateOptionsMenu(menu);
+            //}
 
         }
-       return false;
+       //return false;
     }
 
 
@@ -336,7 +340,13 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
             case R.id.action_finish:
                 Toast.makeText(this, "All Done!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, HomePageActivity.class);
+                intent.putExtra("login", login);
                 startActivity(intent);
+            case R.id.action_edit:
+                Toast.makeText(this, "All Done!", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(this, HomePageActivity.class);
+                intent2.putExtra("login", login);
+                startActivity(intent2);
             case R.id.hmpg:
                 Toast.makeText(this, "Homepage", Toast.LENGTH_SHORT).show();
                 Intent intt = new Intent(this, HomePageActivity.class);
@@ -351,26 +361,15 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
                 return true;
             case R.id.contact:
                 Toast.makeText(this, "Emergency Contact", Toast.LENGTH_SHORT).show();
-                Intent intent2 = new Intent(this, EmergencyContactActivity.class);
-                intent2.putExtra("login", login);
-                startActivity(intent2);
+                Intent intentContact = new Intent(this, EmergencyContactActivity.class);
+                intentContact.putExtra("login", login);
+                startActivity(intentContact);
                 return true;
             case R.id.info:
                 Toast.makeText(this, "Personal Info", Toast.LENGTH_SHORT).show();
                 Intent intent3 = new Intent(this, MedConditionActivity.class);
                 intent3.putExtra("login", login);
                 startActivity(intent3);
-                return true;
-            case R.id.acct:
-                Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
-                Intent intent5 = new Intent(this, AccountActivity.class);
-                startActivity(intent5);
-                return true;
-            case R.id.history:
-                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
-                Intent intent4 = new Intent(this, MainActivity.class);
-                intent4.putExtra("login", login);
-                startActivity(intent4);
                 return true;
             case R.id.signout:
                 Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();
@@ -385,7 +384,7 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
     }
 
     @Override
-    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other) {
+    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other, String path) {
         medcond_ = medCond;
         allergies_ = allergies;
         curr_med_ = medications;

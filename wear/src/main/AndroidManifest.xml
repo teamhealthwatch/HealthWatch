@@ -69,8 +69,12 @@
                     android:pathPrefix="/emergency_contact"
                     android:scheme="wear" />
                 <data
+                android:host="*"
+                android:pathPrefix="/medication_path"
+                android:scheme="wear" />
+                <data
                     android:host="*"
-                    android:pathPrefix="/medication_path"
+                    android:pathPrefix="/info_path"
                     android:scheme="wear" />
 
                 <data

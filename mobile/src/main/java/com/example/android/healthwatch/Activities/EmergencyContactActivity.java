@@ -31,24 +31,32 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener, EmergencyContactCallback {
+/*
+Handles Emergency Contact logic. LoC = 180
+ */
 
+public class EmergencyContactActivity extends AppCompatActivity implements View.OnClickListener, EmergencyContactCallback {
+    //Used to store current user name
     public String login;
+
     FloatingActionButton fab;
 
     //Declare authentication
     private FirebaseAuth mAuth;
-
+    //Listview and adapter for displaying
     ListView listView;
-    ArrayList<Contact> contacts;
-    Bundle contact;
     private static EmergencyContactAdapter adapter;
-    int index;
-    String fullName;
-    String phoneNumber;
-    boolean pc;
 
+    int index;
+    //Global variables for emergency contact fields
+    private String fullName;
+    private String phoneNumber;
+    private boolean pc;
+    //Stores current user's emergency contacts
+    ArrayList<Contact> contacts;
+    //Used to determine if user is registered
     boolean firstTime;
+    //Communicates with database
     DatabaseHelper dh;
 
     @Override
@@ -69,6 +77,7 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
             contacts = new ArrayList<>();
             displayContacts(contacts);
         }
+
         //Initialize Firebase Authenticator
         mAuth = FirebaseAuth.getInstance();
         //Initialize Floating Button
@@ -77,23 +86,32 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
         index = 0;
         getSupportActionBar().setTitle("Emergency Contacts");
-
+        //Build database helper for adding/removing storage
         dh = new DatabaseHelper();
         dh.registerEmergencyCallback(this);
     }
 
-
+    /*
+    Called to update screen with new list view of contacts
+     */
     public void displayContacts(ArrayList<Contact> list){
         adapter = new EmergencyContactAdapter(this, list, getApplicationContext());
         listView.setAdapter(adapter);
     }
 
+    /*
+    Displays dialog for recieving user input for emergency contacts
+     */
     private void showEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
         EmergencyContactFragment editNameDialogFragment = EmergencyContactFragment.newInstance("New");
         editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
+    /*
+    A created intent returns here with its request code, result code, and any data passed to it.
+    Here we determine if there is data returned and then store this in the database
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1){
@@ -128,6 +146,10 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         }
     }
 
+    /*
+    Original store to the database
+    TODO: Send this logic to DatabaseHelper
+     */
     public void storeContact(){
         final String name = fullName;
         final String pNumber = phoneNumber;
@@ -184,6 +206,10 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         });
     }
 
+    /*
+    Used to get contacts from the database
+    TODO:Send logic to DatabaseHelper
+     */
     public void getContacts(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         contacts = new ArrayList<>();
@@ -220,6 +246,10 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
     }
 
+    /*
+    Catches any duplicates found, since the database has a unique name restriction, we can enforce this
+    restriction here as well.
+     */
     public void removeFromList(String username){
         for(Contact c : contacts){
             if(c.getName().equals(username)) {
@@ -230,6 +260,9 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         displayContacts(contacts);
     }
 
+    /*
+    Called to display the menu. Determines which menu to display if the user is registered or not
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if(firstTime){
@@ -245,6 +278,9 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
     }
 
+    /*
+    Logic for what to do for which menu item
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -268,12 +304,6 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
                 intent3.putExtra("login", login);
                 startActivity(intent3);
                 return true;
-            case R.id.history:
-                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
-                Intent intent4 = new Intent(this, MainActivity.class);
-                intent4.putExtra("login", login);
-                startActivity(intent4);
-                return true;
             case R.id.signout:
                 Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();
                 mAuth.signOut();
@@ -288,6 +318,9 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         }
     }
 
+    /*
+    Called if the user is not registered. Continues to Medication tracking
+     */
     public void finishContact(){
         Intent intent = new Intent(this, MedTrackerActivity.class);
         intent.putExtra("login", login);
@@ -295,6 +328,9 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         startActivity(intent);
     }
 
+    /*
+    OnClick handler
+     */
     public void onClick(View v){
         if(v == fab){
             showEditDialog();
@@ -302,6 +338,10 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
 
     }
 
+    /*
+    Used with the adapter. Returns here after and item on the screen is clicked. Gets information
+    about this item and sends it to a new dialog form for deleting or editing.
+     */
     public void onItemClick(int mPosition)
     {
         Contact tempContact = (Contact) contacts.get(mPosition);
@@ -318,22 +358,28 @@ public class EmergencyContactActivity extends AppCompatActivity implements View.
         EmergencyContactFragment editNameDialogFragment = EmergencyContactFragment.newInstance("Edit");
         editNameDialogFragment.setArguments(b);
         editNameDialogFragment.show(fm, "fragment_edit_name");
-
-
     }
 
+    /*
+    Callback method for returning from the database helper with a list of contacts
+     */
     @Override
     public void contactList(ArrayList<Contact> myList, String path) {
         contacts = myList;
-
         displayContacts(contacts);
     }
 
+    /*
+    Not used but must be implemented with emergency contact callback
+     */
     @Override
     public void primaryContact(Contact c, String path) {
 
     }
 
+    /*
+    Called to update with a new primary contact for a user
+     */
     public void updatePrimaryContact(String name) {
         dh.updatePrimaryContact(login, name);
     }

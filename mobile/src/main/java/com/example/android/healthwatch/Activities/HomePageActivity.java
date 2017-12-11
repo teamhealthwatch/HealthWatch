@@ -42,6 +42,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+/*
+Landing page for users that are logged in. Displays heart rate and starts various services. LoC = 196
+ */
 public class HomePageActivity extends AppCompatActivity implements DatabaseHelper.EmergencyContactCallback {
     private TextView textView;
     //private TextView heart_rate;
@@ -152,17 +155,6 @@ public class HomePageActivity extends AppCompatActivity implements DatabaseHelpe
                 Intent intent3 = new Intent(this, MedConditionActivity.class);
                 intent3.putExtra("login", login);
                 startActivity(intent3);
-                return true;
-            case R.id.acct:
-                Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
-                Intent intent5 = new Intent(this, AccountActivity.class);
-                startActivity(intent5);
-                return true;
-            case R.id.history:
-                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
-                Intent intent4 = new Intent(this, MainActivity.class);
-                intent4.putExtra("login", login);
-                startActivity(intent4);
                 return true;
             case R.id.signout:
                 Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();

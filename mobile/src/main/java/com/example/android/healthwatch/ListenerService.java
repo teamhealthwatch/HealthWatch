@@ -50,6 +50,8 @@ public class ListenerService extends WearableListenerService
 
     public final static String MEDICATION_PATH = "/medication_path";
 
+    public final static String MED_INFO_PATH = "/info_path";
+
     int numMessages = 0;
 
     public static String id = "test_channel_01";
@@ -150,6 +152,15 @@ public class ListenerService extends WearableListenerService
             }
         }
 
+        else if (messageEvent.getPath().equals(MED_INFO_PATH)) {
+            final String message = new String(messageEvent.getData());
+            Log.v(TAG, "Message path received on phone is: " + messageEvent.getPath());
+            Log.v(TAG, "Message received on phone is: " + message);
+            if(login != null){
+                dh.getMedConditions(login, "watch");
+            }
+        }
+
         else {
             super.onMessageReceived(messageEvent);
         }
@@ -220,6 +231,38 @@ public class ListenerService extends WearableListenerService
         }
     }
 
+    private void sendConditions(ArrayList<String> list) {
+
+
+        ObjectOutput out = null;
+        try {
+
+
+            // covert each contact to byte array, and send to wear using sendthread
+            for (int i = 0; i < list.size(); i++) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                out = new ObjectOutputStream(bos);
+
+                out.writeObject(list.get(i));
+                out.flush();
+                byte[] newBytes = bos.toByteArray();
+
+                // sending in threads causing random order on receiving items
+                new SendThread(MED_INFO_PATH, newBytes, googleApiClient).start();
+                Log.v(TAG, "sending " + i + " item");
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -253,9 +296,7 @@ public class ListenerService extends WearableListenerService
         textContacts();
         DatabaseHelper dbhelper = new DatabaseHelper();
         dbhelper.registerMedInfoCallback(this);
-        dbhelper.getMedConditions(login);
-
-        //notification
+        dbhelper.getMedConditions(login, "");
 
 
     }
@@ -362,13 +403,24 @@ public class ListenerService extends WearableListenerService
     }
 
     @Override
-    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other) {
+    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other, String path) {
         medcond_ = medCond;
         allergies_ = allergies;
         curr_med_ = medications;
         blood_type_ = bloodType;
         other_ = other;
-        addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
+        if(path.equals("watch")){
+            ArrayList<String> conditions = new ArrayList<>();
+            conditions.add(medCond);
+            conditions.add(allergies);
+            conditions.add(medications);
+            conditions.add(bloodType);
+            conditions.add(other);
+            sendConditions(conditions);
+        }
+        else{
+            addNotification(medcond_, allergies_, curr_med_, blood_type_, other_);
+        }
     }
 
     /**

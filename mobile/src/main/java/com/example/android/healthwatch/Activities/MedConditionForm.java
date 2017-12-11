@@ -16,7 +16,9 @@ import com.example.android.healthwatch.Fragments.AlarmFragment;
 import com.example.android.healthwatch.R;
 
 import static android.view.View.VISIBLE;
-
+/*
+Form used to get user input. LoC = 96
+ */
 public class MedConditionForm extends AppCompatActivity {
 
     EditText Med_Cond;

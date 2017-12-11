@@ -24,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
+/*
+Used to get user information to build an account. LoC = 147
+ */
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
 

@@ -32,33 +32,36 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/*
+Handles building the alarm and sending to the database helper. LoC = 235;
+ */
 public class MedTrackerActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    FloatingActionButton floatingButton;
-    MedTrackerAdapter adapter;
-    ArrayList<MedModel> medications;
-    ListView listView;
-    String allTime;
-    String allDate;
-    String medName;
-    String msg;
-    String repeatDays;
-    Calendar calendar;
-    Intent myIntent;
+    private FloatingActionButton floatingButton;
+    private MedTrackerAdapter adapter;
+    private ArrayList<MedModel> medications;
+    private ListView listView;
+    private String allTime;
+    private String allDate;
+    private String medName;
+    private String msg;
+    private String repeatDays;
+    private Calendar calendar;
+    private Intent myIntent;
     String dayOfWeek;
     String monthString;
 
     //Declare authentication, used to know who is signed in
     private FirebaseAuth mAuth;
 
-    String login;
-    boolean firstTime;
-    DatabaseHelper dh;
+    private String login;
+    private boolean firstTime;
+    private DatabaseHelper dh;
 
 
     PendingIntent pendingIntent;
-    AlarmManager alarm_manager;
+    private AlarmManager alarm_manager;
 
     private int alarmId;
 
@@ -80,8 +83,8 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_tracker);
 
-        listView = (ListView)findViewById(R.id.listview);
-        floatingButton = (FloatingActionButton)findViewById(R.id.fabButton);
+        listView = findViewById(R.id.listview);
+        floatingButton = findViewById(R.id.fabButton);
         floatingButton.setOnClickListener(this);
 
         //Initialize Firebase Authenticator
@@ -159,7 +162,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    public void displayMedications(ArrayList<MedModel> m){
+    private void displayMedications(ArrayList<MedModel> m){
         adapter=new MedTrackerAdapter(this, m, getApplicationContext());
         listView.setAdapter(adapter);
     }
@@ -170,7 +173,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    public void storeMedication(){
+    private void storeMedication(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
 
         myRef.child("medication").child(login).child(medName).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -210,7 +213,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    public void getMedications(){
+    private void getMedications(){
 
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         medications = new ArrayList<>();
@@ -218,10 +221,10 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String medName = dataSnapshot.getKey();
-                String medTime = (String) dataSnapshot.child("time").getValue().toString();
-                String medDay = (String) dataSnapshot.child("date").getValue().toString();
-                String medDosage = (String) dataSnapshot.child("medMessage").getValue().toString();
-                String medRepeatDays = (String) dataSnapshot.child("repeatDays").getValue().toString();
+                String medTime = dataSnapshot.child("time").getValue().toString();
+                String medDay = dataSnapshot.child("date").getValue().toString();
+                String medDosage = dataSnapshot.child("medMessage").getValue().toString();
+                String medRepeatDays = dataSnapshot.child("repeatDays").getValue().toString();
                 int medId = Integer.parseInt(dataSnapshot.child("id").getValue().toString());
                 alarmId = medId;
 
@@ -252,14 +255,14 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    public void finishMedication(){
+    private void finishMedication(){
         Intent intent = new Intent(this, MedConditionActivity.class);
         intent.putExtra("login", login);
         intent.putExtra("Not_Registered", "TRUE");
         startActivity(intent);
     }
 
-    public void buildAlarm(String allTime, String allDate, int pos){
+    private void buildAlarm(String allTime, String allDate, int pos){
         //Split allTime form of hh:mm AM/PM
         String[] parsedTime = allTime.split(" ");
         int hour = Integer.parseInt(parsedTime[0]);
@@ -274,7 +277,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         int month = Integer.parseInt(parsedDate[1]);
         int year = Integer.parseInt(parsedDate[2]);
         //Build calendar
-        calendar = calendar.getInstance();
+        calendar = Calendar.getInstance();
         calendar.set(year, month-1, day, hour, minute, 0);
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         AlarmUtil.setAlarm(this, alarmIntent, pos, calendar, "alarm on");
@@ -298,7 +301,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    public void cancelAlarm(int position){
+    private void cancelAlarm(int position){
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         AlarmUtil.cancelAlarm(this, alarmIntent, position);
         alarmIntent.putExtra("extra", "alarm off");
@@ -307,7 +310,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
 
     public void onItemClick(int mPosition)
     {
-        MedModel tempValues = ( MedModel ) medications.get(mPosition);
+        MedModel tempValues = medications.get(mPosition);
         String name = tempValues.getName();
         String date = tempValues.getDate();
         String time = tempValues.getTime();
@@ -368,12 +371,6 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
                 Intent intent3 = new Intent(this, MedConditionActivity.class);
                 intent3.putExtra("login", login);
                 startActivity(intent3);
-                return true;
-            case R.id.history:
-                Toast.makeText(this, "Medication History", Toast.LENGTH_SHORT).show();
-                Intent intent4 = new Intent(this, MainActivity.class);
-                intent4.putExtra("login", login);
-                startActivity(intent4);
                 return true;
             case R.id.signout:
                 Toast.makeText(this, "Signing out", Toast.LENGTH_SHORT).show();

@@ -19,6 +19,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/*
+Handles logging a user in. LoC = 68
+ */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "EmailPassword";

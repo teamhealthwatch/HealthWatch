@@ -22,6 +22,9 @@ import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.SEND_SMS;
 
 
+/*
+Initial activity, displays login and register for a user. LoC = 82;
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     public static final String KEY_LOGIN = "login";

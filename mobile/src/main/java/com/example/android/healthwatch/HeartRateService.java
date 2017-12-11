@@ -325,7 +325,7 @@ DatabaseHelper.MedInfoCallback{
 
 
     @Override
-    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other) {
+    public void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other, String path) {
         medCond = medcond_;
         allergies = allergies_;
         medications = curr_med_;

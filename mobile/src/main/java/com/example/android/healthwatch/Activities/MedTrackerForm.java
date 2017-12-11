@@ -32,7 +32,9 @@ import java.util.Date;
 
 import static android.view.View.VISIBLE;
 
-
+/*
+Used to get alarm specifications for a user. LoC = 320
+ */
 public class MedTrackerForm extends AppCompatActivity implements AlarmFragment.RepeatSelectionListener{
 
     ImageView setTime;

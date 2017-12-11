@@ -185,7 +185,7 @@ public class DatabaseHelper {
         });
     }
 
-    public void getMedConditions(final String login) {
+    public void getMedConditions(final String login, final String path) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("medInfo").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -198,7 +198,7 @@ public class DatabaseHelper {
                     String curr_med_ = (String) dataSnapshot.child(login).child("curr_med").getValue().toString();
                     String blood_type_ = (String) dataSnapshot.child(login).child("blood_type").getValue().toString();
                     String other_ = (String) dataSnapshot.child(login).child("other").getValue().toString();
-                    medInfoCallback.medInfoValues(medcond_, allergies_, curr_med_, blood_type_, other_);
+                    medInfoCallback.medInfoValues(medcond_, allergies_, curr_med_, blood_type_, other_, path);
 
                 }
             }
@@ -293,7 +293,7 @@ public class DatabaseHelper {
     }
 
     public interface MedInfoCallback{
-        void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other);
+        void medInfoValues(String medCond, String allergies, String medications, String bloodType, String other, String path);
     }
 
     public interface MedicationCallback{
