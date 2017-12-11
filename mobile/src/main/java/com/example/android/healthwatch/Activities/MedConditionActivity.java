@@ -136,7 +136,6 @@ public class MedConditionActivity extends AppCompatActivity implements View.OnCl
         myRef.child("medInfo").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String b = "fa";
                 if(dataSnapshot.hasChild(login))
                 {
                     floatingButton.setImageResource(R.drawable.ic_create_white_24dp);
