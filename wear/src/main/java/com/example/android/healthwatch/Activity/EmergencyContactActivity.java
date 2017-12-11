@@ -10,12 +10,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wear.widget.WearableLinearLayoutManager;
 import android.support.wear.widget.WearableRecyclerView;
+import android.support.wear.widget.drawer.WearableNavigationDrawerView;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.android.healthwatch.Adapter.ContactAdapter;
+import com.example.android.healthwatch.Adapter.NavigationAdapter;
 import com.example.android.healthwatch.Model.Contact;
+import com.example.android.healthwatch.Model.NavigationItem;
 import com.example.android.healthwatch.Model.SendThread;
 import com.example.android.healthwatch.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -30,7 +34,8 @@ import java.util.ArrayList;
 
 public class EmergencyContactActivity extends WearableActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        WearableNavigationDrawerView.OnItemSelectedListener{
 
     private WearableRecyclerView wearableRecyclerView;
     private ContactAdapter contactAdapter;
@@ -46,6 +51,10 @@ public class EmergencyContactActivity extends WearableActivity implements
 
     EmergencyContactActivity.MessageReceiver messageReceiver;
 
+    // Menu
+    private WearableNavigationDrawerView mWearableNavigationDrawer;
+    private ArrayList<NavigationItem> drawerList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +68,8 @@ public class EmergencyContactActivity extends WearableActivity implements
                 wearableRecyclerView.setLayoutManager(new WearableLinearLayoutManager(EmergencyContactActivity.this));
 //                textView = findViewById(R.id.textView3);
 //                textView.setText("Emergency Contacts:\n");
+                // Top navigation drawer
+                intialDrawer();
 
 
             }
@@ -95,6 +106,37 @@ public class EmergencyContactActivity extends WearableActivity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    }
+
+    @Override
+    public void onItemSelected(int pos) {
+        Log.i("Drawer", "OnItemSelected!");
+
+        Intent newIntent;
+
+        switch (pos) {
+            case 0:
+                Toast.makeText(EmergencyContactActivity.this, "Main page", Toast.LENGTH_SHORT).show();
+                newIntent = new Intent(EmergencyContactActivity.this, MainActivity.class);
+                startActivity(newIntent);
+                finish();
+                break;
+            case 1:
+                Toast.makeText(EmergencyContactActivity.this, "Medication Tracker", Toast.LENGTH_SHORT).show();
+                newIntent = new Intent(EmergencyContactActivity.this, MedicationTrackerActivity.class);
+                startActivity(newIntent);
+                finish();
+                break;
+            case 2:
+                Toast.makeText(EmergencyContactActivity.this, "Emergency Contact", Toast.LENGTH_SHORT).show();
+                break;
+            case 3:
+                Toast.makeText(EmergencyContactActivity.this, "Personal Info", Toast.LENGTH_SHORT).show();
+                newIntent = new Intent(EmergencyContactActivity.this, PersonalInfoActivity.class);
+                startActivity(newIntent);
+                finish();
+                break;
+        }
     }
 
 
@@ -167,6 +209,19 @@ public class EmergencyContactActivity extends WearableActivity implements
         Log.v(TAG, "onPause!!!!!");
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+    }
+
+    private void intialDrawer(){
+        mWearableNavigationDrawer = findViewById(R.id.top_navigation_drawer);
+
+        drawerList = new ArrayList<>();
+        drawerList.add(new NavigationItem("Heart Rate", R.mipmap.heart_icon));
+        drawerList.add(new NavigationItem("Medication Tracker", R.mipmap.med_icon));
+        drawerList.add(new NavigationItem("Emergency Contact", R.mipmap.contact_icon));
+        drawerList.add(new NavigationItem("Personal Info", R.mipmap.personal_info_icon));
+
+        mWearableNavigationDrawer.setAdapter(new NavigationAdapter(EmergencyContactActivity.this, drawerList));
+        mWearableNavigationDrawer.addOnItemSelectedListener(this);
     }
 
 }
