@@ -78,7 +78,7 @@ public class AlarmService extends Service {
         if(!this.isRunning && startId == 1)
         {
             //mMediaPlayer = MediaPlayer.create(this, R.raw.solemn);
-            mMediaPlayer = MediaPlayer.create(this, R.raw.annoying_alarm_clock);
+            mMediaPlayer = MediaPlayer.create(this, R.raw.solemn);
             mMediaPlayer.start();
             this.isRunning = true;
             startId = 0;

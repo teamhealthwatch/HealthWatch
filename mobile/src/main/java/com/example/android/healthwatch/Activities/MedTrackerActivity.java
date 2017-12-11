@@ -86,6 +86,7 @@ public class MedTrackerActivity extends AppCompatActivity implements View.OnClic
         listView = findViewById(R.id.listview);
         floatingButton = findViewById(R.id.fabButton);
         floatingButton.setOnClickListener(this);
+        dh = new DatabaseHelper();
 
         //Initialize Firebase Authenticator
         mAuth = FirebaseAuth.getInstance();
