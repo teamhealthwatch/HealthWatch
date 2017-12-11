@@ -72,6 +72,11 @@
                     android:host="*"
                     android:pathPrefix="/medication_path"
                     android:scheme="wear" />
+
+                <data
+                    android:host="*"
+                    android:pathPrefix="/info_path"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 

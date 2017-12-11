@@ -10,6 +10,9 @@ public class ListenerService extends WearableListenerService {
     String TAG = "wear listener";
     final static String EMERGENCY_CONTACT_PATH = "/emergency_contact";
     public final static String MEDICATION_PATH = "/medication_path";
+    public final static String MED_INFO_PATH = "/info_path";
+
+    int infoCount = 0;
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
@@ -32,6 +35,20 @@ public class ListenerService extends WearableListenerService {
             messageIntent.setAction(Intent.ACTION_SEND);
             messageIntent.putExtra("med",  meds);
             LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
+        }else if(messageEvent.getPath().equals(MED_INFO_PATH)){
+            final byte[] info = messageEvent.getData();
+
+            // Broadcast message to wearable activity for display
+            Intent messageIntent = new Intent();
+            messageIntent.setAction(Intent.ACTION_SEND);
+            messageIntent.putExtra("info" + infoCount,  info);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
+
+            infoCount++;
+
+            if(infoCount > 4){
+                infoCount = 0;
+            }
         }else{
             super.onMessageReceived(messageEvent);
         }

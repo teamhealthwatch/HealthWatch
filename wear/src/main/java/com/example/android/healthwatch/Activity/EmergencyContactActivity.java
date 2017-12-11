@@ -43,7 +43,6 @@ public class EmergencyContactActivity extends WearableActivity implements
 
     private ArrayList<Contact> contacts;
 
-    private Contact primaryContact;
 
     EmergencyContactActivity.MessageReceiver messageReceiver;
 
