@@ -117,7 +117,7 @@ public class PersonalInfoActivity extends WearableActivity implements
                 inAllerView.setText(retrieveInfo(newBytes2));
             } else if (newBytes3 != null) {
                 inAllerView.setText(retrieveInfo(newBytes3));
-            } else {
+            } else if(newBytes4 != null){
                 inAllerView.setText(retrieveInfo(newBytes4));
             }
 
